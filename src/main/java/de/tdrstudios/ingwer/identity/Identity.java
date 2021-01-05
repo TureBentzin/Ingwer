@@ -1,13 +1,15 @@
 package de.tdrstudios.ingwer.identity;
 
 import de.tdrstudios.ingwer.permissions.IngwerPermission;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
 public class Identity {
     //Static
-    private static Identity adminIdentity = new Identity();
+    private static Identity adminIdentity = new Identity(Bukkit.getOfflinePlayer("Admin") , AccessType.UNKNOWN);
     public static void setAdminIdentity(Identity adminIdentity) {
         adminIdentity = adminIdentity;
     }
@@ -17,13 +19,13 @@ public class Identity {
 
     //Object
 
-    public Identity(Player player ,AccessType accessType) {
+    public Identity(OfflinePlayer player ,AccessType accessType) {
         setPlayer(player);
         setAccessType(accessType);
         setPlayerName(player.getName());
         setPermissionArrayList(new ArrayList<>());
     }
-    private Player player;
+    private OfflinePlayer player;
     private String playerName;
     private AccessType accessType;
     private ArrayList<IngwerPermission> permissionArrayList;
@@ -36,7 +38,7 @@ public class Identity {
         return permissionArrayList;
     }
 
-    public Player getPlayer() {
+    public OfflinePlayer getPlayer() {
         return player;
     }
 
@@ -48,7 +50,7 @@ public class Identity {
         this.permissionArrayList = permissionArrayList;
     }
 
-    public void setPlayer(Player player) {
+    public void setPlayer(OfflinePlayer player) {
         this.player = player;
     }
 
@@ -59,7 +61,7 @@ public class Identity {
     /**
      * @return a new Identity
      */
-    public static Identity getInstance() {
-        return new Identity();
+    public static Identity getInstance(Player player) {
+        return new Identity(player , AccessType.UNKNOWN);
     }
 }
