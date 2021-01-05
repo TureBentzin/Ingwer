@@ -1,5 +1,6 @@
 package de.tdrstudios.ingwer;
 
+import de.tdrstudios.ingwer.identity.Identity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Ingwer extends JavaPlugin {
@@ -27,5 +28,6 @@ public class Ingwer extends JavaPlugin {
 
     //Ingwer as Lib
 
+    private Identity admin = Identity.getAdminIdentity();
 
 }
