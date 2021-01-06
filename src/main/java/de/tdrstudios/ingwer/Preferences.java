@@ -1,6 +1,7 @@
 package de.tdrstudios.ingwer;
 
 import de.tdrstudios.ingwer.enums.StartType;
+import de.tdrstudios.ingwer.identity.AccessType;
 import de.tdrstudios.ingwer.identity.Identity;
 
 public class Preferences {
@@ -10,6 +11,7 @@ public class Preferences {
 
     public  Preferences(Identity adminIdentity , StartType startType) {
         setPrefix('#');
+        adminIdentity.setAccessType(AccessType.getbyLevel(10));
         setAdminIdentity(adminIdentity);
         setStartType(startType);
     }

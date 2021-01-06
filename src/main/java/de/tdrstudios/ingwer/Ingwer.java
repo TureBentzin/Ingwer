@@ -7,6 +7,7 @@ import de.tdrstudios.ingwer.identity.Identity;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.security.Permission;
 
 
 public class Ingwer extends JavaPlugin {
@@ -27,15 +28,20 @@ public class Ingwer extends JavaPlugin {
      */
     public void onEnable() {
         // Plugin startup logic
-        getPreferences().setStartType(StartType.JAVA_PLUGIN);
+
 
     }
     @Override
     public void onDisable() {
         // Plugin shutdown logic
     }
+
+    /**
+     * @apiNote Here is the Name "TDR_Minecraft" Hardcode but it will change soon!
+     */
     @Override
     public void onLoad() {
+        Preferences preferences = new Preferences(new Identity(Bukkit.getOfflinePlayer("TDR_Minecraft") , AccessType.ADMIN) , StartType.JAVA_PLUGIN);
         super.onLoad();
     }
 
@@ -65,6 +71,11 @@ public class Ingwer extends JavaPlugin {
     }
 
 
+    /**
+     *
+     * @param args - this will be set by JavaVM
+     * @apiNote This is only for Debug - You cant use it in Ingwer!
+     */
     public static void main(String[] args) {
         // STOPSHIP: 05.01.21
         Identity identity = new Identity(Bukkit.getOfflinePlayer("TDR_Minecraft") , AccessType.ADMIN);

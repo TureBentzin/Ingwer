@@ -16,10 +16,10 @@ public enum AccessType {
       this.level = level;
       this.name = getbyLevel(level).name();
   }
-  private int level;
-  public String name;
+    private int level;
+    public String name;
 
-    public AccessType getbyLevel(int level) {
+    public static AccessType getbyLevel(int level) {
         for (AccessType type : values()) {
             if (type.level == level) return type;
         }
