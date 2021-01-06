@@ -12,11 +12,18 @@ import java.security.Permission;
 
 public class Ingwer extends JavaPlugin {
     private static  Preferences preferences;
+    private static boolean active = false;
+
+    public static void setActive(boolean active) {
+        Ingwer.active = active;
+    }
+    public static boolean isActive() {
+        return active;
+    }
 
     public static Preferences getPreferences() {
         return preferences;
     }
-
     protected static void setPreferences(Preferences preferences) {
        Ingwer.preferences = preferences;
     }
@@ -32,9 +39,12 @@ public class Ingwer extends JavaPlugin {
 
     }
     @Override
-    public void onDisable() {
+    public void onDisable()
+    {
         // Plugin shutdown logic
+        setActive(false);
     }
+
 
     /**
      * @apiNote Here is the Name "TDR_Minecraft" Hardcode but it will change soon!
@@ -42,6 +52,7 @@ public class Ingwer extends JavaPlugin {
     @Override
     public void onLoad() {
         Preferences preferences = new Preferences(new Identity(Bukkit.getOfflinePlayer("TDR_Minecraft") , AccessType.ADMIN) , StartType.JAVA_PLUGIN);
+        setActive(true);
         super.onLoad();
     }
 
@@ -49,6 +60,7 @@ public class Ingwer extends JavaPlugin {
     // STOPSHIP: 05.01.21
 
     public static void start(Preferences preferences) {
+        setActive(true);
         Identity.setAdminIdentity(preferences.getAdminIdentity());
         setPreferences(preferences);
         
@@ -63,7 +75,10 @@ public class Ingwer extends JavaPlugin {
      * 3: Java shutdown
      */
     public static void stop(int stopcode){
-        
+        setActive(false);
+        if(Bukkit.getPluginManager().isPluginEnabled("Ingwer")) {
+            Bukkit.getPluginManager().disablePlugin(Bukkit.getPluginManager().getPlugin("Ingwer"));
+        }
     }
     @Deprecated
     public static void panic() {

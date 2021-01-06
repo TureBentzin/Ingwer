@@ -9,6 +9,7 @@ public class Preferences {
     private StartType startType;
     private char prefix;
 
+
     public  Preferences(Identity adminIdentity , StartType startType) {
         setPrefix('#');
         adminIdentity.setAccessType(AccessType.getbyLevel(10));
