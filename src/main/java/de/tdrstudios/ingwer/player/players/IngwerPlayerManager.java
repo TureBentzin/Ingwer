@@ -1,14 +1,25 @@
 package de.tdrstudios.ingwer.player.players;
 import de.bentzin.tools.register.Registerator;
+import de.tdrstudios.ingwer.identity.AccessType;
+import de.tdrstudios.ingwer.identity.Identity;
 import de.tdrstudios.ingwer.player.IngwerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.yaml.snakeyaml.events.Event;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class IngwerPlayerManager extends Registerator{
     public IngwerPlayerManager() {
         super(IngwerPlayer.getInstance());
+    }
+
+    private static List<IngwerPlayer> ingwerPlayerList = new ArrayList<>();
+
+    public static List<IngwerPlayer> getIngwerPlayerList() {
+        return ingwerPlayerList;
     }
 
     public IngwerPlayer getByUUIDFromList(String uuid) {
@@ -60,6 +71,6 @@ public class IngwerPlayerManager extends Registerator{
 
     public IngwerPlayer getbyUUID(String uuid) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-        IngwerPlayer ingwerPlayer = new IngwerPlayer(offlinePlayer);
+        IngwerPlayer ingwerPlayer = new IngwerPlayer(offlinePlayer , new Identity(AccessType.UNKNOWN));
     }
 }

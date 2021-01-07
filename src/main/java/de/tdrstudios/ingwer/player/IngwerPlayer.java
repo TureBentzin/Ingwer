@@ -1,9 +1,14 @@
 package de.tdrstudios.ingwer.player;
 
+import de.tdrstudios.ingwer.identity.AccessType;
 import de.tdrstudios.ingwer.identity.Identity;
+import de.tdrstudios.ingwer.player.players.IngwerPlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Objects;
 
@@ -11,6 +16,10 @@ public class IngwerPlayer {
     public IngwerPlayer(OfflinePlayer offlinePlayer, Identity identity) {
         setOfflinePlayer(offlinePlayer);
         setIdentity(identity);
+        getIdentity().setIngwerPlayer(this);
+        getIdentity().setPlayerName(this.offlinePlayer.getName());
+        getIdentity().setOfflinePlayer(offlinePlayer);
+
     }
     private  OfflinePlayer offlinePlayer;
     private Identity identity;
@@ -66,6 +75,22 @@ public class IngwerPlayer {
     //Trolls and stuff
 
     public static IngwerPlayer getInstance() {
-        return new IngwerPlayer(Bukkit.getOfflinePlayer("Player"));
+        return new IngwerPlayer(Bukkit.getOfflinePlayer("Player"), new Identity());
+    }
+
+    /**
+     *
+     * @param playerJoinEvent
+     * @see de.tdrstudios.ingwer.listeners.JoinEvent
+     */
+    public void joinEvent(PlayerJoinEvent playerJoinEvent , IngwerPlayer ingwerPlayer) {
+        Identity identity = ingwerPlayer.getIdentity();
+        IngwerPlayerManager.getIngwerPlayerList().add(ingwerPlayer);
+    }
+    public void leaveEvent(PlayerQuitEvent playerQuitEvent) {
+
+    }
+    public void kickEvent(PlayerKickEvent playerKickEvent) {
+
     }
 }

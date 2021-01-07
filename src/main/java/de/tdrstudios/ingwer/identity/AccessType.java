@@ -25,6 +25,12 @@ public enum AccessType {
         }
         return UNKNOWN;
     }
+    public static void validateAccessType(Identity identity) {
+
+        if(identity.getAccessType().level > 0) {
+            identity.getIngwerPlayer().setIngwerUser(true);
+        }
+    }
 
     public int getLevel() {
         return level;

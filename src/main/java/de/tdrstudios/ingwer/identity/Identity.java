@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Identity {
     //Static
-    private static Identity adminIdentity = new Identity(Bukkit.getOfflinePlayer("Admin") , AccessType.UNKNOWN);
+    private static Identity adminIdentity = new Identity(IngwerPlayer.getInstance() , AccessType.UNKNOWN);
     public static void setAdminIdentity(Identity adminIdentity) {
         adminIdentity = adminIdentity;
     }
@@ -26,7 +26,7 @@ public class Identity {
         setAccessType(accessType);
         setPlayerName(offlinePlayer.getName());
         setPermissionArrayList(new ArrayList<>());
-        IngwerPlayer ingwerPlayer = new IngwerPlayer(getOfflinePlayer().getPlayer());
+        IngwerPlayer ingwerPlayer = new IngwerPlayer(getOfflinePlayer().getPlayer(), this);
     }
     public Identity(IngwerPlayer ingwerPlayer, AccessType accessType) {
         setIngwerPlayer(ingwerPlayer);
@@ -35,6 +35,9 @@ public class Identity {
         setPlayerName(offlinePlayer.getName());
         setPermissionArrayList(new ArrayList<>());
         getIngwerPlayer().setIdentity(this);
+    }
+    public Identity(AccessType accessType) {
+        setAccessType(accessType);
     }
     private OfflinePlayer offlinePlayer;
     private IngwerPlayer ingwerPlayer;
