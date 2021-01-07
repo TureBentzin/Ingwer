@@ -1,6 +1,7 @@
 package de.tdrstudios.ingwer.identity;
 
 import de.tdrstudios.ingwer.permissions.IngwerPermission;
+import de.tdrstudios.ingwer.player.IngwerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -19,13 +20,24 @@ public class Identity {
 
     //Object
 
-    public Identity(OfflinePlayer player ,AccessType accessType) {
-        setPlayer(player);
+    @Deprecated
+    public Identity(OfflinePlayer offlinePlayer, AccessType accessType) {
+        setOfflinePlayer(offlinePlayer);
         setAccessType(accessType);
-        setPlayerName(player.getName());
+        setPlayerName(offlinePlayer.getName());
         setPermissionArrayList(new ArrayList<>());
+        IngwerPlayer ingwerPlayer = new IngwerPlayer(getOfflinePlayer().getPlayer());
     }
-    private OfflinePlayer player;
+    public Identity(IngwerPlayer ingwerPlayer, AccessType accessType) {
+        setIngwerPlayer(ingwerPlayer);
+        setOfflinePlayer(ingwerPlayer.getOfflinePlayer());
+        setAccessType(accessType);
+        setPlayerName(offlinePlayer.getName());
+        setPermissionArrayList(new ArrayList<>());
+        getIngwerPlayer().setIdentity(this);
+    }
+    private OfflinePlayer offlinePlayer;
+    private IngwerPlayer ingwerPlayer;
     private String playerName;
     private AccessType accessType;
     private ArrayList<IngwerPermission> permissionArrayList;
@@ -34,12 +46,25 @@ public class Identity {
         return accessType;
     }
 
+    public IngwerPlayer getIngwerPlayer() {
+        return ingwerPlayer;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setIngwerPlayer(IngwerPlayer ingwerPlayer) {
+        this.ingwerPlayer = ingwerPlayer;
+    }
+
+
     public ArrayList<IngwerPermission> getPermissionArrayList() {
         return permissionArrayList;
     }
 
-    public OfflinePlayer getPlayer() {
-        return player;
+    public OfflinePlayer getOfflinePlayer() {
+        return offlinePlayer;
     }
 
     public void setAccessType(AccessType accessType) {
@@ -50,13 +75,19 @@ public class Identity {
         this.permissionArrayList = permissionArrayList;
     }
 
-    public void setPlayer(OfflinePlayer player) {
-        this.player = player;
+    public void setOfflinePlayer(OfflinePlayer offlinePlayer) {
+        this.offlinePlayer = offlinePlayer;
     }
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+
     }
+
+    public boolean equalsPlayer(Player player) {
+        return getOfflinePlayer().equals(player);
+    }
+
 
     /**
      * @return a new Identity

@@ -63,6 +63,7 @@ public class Ingwer extends JavaPlugin {
         setActive(true);
         Identity.setAdminIdentity(preferences.getAdminIdentity());
         setPreferences(preferences);
+        Tools.getChat().setPrefix(preferences.getPrefix());
         
     }
 
@@ -99,6 +100,8 @@ public class Ingwer extends JavaPlugin {
         preferences.setStartType(StartType.LIBARY);
         preferences.setAdminIdentity(identity);
         Ingwer.start(preferences);
+
+
     }
 
 }

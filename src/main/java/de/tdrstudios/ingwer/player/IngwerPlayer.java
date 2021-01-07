@@ -1,22 +1,48 @@
 package de.tdrstudios.ingwer.player;
 
-import de.tdrstudios.ingwer.Ingwer;
+import de.tdrstudios.ingwer.identity.Identity;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
 public class IngwerPlayer {
-    public IngwerPlayer(Player player) {
-        setPlayer(player);
+    public IngwerPlayer(OfflinePlayer offlinePlayer, Identity identity) {
+        setOfflinePlayer(offlinePlayer);
+        setIdentity(identity);
     }
-    private  Player player;
-    public Player getPlayer() {
-        return player;
+    private  OfflinePlayer offlinePlayer;
+    private Identity identity;
+
+    public void setIdentity(Identity identity) {
+        this.identity = identity;
     }
-    protected void setPlayer(Player player) {
-        this.player = player;
+
+    public Identity getIdentity() {
+        return identity;
+    }
+
+    public OfflinePlayer getOfflinePlayer() {
+        return offlinePlayer;
+    }
+    protected void setOfflinePlayer(OfflinePlayer offlinePlayer) {
+        this.offlinePlayer = offlinePlayer;
     }
     private boolean IngwerUser;
+
+
+    public boolean isOnline() {
+        return getOfflinePlayer().isOnline();
+    }
+    public Player getOnlinePLayer() {
+        if(isOnline()) {
+            return getOnlinePLayer().getPlayer();
+        }else {
+            return null;
+        }
+    }
+
 
     public void setIngwerUser(boolean ingwerUser) {
         IngwerUser = ingwerUser;
@@ -34,7 +60,12 @@ public class IngwerPlayer {
         if (this == player) return true;
         if (player == null || getClass() != player.getClass()) return false;
         IngwerPlayer that = (IngwerPlayer) player;
-        return Objects.equals(player, that.player);
+        return Objects.equals(player, that.offlinePlayer);
     }
 
+    //Trolls and stuff
+
+    public static IngwerPlayer getInstance() {
+        return new IngwerPlayer(Bukkit.getOfflinePlayer("Player"));
+    }
 }
