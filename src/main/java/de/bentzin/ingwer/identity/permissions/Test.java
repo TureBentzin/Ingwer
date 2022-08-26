@@ -9,7 +9,7 @@ public class Test {
         public static void main(String[] args) {
             IngwerPermissions ingwerPermissions
 
-                    = new IngwerPermissions(IngwerPermission.USE, IngwerPermission.MICHAEL, IngwerPermission.TEST1);
+                    = new IngwerPermissions(IngwerPermission.USE);
 
 
             System.out.println(Arrays.toString(IngwerPermission.values()));
