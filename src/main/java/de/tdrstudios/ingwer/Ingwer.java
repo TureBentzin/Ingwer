@@ -1,13 +1,10 @@
 package de.tdrstudios.ingwer;
 
-import com.sun.javafx.css.parser.StopConverter;
 import de.tdrstudios.ingwer.enums.StartType;
 import de.tdrstudios.ingwer.identity.AccessType;
 import de.tdrstudios.ingwer.identity.Identity;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.security.Permission;
 
 
 public class Ingwer extends JavaPlugin {
