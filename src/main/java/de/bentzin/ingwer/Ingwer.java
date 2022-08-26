@@ -1,6 +1,7 @@
 package de.bentzin.ingwer;
 
 import de.bentzin.ingwer.preferences.Preferences;
+import de.bentzin.ingwer.preferences.StartType;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class Ingwer {
@@ -20,7 +21,7 @@ public class Ingwer {
 
     public static void main(String[] args) {
         //entrypoint for Ingwer
-        start(new Preferences());
+        start(Preferences.getDefaults(Identity.DEVELOPER_UUID, StartType.JAVA_PLUGIN_LIBRARY));
     }
 
 }
