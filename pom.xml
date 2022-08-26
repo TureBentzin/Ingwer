@@ -6,15 +6,16 @@
 
     <groupId>de.tdrstudios</groupId>
     <artifactId>ingwer</artifactId>
-    <version>1.0-CREACKED</version>
+    <version>0.1-BETA</version>
     <packaging>jar</packaging>
 
     <name>Ingwer</name>
 
-    <description>Ingwer makes your strong!</description>
+    <description>Ingwer</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <ingwer.status>development</ingwer.status>
     </properties>
 
     <build>
