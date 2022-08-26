@@ -11,10 +11,7 @@ import java.util.List;
 public enum IngwerPermission {
 
     USE,
-    TEST1,
-    TEST2,
-    TEST3,
-    MICHAEL,
+    SUPERADMIN,
 
     ;
 
