@@ -20,7 +20,7 @@ public class Ingwer {
 
     public static void main(String[] args) {
         //entrypoint for Ingwer
-
+        start(new Preferences());
     }
 
 }
