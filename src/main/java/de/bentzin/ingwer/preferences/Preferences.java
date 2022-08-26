@@ -1,25 +1,15 @@
 package de.bentzin.ingwer.preferences;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
-public class Preferences implements IPreferences {
+public record Preferences(UUID superadmin, char prefix) {
 
 
-    private UUID superadmin;
-    private char prefix;
-
-    public Preferences(UUID superadmin, char prefix) {
-        this.superadmin = superadmin;
-        this.prefix = prefix;
-    }
-
-    @Override
-    public UUID superadmin() {
-        return superadmin;
-    }
-
-    @Override
-    public char prefix() {
-        return prefix;
+    @Contract("_ -> new")
+    public static @NotNull Preferences getDefaults(UUID superadmin) {
+        return new Preferences(superadmin,'+');
     }
 }
