@@ -11,8 +11,19 @@ public class PrintSteamLogger extends Logger {
 
     private PrintStream printStream;
 
-    public PrintSteamLogger(String name, PrintStream printStream) {
+    public PrintSteamLogger(@NotNull String name,@NotNull PrintStream printStream,@NotNull Logger parent) {
+        super(name, parent);
+        this.printStream = printStream;
+    }
+
+    public PrintSteamLogger(@NotNull String name,@NotNull PrintStream printStream) {
         super(name);
+        this.printStream = printStream;
+    }
+
+    @Deprecated
+    public PrintSteamLogger(@NotNull PrintStream printStream) {
+        super(printStream.getClass().getSimpleName() + printStream.hashCode());
         this.printStream = printStream;
     }
 
@@ -21,9 +32,17 @@ public class PrintSteamLogger extends Logger {
     }
 
     @Override
-    public void log(String message, LogLevel logLevel) {
+    public void log(String message, @NotNull LogLevel logLevel) {
+        if(logLevel.equals(LogLevel.COSMETIC)){
+            printStream.println(message);
+        }else
                 printStream.println(prefix(message,logLevel));
 
+    }
+
+    @Override
+    public Logger adopt(String name) {
+        return new PrintSteamLogger(name,getPrintStream(),this);
     }
 
 
