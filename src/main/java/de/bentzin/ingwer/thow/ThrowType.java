@@ -8,13 +8,21 @@ public enum ThrowType {
 
     GENERAL(),
     STORAGE("An error has occurred handling Ingwer Storage!"),
-    LOGGING("An error has occurred within Ingwers logging! Feel free to report this issue!")
+    LOGGING("An error has occurred within Ingwers logging! Feel free to report this issue!"),
+    FEATURE("AN error has occurred within Ingwers feature system! This my not be an official Ingwer issue!")
 
     ;
     private String message;
 
+    public boolean hasMessage() {
+        return message != null;
+    }
+
     @Contract(pure = true)
     public @NotNull String getMessage() {
+        if(message == null) {
+            return "";
+        }
         return message +  " <> Running Ingwer v." + de.bentzin.ingwer.Ingwer.VERSION_STRING + "!";
     }
 
@@ -22,6 +30,6 @@ public enum ThrowType {
         this.message = message;
     }
     ThrowType() {
-        this.message = "An unknown error has occurred!";
+        this.message = null;
     }
 }

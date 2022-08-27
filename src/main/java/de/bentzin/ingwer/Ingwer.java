@@ -1,5 +1,7 @@
 package de.bentzin.ingwer;
 
+import de.bentzin.ingwer.features.Feature;
+import de.bentzin.ingwer.features.FeatureManager;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.logging.SystemLogger;
@@ -7,11 +9,14 @@ import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
 import de.bentzin.ingwer.storage.Sqlite;
 import de.bentzin.ingwer.thow.IngwerThrower;
+import de.bentzin.ingwer.thow.ThrowType;
 import de.bentzin.ingwer.utils.StopCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 
 public class Ingwer {
 
@@ -39,6 +44,12 @@ public class Ingwer {
 
     public static IngwerThrower getIngwerThrower() {
         return ingwerThrower;
+    }
+
+    private static FeatureManager featureManager;
+
+    public static FeatureManager getFeatureManager() {
+        return featureManager;
     }
 
     private static Sqlite storage;
@@ -74,10 +85,16 @@ public class Ingwer {
             storage = new Sqlite();
         } catch (URISyntaxException e) {
             getIngwerThrower().accept(e);
+        } catch (SQLException e) {
+            getIngwerThrower().accept(e, ThrowType.STORAGE);
+        } catch (IOException e) {
+            getIngwerThrower().accept(e);
         }
 
         if(preferences.hasCustomSqliteLocation())
          getStorage().setDb(preferences.custom_sqliteLocation());
+
+        featureManager = new FeatureManager();
 
 
 

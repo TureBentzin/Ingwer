@@ -23,9 +23,16 @@ import java.sql.Statement;
 
 public class Sqlite {
 
-    public Sqlite() throws URISyntaxException {
+    public Sqlite() throws URISyntaxException, IOException, SQLException {
         logger = Ingwer.getLogger().adopt("Storage");
         db = getDefaultFile();
+
+        //INIT
+
+        init();
+        connect();
+        setupDB();
+
     }
 
 

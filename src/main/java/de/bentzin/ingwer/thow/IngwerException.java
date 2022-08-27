@@ -32,4 +32,8 @@ public class IngwerException extends RuntimeException{
     }
 
 
+    @Override
+    public String getMessage() {
+        return type.getMessage();
+    }
 }
