@@ -26,7 +26,7 @@ public class Ingwer {
             "██║██║╚████║██║░░╚██╗░░████╔═████║░██╔══╝░░██╔══██╗\n" +
             "██║██║░╚███║╚██████╔╝░░╚██╔╝░╚██╔╝░███████╗██║░░██║\n" +
             "╚═╝╚═╝░░╚══╝░╚═════╝░░░░╚═╝░░░╚═╝░░╚══════╝╚═╝░░╚═╝\n" +
-            "Ingwer v." + VERSION_STRING + " by Ture Bentzin";
+            "Ingwer v." + VERSION_STRING + " by Ture Bentzin \n";
 
     @UnknownNullability
     private static Preferences preferences;
@@ -107,7 +107,7 @@ public class Ingwer {
                     "Ingwer is a piece of educational Software meant to be used for educational purpose only.\n" +
                     "Ingwer can be used as admin software. You are only authorised to install / run / maintain Ingwer with the agreement \n" +
                             "of the authorised personal running the server Ingwer is being used on! \n" +
-                            "-------------------------------------------------------------------------------------------- \n";
+                            "-------------------------------------------------------------------------------------------- ";
                 logger.cosmetic(legal);
         return legal;
     }

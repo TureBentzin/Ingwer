@@ -8,6 +8,8 @@ import java.sql.SQLException;
 
 public final class IngwerThrower {
 
+    public static boolean SQL_DEBUGMODE = false;
+
     public static IngwerThrower getInstance() {
         return Ingwer.getIngwerThrower();
     }
@@ -26,10 +28,16 @@ public final class IngwerThrower {
 
     public  void accept(Throwable throwable, ThrowType type) throws IngwerException {
         //TODO
-        if(throwable instanceof SQLException) {
-            
+        if(throwable instanceof SQLException && SQL_DEBUGMODE == false) {
+            SQLException sqlException = (SQLException) throwable;
+            logger.error(sqlException.getSQLState() + " : " + sqlException.getMessage() + " [" + sqlException.getErrorCode() +"]!");
+            StackTraceElement element = sqlException.getStackTrace()[sqlException.getStackTrace().length - 1];
+            logger.error(element.toString());
+        }else {
+
+            throw new IngwerException(throwable, type);
         }
-        throw new IngwerException(throwable, type);
+
     }
 
 

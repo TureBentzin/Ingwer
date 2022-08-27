@@ -10,6 +10,7 @@ import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
 import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.thow.ThrowType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -50,7 +51,7 @@ public class Sqlite {
 
     public  void init() throws URISyntaxException, IOException {
 
-        System.out.println("db = " + db);
+        logger.debug("database File: " + db);
         db.createNewFile();
 
     }
@@ -98,8 +99,9 @@ public class Sqlite {
     }
 
     public  void connect() throws SQLException {
+        logger.debug("establishing connection to: " + db.getName());
         connection = DriverManager.getConnection("jdbc:sqlite:" + db.getPath());
-        logger.debug("connection: " + connection.toString());
+
     }
 
     public  void close(){
@@ -152,15 +154,12 @@ public class Sqlite {
     public  Identity saveIdentity(@NotNull Identity identity) {
         try {
             Statement statement = connection.createStatement();
-            if(
+
             statement.execute(
-                    "INSERT INTO identity (user_name, player_uuid, user_permissions)\n" +
-                    "VALUES (" + identity.getName() + "," + identity.getUUID()
-                            + "," + identity.getCodedPermissions() + ")")){
-                logger.debug("successfully entered 1x identity!");
-            }else {
-                logger.error("failed to enter 1x identity!");
-            }
+                    "INSERT INTO identity (user_name, player_uuid, user_permissions)" +
+                    "VALUES (" + a(identity.getName()) + "," + a(identity.getUUID())
+                            + "," + a(identity.getCodedPermissions()) + ")");
+
 
 
         } catch (SQLException e) {
@@ -170,5 +169,14 @@ public class Sqlite {
         return identity;
     }
 
+    /**
+     *
+     * @param s
+     * @return s but with "'"
+     */
+    @Contract(pure = true)
+    private @NotNull <S> String a(S s) {
+        return "'" + s + "'";
+    }
 
 }
