@@ -7,6 +7,9 @@ import org.jetbrains.annotations.UnknownNullability;
 
 public class Ingwer {
 
+    //TODO dynamic
+    public static String VERSION_STRING = "0.1-BETA";
+
 
     @UnknownNullability
     private static Preferences preferences;

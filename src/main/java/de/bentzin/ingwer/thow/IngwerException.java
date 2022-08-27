@@ -17,7 +17,8 @@ public class IngwerException extends RuntimeException{
     }
 
     public IngwerException(Throwable cause) {
-        super("CAUSE: " + cause.getMessage(),cause);
+        super("Error executing Ingwer v. "+ Ingwer.VERSION_STRING,cause);
     }
+
 
 }
