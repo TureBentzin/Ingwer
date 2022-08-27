@@ -1,5 +1,6 @@
 package de.bentzin.ingwer.identity;
 
+import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 
 import java.util.UUID;
@@ -13,6 +14,14 @@ public class Identity {
     //Identity
     private final UUID uuid;
     private final IngwerPermissions permissions;
+
+    public boolean isSuperAdmin() {
+        return permissions.contains(IngwerPermission.SUPERADMIN);
+    }
+
+    public boolean isEnabled() {
+        return permissions.contains(IngwerPermission.USE);
+    }
 
     public Identity(UUID uuid, IngwerPermissions permissions) {
         this.uuid = uuid;

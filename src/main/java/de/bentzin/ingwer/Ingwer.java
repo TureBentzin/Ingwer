@@ -1,5 +1,6 @@
 package de.bentzin.ingwer;
 
+import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
 import org.jetbrains.annotations.UnknownNullability;
