@@ -8,6 +8,7 @@ public enum ThrowType {
 
     GENERAL(),
     STORAGE("An error has occurred handling Ingwer Storage!"),
+    LOGGING("An error has occurred within Ingwers logging! Feel free to report this issue!")
 
     ;
     private String message;
