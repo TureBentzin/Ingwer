@@ -3,6 +3,8 @@ package de.bentzin.ingwer;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
+import de.bentzin.ingwer.storage.Sqlite;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class Ingwer {
@@ -18,8 +20,11 @@ public class Ingwer {
         return preferences;
     }
 
-    public static void start(Preferences preferences) {
+    public static void start(@NotNull Preferences preferences) {
         Ingwer.preferences = preferences;
+
+        if(preferences.hasCustomSqliteLocation())
+         Sqlite.setDb(preferences.custom_sqliteLocation());
     }
 
 
