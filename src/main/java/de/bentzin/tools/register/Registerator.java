@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class Registerator<T> implements Iterable {
+public class Registerator<T> implements Iterable<T> {
 
     private String name = this.getClass().getName() + hashCode();
     private List<T> index = new ArrayList<>();

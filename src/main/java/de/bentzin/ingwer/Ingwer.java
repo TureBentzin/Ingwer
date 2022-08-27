@@ -1,5 +1,6 @@
 package de.bentzin.ingwer;
 
+import de.bentzin.ingwer.command.IngwerCommandManager;
 import de.bentzin.ingwer.features.Feature;
 import de.bentzin.ingwer.features.FeatureManager;
 import de.bentzin.ingwer.identity.Identity;
@@ -52,6 +53,12 @@ public class Ingwer {
         return featureManager;
     }
 
+    public static IngwerCommandManager commandManager;
+
+    public static IngwerCommandManager getCommandManager() {
+        return commandManager;
+    }
+
     private static Sqlite storage;
 
     public static Sqlite getStorage() {
@@ -95,7 +102,7 @@ public class Ingwer {
          getStorage().setDb(preferences.custom_sqliteLocation());
 
         featureManager = new FeatureManager();
-
+        commandManager = new IngwerCommandManager();
 
 
 

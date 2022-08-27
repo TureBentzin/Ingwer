@@ -34,8 +34,16 @@ public final class FeatureManager extends Registerator<Feature>{
         this.logger = Ingwer.getLogger().adopt("Features");
     }
 
+    /**
+     *
+     * @param newName
+     * @return if name is already taken
+     */
     public boolean checkName(String newName) {
-        return true;
+        for (Feature feature : this) {
+            if(feature.getName().equalsIgnoreCase(newName)) {return true;}
+        }
+        return false;
     }
 
     @Override

@@ -21,7 +21,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Sqlite {
+public final class Sqlite {
 
     public Sqlite() throws URISyntaxException, IOException, SQLException {
         logger = Ingwer.getLogger().adopt("Storage");

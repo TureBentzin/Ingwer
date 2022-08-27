@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class IngwerPermissions extends ArrayList<IngwerPermission> {
+public final class IngwerPermissions extends ArrayList<IngwerPermission> {
 
     /**
      * Constructs an empty list with the specified initial capacity.

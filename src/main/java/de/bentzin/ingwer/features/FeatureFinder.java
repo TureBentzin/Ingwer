@@ -12,7 +12,7 @@ import org.reflections.Reflections;
 import javax.swing.plaf.basic.BasicTreeUI;
 import java.lang.reflect.InvocationTargetException;
 
-public class FeatureFinder {
+public final class FeatureFinder {
     private Logger logger;
 
     public FeatureFinder(){
