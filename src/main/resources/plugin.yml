@@ -1,6 +1,6 @@
 name: Ingwer
 version: ${project.version}
-main: de.bentzin.ingwer.Ingwer
+main: de.bentzin.ingwer.IngwerPlugin
 api-version: 1.15
 authors: [Ture Bentzin]
 description: Ingwer ${ingwer.status}

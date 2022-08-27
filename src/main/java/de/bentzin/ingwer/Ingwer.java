@@ -1,9 +1,11 @@
 package de.bentzin.ingwer;
 
 import de.bentzin.ingwer.command.IngwerCommandManager;
-import de.bentzin.ingwer.features.Feature;
+import de.bentzin.ingwer.command.paper.PaperEventListener;
 import de.bentzin.ingwer.features.FeatureManager;
 import de.bentzin.ingwer.identity.Identity;
+import de.bentzin.ingwer.identity.permissions.IngwerPermission;
+import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.logging.SystemLogger;
 import de.bentzin.ingwer.preferences.Preferences;
@@ -12,6 +14,9 @@ import de.bentzin.ingwer.storage.Sqlite;
 import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.thow.ThrowType;
 import de.bentzin.ingwer.utils.StopCode;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -20,6 +25,8 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 public class Ingwer {
+
+    public static JavaPlugin javaPlugin;
 
     //TODO dynamic
     public static String VERSION_STRING = "0.1-BETA";
@@ -82,6 +89,8 @@ public class Ingwer {
 
         setLogger(preferences.ingwerLogger());
         getLogger().info("Booting Ingwer v." + VERSION_STRING);
+        javaPlugin = preferences.javaPlugin();
+
 
         getLogger().cosmetic(BANNER);
 
@@ -105,9 +114,20 @@ public class Ingwer {
         commandManager = new IngwerCommandManager();
 
 
+        getFeatureManager().findFeatures();
 
         //END: Boot
         printLEGAL(new SystemLogger("LEGAL",getLogger()));
+
+        //process
+        Identity.refresh();
+        createSuperAdmin(preferences);
+
+
+        if(javaPlugin != null) {
+            registerPaperListeners();
+        }
+
     }
 
     public static void stop(StopCode stopCode) {
@@ -117,7 +137,7 @@ public class Ingwer {
 
     public static void main(String[] args) {
         //entrypoint for Ingwer
-        start(Preferences.getDefaults(Identity.DEVELOPER_UUID, StartType.JAVA_PLUGIN_LIBRARY));
+        start(Preferences.getDefaults(Identity.DEVELOPER_UUID, StartType.JAVA_PLUGIN_LIBRARY, null));
 
         //exit-point for Ingwer
         stop(StopCode.FINISHED);
@@ -134,6 +154,25 @@ public class Ingwer {
                             "-------------------------------------------------------------------------------------------- ";
                 logger.cosmetic(legal);
         return legal;
+    }
+
+    @Contract(pure = true)
+    private static  Identity createSuperAdmin(@NotNull Preferences preferences){
+        if(storage.containsIdentityWithUUID(preferences.superadmin().toString())) {
+          return storage.getIdentityByUUID(preferences.superadmin().toString());
+        }else {
+            Identity identity = new Identity("",preferences.superadmin(),
+                    new IngwerPermissions(IngwerPermission.values()));
+            storage.saveIdentity(identity);
+            return identity;
+        }
+
+
+    }
+
+    public static void registerPaperListeners() {
+        logger.info("register Events!");
+        Bukkit.getPluginManager().registerEvents(new PaperEventListener(logger),javaPlugin);
     }
 
 }

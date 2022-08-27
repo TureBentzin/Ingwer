@@ -17,7 +17,7 @@ public class IngwerPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
-        Ingwer.start(Preferences.getDefaults(Identity.DEVELOPER_UUID, StartType.JAVA_PLUGIN_STANDALONE));
+        Ingwer.start(Preferences.getDefaults(Identity.DEVELOPER_UUID, StartType.JAVA_PLUGIN_STANDALONE, this));
     }
 
     @Override

@@ -7,6 +7,7 @@ import de.bentzin.ingwer.logging.SystemLogger;
 import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.thow.ThrowType;
+import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 import javax.swing.plaf.basic.BasicTreeUI;
@@ -15,8 +16,8 @@ import java.lang.reflect.InvocationTargetException;
 public final class FeatureFinder {
     private Logger logger;
 
-    public FeatureFinder(){
-       logger = FeatureManager.getInstance().getLogger().adopt("finder");
+    public FeatureFinder(@NotNull FeatureManager manager){
+       logger = manager.getLogger().adopt("finder");
     }
 
     public FeatureFinder(Logger logger){
@@ -26,6 +27,7 @@ public final class FeatureFinder {
     public void find() {
         Reflections ref = new Reflections("");
         for (Class<?> cl : ref.getTypesAnnotatedWith(NewFeature.class)) {
+            logger.debug("found: " + cl.getSimpleName());
             NewFeature newFeature = cl.getAnnotation(NewFeature.class);
             try {
                     Feature feature1 = (Feature) cl.getConstructor().newInstance();
@@ -41,7 +43,7 @@ public final class FeatureFinder {
 
 
     public static void main(String[] args) {
-        Ingwer.start(Preferences.getDefaults(null,null));
+        Ingwer.start(Preferences.getDefaults(null,null, null));
         FeatureFinder featureFinder = new FeatureFinder(new SystemLogger("Finder"));
         featureFinder.find();
     }

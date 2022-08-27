@@ -12,16 +12,23 @@ import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.thow.ThrowType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 public final class Sqlite {
+
+    public Logger logger;
+    private File db;
+    private Connection connection;
+
 
     public Sqlite() throws URISyntaxException, IOException, SQLException {
         logger = Ingwer.getLogger().adopt("Storage");
@@ -35,45 +42,34 @@ public final class Sqlite {
 
     }
 
-
-    public  Logger logger;
-
     public static @NotNull File getDefaultFile() throws URISyntaxException {
         File jar;
 
         jar = new File(Ingwer.class.getProtectionDomain().getCodeSource().getLocation().toURI());
         File parent = jar.getParentFile();
         File db;
-        db = new File(parent,"data.sqlite");
+        db = new File(parent, "data.sqlite");
         return db;
     }
 
-
-
-    private  File db;
-
-
-    private  Connection connection;
-
-
-    public  void init() throws URISyntaxException, IOException {
+    public void init() throws URISyntaxException, IOException {
 
         logger.debug("database File: " + db);
         db.createNewFile();
 
     }
 
-    public  boolean isConnected(){
+    public boolean isConnected() {
         try {
-            return  !connection.isClosed();
+            return !connection.isClosed();
         } catch (SQLException e) {
             IngwerThrower.acceptS(e, ThrowType.STORAGE);
         }
         return false;
     }
 
-    private  void setupDB() throws SQLException {
-        if(isConnected()) {
+    private void setupDB() throws SQLException {
+        if (isConnected()) {
 
             connection.createStatement().execute("create table if not exists identity\n" +
                     "(\n" +
@@ -95,61 +91,32 @@ public final class Sqlite {
                     "    on identity (user_name);\n" +
                     "\n");
 
-        }else {
+        } else {
             try {
                 throw new IllegalStateException("Database needs to be connected!");
-            }catch (Exception e) {
+            } catch (Exception e) {
                 IngwerThrower.acceptS(e, ThrowType.STORAGE);
             }
 
         }
     }
 
-    public  void connect() throws SQLException {
+    public void connect() throws SQLException {
         logger.debug("establishing connection to: " + db.getName());
         connection = DriverManager.getConnection("jdbc:sqlite:" + db.getPath());
 
     }
 
-    public  void close(){
-        if(connection != null)
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            IngwerThrower.acceptS(e);
-        }
+    public void close() {
+        if (connection != null)
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                IngwerThrower.acceptS(e);
+            }
     }
 
-    public static void main(String[] args) {
-
-        Ingwer.start(new Preferences(Identity.DEVELOPER_UUID,
-                '+',StartType.DEBUG_STANDALONE,
-                new File("E:\\WorkSpace\\Ich versuche es nochmal\\Ich versuche es nochmal\\WORKSPACE 2020\\Ingwer\\out\\artifacts\\ingwer_storage_jar\\data.sqlite"),
-                new SystemLogger("Ingwer")
-                ));
-
-        Sqlite storage = Ingwer.getStorage();
-        try {
-
-            storage.init();
-            storage.connect();
-            storage.setupDB();
-
-            //HARDCODE
-
-            Identity identity = new Identity("TEST", null, new IngwerPermissions(IngwerPermission.USE));
-            storage.saveIdentity(identity);
-
-            //<HARDCODE
-        } catch (URISyntaxException | IOException e) {
-            IngwerThrower.acceptS(e);
-        } catch (SQLException e) {
-            IngwerThrower.acceptS(e, ThrowType.STORAGE);
-        }
-    }
-
-
-    public  File getDb() {
+    public File getDb() {
         return db;
     }
 
@@ -158,26 +125,127 @@ public final class Sqlite {
     }
 
 
-    public  Identity saveIdentity(@NotNull Identity identity) {
+    public Identity saveIdentity(@NotNull Identity identity) {
         try {
             Statement statement = connection.createStatement();
 
             statement.execute(
                     "INSERT INTO identity (user_name, player_uuid, user_permissions)" +
-                    "VALUES (" + a(identity.getName()) + "," + a(identity.getUUID())
+                            "VALUES (" + a(identity.getName()) + "," + a(identity.getUUID())
                             + "," + a(identity.getCodedPermissions()) + ")");
 
 
-
         } catch (SQLException e) {
-            IngwerThrower.acceptS(e,ThrowType.STORAGE);
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
         }
 
         return identity;
     }
 
+    public @Nullable Identity getIdentityByName(String name) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(
+                    "SELECT * FROM identity WHERE user_name =" + a(name));
+            ResultSet resultSet = statement.getResultSet();
+            Identity identity = new Identity(resultSet.getString("user_name"),
+                    UUID.fromString(resultSet.getString("player_uuid")),
+                    IngwerPermission.decodePermissions(resultSet.getLong("user_permissions")));
+            return identity;
+        } catch (SQLException e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+        }
+        return null;
+    }
+
+    public @Nullable Identity getIdentityByUUID(String uuid) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(
+                    "SELECT * FROM identity WHERE player_uuid =" + a(uuid));
+            ResultSet resultSet = statement.getResultSet();
+            Identity identity = new Identity(resultSet.getString("user_name"),
+                    UUID.fromString(resultSet.getString("player_uuid")),
+                    IngwerPermission.decodePermissions(resultSet.getLong("user_permissions")));
+            return identity;
+        } catch (SQLException e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+        }
+        return null;
+    }
+
+    public @Nullable Identity getIdentityByID(int id) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(
+                    "SELECT * FROM identity WHERE id = " + a(id));
+            ResultSet resultSet = statement.getResultSet();
+            Identity identity = new Identity(resultSet.getString("user_name"),
+                    UUID.fromString(resultSet.getString("player_uuid")),
+                    IngwerPermission.decodePermissions(resultSet.getLong("user_permissions")));
+            return identity;
+        } catch (SQLException e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+        }
+        return null;
+    }
+
+    public boolean containsIdentityWithUUID(String uuid) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(
+                    "SELECT * FROM identity WHERE player_uuid = " + a(uuid));
+            ResultSet resultSet = statement.getResultSet();
+            return resultSet != null;
+        } catch (SQLException e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+        }
+        return false;
+    }
+
+    public @NotNull Collection<Identity> getIdentities() {
+        Collection<Identity> collection = new ArrayList<>();
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(
+                    "SELECT * FROM identity");
+            ResultSet resultSet = statement.getResultSet();
+            while (resultSet.next()) {
+                collection.add(new Identity(resultSet.getString("user_name"),
+                        UUID.fromString(resultSet.getString("player_uuid")),
+                        IngwerPermission.decodePermissions(resultSet.getLong("user_permissions"))));
+            }
+
+        } catch (SQLException e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+        }
+        return collection;
+    }
+
+    @Contract("_, _, _, _ -> param1")
+    public Identity updateIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
+
+        String suuid = uuid.toString();
+        try {
+            Statement statement = connection.createStatement();
+
+            statement.execute(
+                    "UPDATE identity\n" +
+                            "SET user_name = " + a(name) + ", player_uuid = " + a(suuid) +
+                            ", user_permissions = " + a(IngwerPermission.generatePermissions(ingwerPermissions)) +
+                            "WHERE user_name = " + a(identity.getName()));
+
+            ;
+
+        } catch (SQLException e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+        }
+
+        return getIdentityByUUID(suuid);
+    }
+
+
     /**
-     *
      * @param s
      * @return s but with "'"
      */

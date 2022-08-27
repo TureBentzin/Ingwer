@@ -65,9 +65,9 @@ public abstract class IngwerCommand {
     public Collection<CommandTarget> commandTargetCollection() { return List.of(getCommandTargets());}
 
 
-    public void execute(IngwerCommandSender commandSender, String[] cmd, CommandTarget senderType){};
+    public abstract void execute(IngwerCommandSender commandSender, String[] cmd, CommandTarget senderType);
 
-    abstract CommandTarget[] getCommandTargets();
+    public abstract CommandTarget[] getCommandTargets();
 
 
 }

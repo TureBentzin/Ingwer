@@ -1,20 +1,43 @@
 package de.bentzin.ingwer.identity;
 
+import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.message.IngwerMessage;
+import de.bentzin.ingwer.storage.Sqlite;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class Identity implements IngwerCommandSender {
 
 
     public static UUID DEVELOPER_UUID = UUID.fromString("be6e2c93-694b-4cdf-827f-83d6f2d42fb9");
+
+    public static Set<Identity> IDENTITY_SET = new HashSet<>();
+
+    public static void refresh() {
+        IDENTITY_SET.clear();
+        IDENTITY_SET.addAll(Ingwer.getStorage().getIdentities());
+    }
+
+    @Contract(pure = true)
+    public static @Nullable Identity searchSetByUUID(@NotNull UUID uuid) {
+        for (Identity identity : IDENTITY_SET) {
+            if(identity.getUUID().equals(uuid)){
+                return identity;
+            }
+        }
+        return null;
+    }
+
 
 
     //Identity
@@ -87,11 +110,15 @@ public class Identity implements IngwerCommandSender {
         }
     }
 
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Identity{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", uuid=").append(uuid);
+        sb.append(", permissions=").append(permissions);
+        sb.append('}');
+        return sb.toString();
+    }
 
     //generator
-    @Contract(pure = true)
-    public static @Nullable Identity deserialize() {
-
-        return null;
-    };
 }

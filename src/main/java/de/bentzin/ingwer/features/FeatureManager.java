@@ -18,7 +18,7 @@ import java.util.Set;
 
 public final class FeatureManager extends Registerator<Feature>{
 
-    private FeatureFinder featureFinder = new FeatureFinder();
+    private FeatureFinder featureFinder;
 
     public static FeatureManager getInstance() {
         return Ingwer.getFeatureManager();
@@ -32,6 +32,7 @@ public final class FeatureManager extends Registerator<Feature>{
 
     public FeatureManager() {
         this.logger = Ingwer.getLogger().adopt("Features");
+        featureFinder = new FeatureFinder(this);
     }
 
     /**

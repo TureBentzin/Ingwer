@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public final class IngwerThrower {
 
-    public static boolean SQL_DEBUGMODE = false;
+    public static boolean SQL_DEBUGMODE = true;
 
     public static IngwerThrower getInstance() {
         return Ingwer.getIngwerThrower();

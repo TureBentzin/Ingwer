@@ -13,7 +13,7 @@ public enum IngwerPermission {
     USE,
     SUPERADMIN,
     FEATURE_WELCOME,
-    
+    SUDO_COMMAND,
 
     ;
 
