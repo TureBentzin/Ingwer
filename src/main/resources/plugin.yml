@@ -1,6 +1,6 @@
 name: Ingwer
 version: ${project.version}
-main: de.tdrstudios.ingwer.Ingwer
+main: de.bentzin.ingwer.IngwerPlugin
 api-version: 1.15
-authors: [ TDRStudios ]
-description: Ingwer makes your strong!
+authors: [Ture Bentzin]
+description: Ingwer ${ingwer.status}

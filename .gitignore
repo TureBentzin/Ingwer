@@ -111,3 +111,5 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+src/main/java/de/bentzin/ingwer/identity/permissions/Test.java
