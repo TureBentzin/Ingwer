@@ -27,7 +27,7 @@ public abstract class Logger {
     }
 
     public void waring(String message) {
-        log(message,LogLevel.WARING);
+        log(message,LogLevel.WARNING);
     }
 
     public void error(String message) {
@@ -44,7 +44,7 @@ public abstract class Logger {
 
     public enum LogLevel{
         INFO,
-        WARING,
+        WARNING,
         ERROR,
         COSMETIC,
         DEBUG,

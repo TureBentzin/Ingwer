@@ -79,5 +79,10 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.8.7</version>
         </dependency>
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>0.9.10</version>
+            </dependency>
     </dependencies>
 </project>

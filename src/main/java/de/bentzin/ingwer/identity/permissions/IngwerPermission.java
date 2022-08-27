@@ -12,6 +12,7 @@ public enum IngwerPermission {
 
     USE,
     SUPERADMIN,
+    FEATURE_WELCOME,
 
     ;
 

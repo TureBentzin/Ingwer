@@ -19,7 +19,7 @@ public class SystemLogger extends Logger{
     public void log(String message, @NotNull LogLevel logLevel) {
         switch (logLevel) {
 
-            case INFO, DEBUG, WARING -> {
+            case INFO, DEBUG, WARNING -> {
                 System.out.println(prefix(message,logLevel));
             }
             case ERROR -> {

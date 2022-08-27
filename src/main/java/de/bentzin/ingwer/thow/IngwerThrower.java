@@ -1,10 +1,12 @@
 package de.bentzin.ingwer.thow;
 
 import de.bentzin.ingwer.Ingwer;
+import de.bentzin.ingwer.features.NewFeature;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.logging.SystemLogger;
 
 import java.sql.SQLException;
+
 
 public final class IngwerThrower {
 

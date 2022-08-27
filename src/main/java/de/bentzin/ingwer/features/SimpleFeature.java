@@ -17,7 +17,7 @@ public abstract class SimpleFeature implements Feature{
         this.name = name;
         this.description = description;
         if(FeatureManager.getInstance().checkName(name)) {
-            Ingwer.getFeatureManager().getLogger().adopt(name);
+           logger = Ingwer.getFeatureManager().getLogger().adopt(name);
         }else {
             Ingwer.getFeatureManager().getLogger().error("ambiguous naming of: " + name + "!");
             valid = false;
