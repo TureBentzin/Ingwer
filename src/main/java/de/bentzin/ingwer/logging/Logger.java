@@ -1,11 +1,20 @@
 package de.bentzin.ingwer.logging;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class Logger {
 
     private String name;
+    @Nullable
+    private Logger parent = null;
 
+
+    public Logger(String name,@NotNull Logger parent) {
+        this.name = name;
+        this.parent = parent;
+        debug("creating new logger: " + genName() + "!");
+    }
 
     public Logger(String name) {
         this.name = name;
@@ -42,10 +51,22 @@ public abstract class Logger {
     }
 
     public String prefix(String message) {
-        return "[" + name + "]: " + message;
+        return "[" + genName() + "]: " + message;
     }
 
     public String prefix(String message, @NotNull LogLevel logLevel) {
         return logLevel.name() +" >> " + prefix(message);
     }
+
+    public Logger getParent() {
+        return parent;
+    }
+
+    protected String genName() {
+        if(parent != null)
+         return parent.genName() +"/"+ name;
+        else return  name;
+    }
+
+    public abstract Logger adopt(String name);
 }
