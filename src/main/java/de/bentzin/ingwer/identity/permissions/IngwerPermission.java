@@ -45,7 +45,7 @@ public enum IngwerPermission {
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
             if(c != '1' && c != '0') {
-                IngwerThrower.accept(new InvalidParameterException("permissions needs to be a binary chain!"));
+                IngwerThrower.acceptS(new InvalidParameterException("permissions needs to be a binary chain!"));
             }
             if(c == '1')
                 ingwerPermissions.add(values[i]);
