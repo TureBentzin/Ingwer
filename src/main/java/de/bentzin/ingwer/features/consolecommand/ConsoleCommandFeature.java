@@ -1,5 +1,6 @@
 package de.bentzin.ingwer.features.consolecommand;
 
+import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.IngwerCommandManager;
 import de.bentzin.ingwer.features.NewFeature;
 import de.bentzin.ingwer.features.SimpleFeature;
@@ -26,20 +27,14 @@ public class ConsoleCommandFeature extends SimpleFeature {
     @Override
     public void onEnable() {
         try {
-
-            IngwerCommandManager.getInstance().register(sudoConsoleCommand);
+            Ingwer.getCommandManager().register(sudoConsoleCommand);
         } catch (Registerator.DuplicateEntryException e) {
-            IngwerThrower.acceptS(e, ThrowType.COMMAND);
+            getLogger().error("Error while registering commands!");
         }
     }
 
     @Override
     public void onDisable() {
-        try {
-            IngwerCommandManager.getInstance().unregister(sudoConsoleCommand);
-        } catch (Registerator.NoSuchEntryException e) {
-            IngwerThrower.acceptS(e, ThrowType.COMMAND);
-        }
     }
 
     @Override

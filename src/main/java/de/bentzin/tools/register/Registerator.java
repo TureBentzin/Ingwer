@@ -80,8 +80,11 @@ public class Registerator<T> implements Iterable<T> {
                 '}';
     }
 
+    //change: unregister at clear!
     public void clear() {
-        getIndex().clear();
+        getIndex().forEach(t -> {try {
+                unregister(t);
+            } catch (NoSuchEntryException ignored){}});
     }
 
     /**

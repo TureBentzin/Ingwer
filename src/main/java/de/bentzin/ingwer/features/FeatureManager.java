@@ -40,6 +40,9 @@ public final class FeatureManager extends Registerator<Feature>{
 
     @Override
     public Feature register(@NotNull Feature object) throws DuplicateEntryException {
+        if(getIndex().contains(object)) {
+            throw new DuplicateEntryException(object,this);
+        }
         getLogger().info("loading " + object.getName() + "!");
         if(object.load()) {
             getLogger().info("enabling " + object.getName() + "!");

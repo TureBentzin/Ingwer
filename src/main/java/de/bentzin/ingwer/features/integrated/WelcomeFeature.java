@@ -57,7 +57,7 @@ public class WelcomeFeature extends SimpleFeature implements Listener {
     }
 
     @EventHandler
-    public void onSuperAdminJoin(@NotNull PlayerJoinEvent event) {
+    public void onAdminJoin(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
         Identity identity = Identity.searchSetByUUID(player.getUniqueId());
 

@@ -27,11 +27,12 @@ public abstract class SimpleFeature implements Feature{
         logger.info("finished creating of: " + name);
         valid = true;
 
-        try {
+       /* try {
             Ingwer.getFeatureManager().register(this);
         } catch (Registerator.DuplicateEntryException e) {
             Ingwer.getIngwerThrower().accept(e, ThrowType.FEATURE);
         }
+        */
     }
 
     @Override

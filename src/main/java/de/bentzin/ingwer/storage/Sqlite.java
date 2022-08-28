@@ -111,7 +111,9 @@ public final class Sqlite {
         if (connection != null)
             try {
                 connection.close();
+                logger.waring("closed connection to database!");
             } catch (SQLException e) {
+                logger.waring("suspicious behavior of database detected! Check your storage and the conditions Ingwer is getting executed under immediately!");
                 IngwerThrower.acceptS(e);
             }
     }

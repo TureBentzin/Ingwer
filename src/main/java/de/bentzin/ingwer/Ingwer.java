@@ -130,8 +130,14 @@ public class Ingwer {
 
     }
 
-    public static void stop(StopCode stopCode) {
+    public static void stop(@NotNull StopCode stopCode) {
+        logger.info("Stopping Ingwer: " + stopCode.name());
         getStorage().close();
+
+        logger.info("cleaning...");
+        getCommandManager().clear();
+        getFeatureManager().clear();
+
     }
 
 
