@@ -16,11 +16,13 @@ public class ComponentMessage implements OneLinedMessage{
     @Override
     public void send(@NotNull CommandSender recipient) {
         recipient.sendMessage(message);
+        log(recipient.getName(), IngwerMessage.deserialize(message));
     }
 
     @Override
     public void send(@NotNull IngwerCommandSender recipient) {
         recipient.sendOneLinedMessage(this);
+        log(recipient.getName(),getOneLinedString());
     }
 
     @Override

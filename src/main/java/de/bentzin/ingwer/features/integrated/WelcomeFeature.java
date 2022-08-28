@@ -75,6 +75,6 @@ public class WelcomeFeature extends SimpleFeature implements Listener {
     public IngwerMessage getRandomMessage() {
         Random random = new Random();
         int i = random.nextInt(WELCOME_MESSAGES.length);
-        return new MiniMessageMessage("<gold> " + WELCOME_MESSAGES[i]);
+        return new MiniMessageMessage("<gold>" + WELCOME_MESSAGES[i]);
     }
 }
