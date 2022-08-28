@@ -1,8 +1,6 @@
 package de.bentzin.ingwer.message;
 
-import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.IngwerCommandSender;
-import de.bentzin.ingwer.utils.LoggingClass;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 

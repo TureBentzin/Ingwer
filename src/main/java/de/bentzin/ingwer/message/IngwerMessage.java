@@ -1,5 +1,6 @@
 package de.bentzin.ingwer.message;
 
+import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -52,4 +53,8 @@ public interface IngwerMessage {
      void send(CommandSender sender);
      void send(IngwerCommandSender sender);
 
+
+     default IngwerMessageManager manager() {
+          return Ingwer.getMessageManager();
+     }
 }
