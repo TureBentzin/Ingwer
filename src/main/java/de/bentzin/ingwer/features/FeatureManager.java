@@ -2,18 +2,9 @@ package de.bentzin.ingwer.features;
 
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.logging.SystemLogger;
 import de.bentzin.tools.register.Registerator;
-import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.NotNull;
-import org.scannotation.AnnotationDB;
-import org.scannotation.ClasspathUrlFinder;
-import org.scannotation.WarUrlFinder;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
-import java.util.Set;
 
 
 public final class FeatureManager extends Registerator<Feature>{
@@ -68,7 +59,7 @@ public final class FeatureManager extends Registerator<Feature>{
         return super.unregister(object);
     }
 
-   
+
 
     public void findFeatures() {
         featureFinder.find();

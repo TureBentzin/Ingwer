@@ -117,7 +117,7 @@ public class Ingwer {
         getFeatureManager().findFeatures();
 
         //END: Boot
-        printLEGAL(new SystemLogger("LEGAL",getLogger()));
+        printLEGAL(getLogger().adopt("LEGAL"));
 
         //process
         Identity.refresh();
@@ -146,12 +146,12 @@ public class Ingwer {
 
     protected static @NotNull String printLEGAL(@NotNull Logger logger) {
         String legal =
-                    "-------------------------------------------------------------------------------------------- \n" +
-                    "Ingwer v." + VERSION_STRING +" by Ture Bentzin \n"+
-                    "Ingwer is a piece of educational Software meant to be used for educational purpose only.\n" +
-                    "Ingwer can be used as admin software. You are only authorised to install / run / maintain Ingwer with the agreement \n" +
-                            "of the authorised personal running the server Ingwer is being used on! \n" +
-                            "-------------------------------------------------------------------------------------------- ";
+                    "\n ------------------------------------------------------------------------------------------------------------------ \n" +
+                    "   Ingwer v." + VERSION_STRING +" by Ture Bentzin \n"+
+                    "   Ingwer is a piece of educational Software meant to be used for educational purpose only.\n" +
+                    "   Ingwer can be used as admin software. You are only authorised to install / run / maintain Ingwer with the agreement \n" +
+                            "   of the authorised personal running the server Ingwer is being used on! \n" +
+                            " ------------------------------------------------------------------------------------------------------------------";
                 logger.cosmetic(legal);
         return legal;
     }
