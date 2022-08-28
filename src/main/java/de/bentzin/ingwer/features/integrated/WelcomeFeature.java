@@ -5,6 +5,9 @@ import de.bentzin.ingwer.features.NewFeature;
 import de.bentzin.ingwer.features.SimpleFeature;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
+import de.bentzin.ingwer.message.IngwerMessage;
+import de.bentzin.ingwer.message.MiniMessageMessage;
+import de.bentzin.ingwer.message.StraightLineStringMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -69,9 +72,9 @@ public class WelcomeFeature extends SimpleFeature implements Listener {
         }
     }
 
-    public String getRandomMessage() {
+    public IngwerMessage getRandomMessage() {
         Random random = new Random();
         int i = random.nextInt(WELCOME_MESSAGES.length);
-        return ChatColor.GOLD + WELCOME_MESSAGES[i];
+        return new MiniMessageMessage("<gold> " + WELCOME_MESSAGES[i]);
     }
 }

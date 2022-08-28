@@ -27,7 +27,7 @@ public interface IngwerMessage {
      MiniMessage miniMessage = MiniMessage.miniMessage();
      TextColor COLOR = NamedTextColor.GRAY;
      TextColor ACCENT = NamedTextColor.BLUE;
-     Component INGWER = mm("<gray>[<light_purple>Ingwer<gray>]");
+     Component INGWER = mm("<gray>[<light_purple>Ingwer<gray>]: ");
 
      @Contract(pure = true)
      static @NotNull Component addPrefix(Component message) {
