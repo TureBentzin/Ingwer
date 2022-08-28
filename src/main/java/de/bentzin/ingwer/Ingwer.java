@@ -8,6 +8,7 @@ import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.logging.SystemLogger;
+import de.bentzin.ingwer.message.IngwerMessageManager;
 import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
 import de.bentzin.ingwer.storage.Sqlite;
@@ -54,13 +55,19 @@ public class Ingwer {
         return ingwerThrower;
     }
 
+    private static IngwerMessageManager messageManager;
+
+    public static IngwerMessageManager getMessageManager() {
+        return messageManager;
+    }
+
     private static FeatureManager featureManager;
 
     public static FeatureManager getFeatureManager() {
         return featureManager;
     }
 
-    public static IngwerCommandManager commandManager;
+    private static IngwerCommandManager commandManager;
 
     public static IngwerCommandManager getCommandManager() {
         return commandManager;
@@ -112,6 +119,7 @@ public class Ingwer {
 
         featureManager = new FeatureManager();
         commandManager = new IngwerCommandManager();
+        messageManager = new IngwerMessageManager();
 
 
         getFeatureManager().findFeatures();
@@ -144,7 +152,6 @@ public class Ingwer {
     public static void main(String[] args) {
         //entrypoint for Ingwer
         start(Preferences.getDefaults(Identity.DEVELOPER_UUID, StartType.JAVA_PLUGIN_LIBRARY, null));
-
         //exit-point for Ingwer
         stop(StopCode.FINISHED);
     }
