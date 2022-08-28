@@ -68,38 +68,7 @@ public final class FeatureManager extends Registerator<Feature>{
         return super.unregister(object);
     }
 
-    public void scan() {
-        Logger slog = Ingwer.getLogger().adopt("Scannotation");
-        slog.info("searching classpath!");
-        URL[] classPaths = ClasspathUrlFinder.findClassPaths();
-        slog.info("indexed classpath! -> " + classPaths.length + " entry's!");
-        AnnotationDB annotationDB = new AnnotationDB();
-
-
-    }
-
-    public static void main(String[] args) {
-        Logger slog = new SystemLogger("SCANNOTATION");
-        slog.info("searching classpath!");
-        URL[] classPaths = ClasspathUrlFinder.findClassPaths();
-        slog.info("indexed classpath! -> " + classPaths.length + " entry's!");
-        AnnotationDB annotationDB = new AnnotationDB();
-
-        URL classBase = ClasspathUrlFinder.findClassBase(FeatureManager.class);
-        slog.info("classBase: " + classBase);
-
-        try {
-                annotationDB.scanArchives(classBase);
-            Map<String, Set<String>> classIndex = annotationDB.getClassIndex();
-            slog.info("classIndex: " + classIndex);
-        } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            Map<String, Set<String>> annotationIndex = annotationDB.getAnnotationIndex();
-            slog.info(annotationIndex.toString());
-
-
-    }
+   
 
     public void findFeatures() {
         featureFinder.find();

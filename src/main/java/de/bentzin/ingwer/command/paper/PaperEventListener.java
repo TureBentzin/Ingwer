@@ -9,6 +9,7 @@ import de.bentzin.ingwer.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -24,13 +25,15 @@ public class PaperEventListener implements Listener {
     }
 
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(@NotNull AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         Identity identity = Identity.searchSetByUUID(player.getUniqueId());
         if (identity != null) {
-            if (identity.isEnabled())
+            if (identity.isEnabled()) {
                 Ingwer.getCommandManager().preRunCommand(event.getMessage(), identity, CommandTarget.INGAME);
+                event.setCancelled(event.getMessage().startsWith(Ingwer.getPreferences().prefix() + ""));
+            }
         }
 
     }
@@ -51,16 +54,5 @@ public class PaperEventListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onSuperAdminJoin(@NotNull PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        Identity identity = Identity.searchSetByUUID(player.getUniqueId());
-        logger.debug(identity.toString());
-        if (identity != null) {
 
-            if(identity.isSuperAdmin()) {
-                identity.sendMessage(ChatColor.GOLD + "Welcome to Ingwer, Captain!");
-            }
-        }
-    }
 }

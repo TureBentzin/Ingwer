@@ -9,7 +9,8 @@ import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-public class SudoConsoleCommand extends IngwerCommand implements Permissioned {
+public class
+SudoConsoleCommand extends IngwerCommand implements Permissioned {
     private final Feature feature;
 
     public SudoConsoleCommand(Feature feature) {

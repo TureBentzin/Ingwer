@@ -10,6 +10,7 @@ import de.bentzin.tools.register.Registerator;
 import org.bukkit.command.Command;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 public final class IngwerCommandManager extends Registerator<IngwerCommand> {
 
@@ -47,7 +48,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
         if(senderType.comesWithPrefix()) {
             if (input.startsWith(Ingwer.getPreferences().prefix() + "")) {
                 logger.debug("prefixed message received -> " + input);
-                String replaceFirst = input.replaceFirst(Ingwer.getPreferences().prefix() + "", "");
+                String replaceFirst = saveRemoveFirst(input,Ingwer.getPreferences().prefix());
                 boolean b = runCommand(replaceFirst, sender, senderType);
                 if (!b) {
                     logger.waring("failed to execute command: " + input);
@@ -60,6 +61,21 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
             }
         }
 
+    }
+
+
+    protected @NotNull String saveRemoveFirst(@NotNull String s, char query) {
+        StringBuilder builder = new StringBuilder();
+        char[] chars = s.toCharArray();
+        boolean first = true;
+        for (char aChar : chars) {
+            if(aChar == query && first) {
+                first = false;
+            }else{
+                builder.append(aChar);
+            }
+        }
+        return builder.toString();
     }
 
     @Contract(pure = true)
