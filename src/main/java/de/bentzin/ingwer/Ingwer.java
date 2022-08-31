@@ -15,6 +15,8 @@ import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.thow.ThrowType;
 import de.bentzin.ingwer.utils.IngwerLog4JFilter;
 import de.bentzin.ingwer.utils.StopCode;
+import de.bentzin.ingwer.utils.cmdreturn.CommandReturnSystem;
+import de.bentzin.ingwer.utils.cmdreturn.paper.CommandReturnPaperListener;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
@@ -82,6 +84,12 @@ public class Ingwer {
         return commandManager;
     }
 
+    private static CommandReturnSystem commandReturnSystem;
+
+    public static CommandReturnSystem getCommandReturnSystem() {
+        return commandReturnSystem;
+    }
+
     private static Sqlite storage;
 
     public static Sqlite getStorage() {
@@ -135,6 +143,7 @@ public class Ingwer {
         featureManager = new FeatureManager();
         commandManager = new IngwerCommandManager();
         messageManager = new IngwerMessageManager();
+        commandReturnSystem = new CommandReturnSystem(getLogger());
 
 
 
@@ -213,6 +222,7 @@ public class Ingwer {
     public static void registerPaperListeners() {
         logger.info("register Events!");
         Bukkit.getPluginManager().registerEvents(new PaperEventListener(logger),javaPlugin);
+        Bukkit.getPluginManager().registerEvents(new CommandReturnPaperListener(getLogger()),javaPlugin);
     }
 
 
