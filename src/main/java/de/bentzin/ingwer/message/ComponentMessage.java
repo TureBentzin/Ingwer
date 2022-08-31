@@ -16,7 +16,7 @@ public class ComponentMessage implements OneLinedMessage{
     @Override
     public void send(@NotNull CommandSender recipient) {
         recipient.sendMessage(message);
-        log(recipient.getName(), IngwerMessage.deserialize(message));
+        log(recipient.getName(), IngwerMessage.deserializePlain(message));
     }
 
     @Override

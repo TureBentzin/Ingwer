@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +37,10 @@ public interface IngwerMessage {
           return component;
      }
 
+     static void easySend(CommandSender sender, String message) {
+          new ComponentMessage(easyFormat(message)).send(sender);
+     }
+
 
      static @NotNull Component mm(String s) {
           return miniMessage.deserialize(s);
@@ -52,6 +57,11 @@ public interface IngwerMessage {
      static @NotNull String deserialize(Component component) {
           return LegacyComponentSerializer.legacyAmpersand().serialize(component);
      }
+
+     static @NotNull String deserializePlain(Component component) {
+          return PlainTextComponentSerializer.plainText().serialize(component);
+     }
+
 
     //message
 

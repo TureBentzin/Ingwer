@@ -92,7 +92,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
             if(command.commandTargetCollection().contains(senderType) && command.getName().equalsIgnoreCase(cmd)) {
                 boolean b = true;
                 Permissioned p = null;
-                if(command instanceof Permissioned) {
+                if(command instanceof Permissioned) { //check for permission
                     p = (Permissioned) command;
                     b = p.checkPermission(sender);
                 }

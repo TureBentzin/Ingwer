@@ -122,6 +122,7 @@ public class Ingwer {
         messageManager = new IngwerMessageManager();
 
 
+        getFeatureManager().registerInternalFeatures();
         getFeatureManager().findFeatures();
 
         //END: Boot

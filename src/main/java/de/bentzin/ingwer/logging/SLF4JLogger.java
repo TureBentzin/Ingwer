@@ -3,20 +3,17 @@ package de.bentzin.ingwer.logging;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.logging.Level;
-
-public class JavaLogger extends Logger{
+public class SLF4JLogger extends Logger{
 
 
-    @NotNull
-    private final java.util.logging.Logger logger;
+    private final org.slf4j.Logger logger;
 
-    public JavaLogger(String name, @NotNull Logger parent, @NotNull java.util.logging.Logger logger) {
+    public SLF4JLogger(String name, @NotNull Logger parent, org.slf4j.Logger logger) {
         super(name,parent);
         this.logger = logger;
     }
 
-    public JavaLogger(String name, @NotNull java.util.logging.Logger logger ){
+    public SLF4JLogger(String name, org.slf4j.Logger logger ){
         super(name);
         this.logger = logger;
 
@@ -34,7 +31,7 @@ public class JavaLogger extends Logger{
                 logger.info(prefix(message,logLevel));
             }
             case WARNING -> {
-                logger.warning(prefix(message));
+                logger.warn(prefix(message));
             }
             case COSMETIC -> {
                 logger.info(message);
@@ -44,6 +41,6 @@ public class JavaLogger extends Logger{
 
     @Override
     public Logger adopt(String name) {
-        return new JavaLogger(name,this, logger);
+        return new SLF4JLogger(name,this, logger);
     }
 }

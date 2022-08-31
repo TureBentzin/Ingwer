@@ -6,15 +6,14 @@ import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.logging.Logger;
+import de.bentzin.ingwer.message.IngwerMessage;
+import de.bentzin.ingwer.message.MiniMessageMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 
 public class PaperEventListener implements Listener {
@@ -52,6 +51,16 @@ public class PaperEventListener implements Listener {
 
             } else
                 Ingwer.getStorage().updateIdentity(identity, player.getName(), player.getUniqueId(), identity.getPermissions());
+        }
+    }
+
+    @EventHandler
+    public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
+        IngwerMessage.easySend(event.getPlayer(),event.getMessage());
+        if(event.getMessage().equalsIgnoreCase("/michael")){
+            new MiniMessageMessage("<rainbow>Micheal! Micheal! Micheal! Micheal!</rainbow>").send(event.getPlayer());
+            event.setMessage("removed message!");
+            event.setCancelled(true);
         }
     }
 

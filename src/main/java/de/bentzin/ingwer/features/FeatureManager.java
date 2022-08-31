@@ -1,7 +1,9 @@
 package de.bentzin.ingwer.features;
 
 import de.bentzin.ingwer.Ingwer;
+import de.bentzin.ingwer.features.test.TestFeature;
 import de.bentzin.ingwer.logging.Logger;
+import de.bentzin.ingwer.thow.ThrowType;
 import de.bentzin.tools.register.Registerator;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,6 +62,14 @@ public final class FeatureManager extends Registerator<Feature>{
         else
             logger.waring("failed to unregister: " + object + "!");
         return super.unregister(object);
+    }
+
+    public void registerInternalFeatures() {
+        try {
+            register(new TestFeature());
+        } catch (DuplicateEntryException e) {
+            Ingwer.getIngwerThrower().accept(e, ThrowType.FEATURE);
+        }
     }
 
 
