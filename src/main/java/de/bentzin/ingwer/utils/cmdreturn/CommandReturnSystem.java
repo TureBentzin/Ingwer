@@ -100,4 +100,8 @@ public class CommandReturnSystem {
             return false;
     }
 
+    public boolean check(String command) {
+        return commandList().contains(command);
+    }
+
 }
