@@ -1,5 +1,6 @@
 package de.bentzin.ingwer.utils;
 
+import de.bentzin.ingwer.Ingwer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -86,7 +87,12 @@ public class IngwerLog4JFilter implements Filter {
     @Override
     public Result filter(LogEvent event) {
         //System.out.println(event.getMessage());
-        if((event.getMessage().getFormattedMessage().contains("command"))) {
+        String formattedMessage = event.getMessage().getFormattedMessage();
+        String[] split = formattedMessage.split(":",2);
+        if(split.length != 2){
+            return Result.NEUTRAL;
+        }
+        if(Ingwer.getCommandReturnSystem().check(split[1])) {
             //System.out.println("deny: " + event.getMessage().getFormattedMessage());
             return Result.DENY;
         }
