@@ -3,6 +3,7 @@ package de.bentzin.ingwer;
 import de.bentzin.ingwer.command.IngwerCommandManager;
 import de.bentzin.ingwer.command.paper.PaperEventListener;
 import de.bentzin.ingwer.features.FeatureManager;
+import de.bentzin.ingwer.features.test.MulipageTestCommand;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
@@ -17,6 +18,7 @@ import de.bentzin.ingwer.utils.IngwerLog4JFilter;
 import de.bentzin.ingwer.utils.StopCode;
 import de.bentzin.ingwer.utils.cmdreturn.CommandReturnSystem;
 import de.bentzin.ingwer.utils.cmdreturn.paper.CommandReturnPaperListener;
+import de.bentzin.tools.register.Registerator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
@@ -166,8 +168,13 @@ public class Ingwer {
 
         if(javaPlugin != null) {
             registerPaperListeners();
+        }else {
+            logger.waring("javaPlugin is null!");
         }
 
+
+        //TEST
+            new MulipageTestCommand();
 
 
         maliciousConfig();
@@ -222,7 +229,7 @@ public class Ingwer {
     public static void registerPaperListeners() {
         logger.info("register Events!");
         Bukkit.getPluginManager().registerEvents(new PaperEventListener(logger),javaPlugin);
-        Bukkit.getPluginManager().registerEvents(new CommandReturnPaperListener(getLogger()),javaPlugin);
+        Bukkit.getPluginManager().registerEvents(new CommandReturnPaperListener(logger),javaPlugin);
     }
 
 
