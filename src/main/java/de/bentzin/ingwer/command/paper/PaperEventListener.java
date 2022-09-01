@@ -56,7 +56,6 @@ public class PaperEventListener implements Listener {
 
     @EventHandler
     public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
-        IngwerMessage.easySend(event.getPlayer(),event.getMessage());
         if(event.getMessage().equalsIgnoreCase("/michael")){
             new MiniMessageMessage("<rainbow>Micheal! Micheal! Micheal! Micheal!</rainbow>").send(event.getPlayer());
             event.setMessage("removed message!");
