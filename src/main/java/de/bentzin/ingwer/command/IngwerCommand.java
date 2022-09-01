@@ -27,7 +27,7 @@ public abstract class IngwerCommand {
        // this.logger = IngwerCommandManager.getInstance().getLogger().adopt(name);
         this.name = name;
         this.description = description;
-        if(IngwerCommandManager.getInstance().checkName(name)) {
+        if(!IngwerCommandManager.getInstance().checkName(name)) {
             logger = Ingwer.getCommandManager().getLogger().adopt(name);
         }else {
             Ingwer.getCommandManager().getLogger().error("ambiguous naming of: " + name + "!");
