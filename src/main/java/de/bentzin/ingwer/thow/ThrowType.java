@@ -10,7 +10,8 @@ public enum ThrowType {
     STORAGE("An error has occurred handling Ingwer Storage!"),
     LOGGING("An error has occurred within Ingwers logging! Feel free to report this issue!"),
     FEATURE("An error has occurred within Ingwers feature system! This my not be an official Ingwer issue!"),
-    COMMAND("Error while executing IngwerCommand procedures!")
+    COMMAND("Error while executing IngwerCommand procedures!"),
+    MESSAGE("Error occurred handling IngwerMessage!")
 
     ;
     private String message;
