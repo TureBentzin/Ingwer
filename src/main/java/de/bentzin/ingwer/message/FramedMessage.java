@@ -9,11 +9,17 @@ import java.util.List;
 
 public class FramedMessage extends SimpleMultilinedMessage{
 
-    public static Component FRAME = IngwerMessage.mm("<gray>--------------- " + IngwerMessage.INGWER + "<gray> ---------------");
+    public static Component FRAME;
+    static {
+        Component mm = IngwerMessage.mm("<gray>--------------- ");
+        Component nC = Component.empty();
+        FRAME = nC.append(mm).append(IngwerMessage.INGWER_HEAD).append(mm);
+    }
 
     public static @NotNull List<OneLinedMessage> frame(Collection<OneLinedMessage> content) {
         ComponentMessage componentMessage = new ComponentMessage(FRAME);
         List<OneLinedMessage> oneLinedMessages = new ArrayList<>();
+        oneLinedMessages.add(IngwerMessage.EMPTY_LINE);
         oneLinedMessages.add(componentMessage);
         oneLinedMessages.addAll(content);
         oneLinedMessages.add(componentMessage);
