@@ -1,8 +1,13 @@
 package de.bentzin.ingwer.message;
 
-import de.bentzin.ingwer.tests.TempReturnCommandSystem;
+import de.bentzin.ingwer.Ingwer;
+import de.bentzin.ingwer.utils.cmdreturn.CommandReturn;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Bukkit;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -20,14 +25,28 @@ public class FramedMultipageMessageGenerator {
         return content;
     }
 
-    public Iterable<FramedMessage> generate(int pageLength) {
-        Queue<Collection<OneLinedMessage>> queue = new PriorityQueue<>();
+
+    public void doRoutine(int pageLength, UUID uuid) {
+
+    }
+
+
+    public ArrayList<FramedMessage> generate(int pageLength, UUID uuid, Consumer<Integer> consumer) {
+        pageLength = pageLength + 1; //user interface
+        Queue<Collection<OneLinedMessage>> queue = new LinkedList<>();
         ArrayList<OneLinedMessage> arrayList = new ArrayList<>(content);
         nextPage(arrayList,pageLength,queue);
         ArrayList<FramedMessage> pages = new ArrayList<>();
+        int length = queue.size();
         while (!queue.isEmpty()){
             //TODO: add footer
-            pages.add(new FramedMessage(queue.remove()));
+            ArrayList<OneLinedMessage> a = new ArrayList<>(queue.remove());
+            //add footer
+            int size = queue.size();
+            ComponentMessage componentMessage = new ComponentMessage(generatePageFooter(16, length - size, length, consumer, uuid));
+            a.add(componentMessage);
+            pages.add(new FramedMessage(a));
+
         }
         return pages;
     }
@@ -36,7 +55,7 @@ public class FramedMultipageMessageGenerator {
         if(remaining.size() <= pageLength) {
             queue.add(remaining);
         }else {
-            List<OneLinedMessage> oneLinedMessages = remaining.subList(0, pageLength - 1);
+            List<OneLinedMessage> oneLinedMessages = remaining.subList(0, pageLength - 1).stream().toList();
             remaining.removeAll(oneLinedMessages);
             queue.add(oneLinedMessages);
             nextPage(remaining,pageLength,queue);
@@ -49,19 +68,31 @@ public class FramedMultipageMessageGenerator {
      * @param maxPage
      * @return
      */
-    public Component generatePageFooter(int footer_space,int page, int maxPage, Consumer<Integer> pageSelect) {
+    public Component generatePageFooter(int footer_space,int page, int maxPage, Consumer<Integer> pageSelect, UUID uuid) {
         //<gray>               [<-] <blue>Page 2 of 4 <gray>[->]
-        if(page == maxPage) return IngwerMessage.mm(delay(footer_space) + "<blue>Page 1");
+        if(page == maxPage && page == 1) return IngwerMessage.mm(delay(footer_space) + pages(page,maxPage));
         if(page > maxPage || page <= 0) {
             throw new InvalidParameterException("page and maxPage need to be valid!");
         }
-        String increase_command = TempReturnCommandSystem.addReturn(() -> pageSelect.accept(page + 1));
-        String decrease_command = TempReturnCommandSystem.addReturn(() -> pageSelect.accept(page - 1));
+        CommandReturn increase_command = Ingwer.getCommandReturnSystem().addNewReturn(() -> pageSelect.accept(page + 1),uuid);
+        CommandReturn decrease_command = Ingwer.getCommandReturnSystem().addNewReturn(() -> pageSelect.accept(page - 1),uuid);
 
-        String increase = "<gray><click:run_command:'" + increase_command + "'>[->]</click>";
-        String decrease = "<gray><click:run_command:'" + decrease_command + "'>[<-]</click>";
-        //TODO WORK
-        return null;
+        String increase = "<gray><click:run_command:'" + increase_command.command() + "'>[->]</click>";
+        String decrease = "<gray><click:run_command:'" + decrease_command.command() + "'>[<-]</click>";
+
+        PlainTextComponentSerializer text = PlainTextComponentSerializer.plainText();
+        return IngwerMessage.mm(
+                delay(footer_space) +
+                        (page == 1 ? delay(text.serialize(IngwerMessage.mm(decrease)).length()) : decrease) +
+                        pages(page,maxPage) +
+                        (page == maxPage ? delay(text.serialize(IngwerMessage.mm(increase)).length()) : increase)
+        );
+    }
+
+    @Contract(pure = true)
+    private @NotNull String pages(int page, int maxPage) {
+        if(page == maxPage && page == 1) return "<blue>Page 1</blue>";
+        return "<blue> Page " + page + " of " + maxPage + " </blue>";
     }
 
     private @NotNull String delay(int space) {
