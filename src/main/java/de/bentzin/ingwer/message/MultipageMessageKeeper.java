@@ -11,17 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FramedMessageKeeper {
+public class MultipageMessageKeeper {
 
     private final UUID recipient;
     private final ArrayList<FramedMessage> messages;
 
-    public FramedMessageKeeper(UUID recipient, ArrayList<FramedMessage> messages) {
+    public MultipageMessageKeeper(UUID recipient, ArrayList<FramedMessage> messages) {
         this.recipient = recipient;
         this.messages = messages;
     }
 
-    public FramedMessageKeeper(UUID recipient, List<OneLinedMessage> content, int pageLength) {
+    public MultipageMessageKeeper(UUID recipient, List<OneLinedMessage> content, int pageLength) {
         this.recipient = recipient;
         this.messages = new FramedMultipageMessageGenerator(content).generate(pageLength, recipient, this::send);
     }
