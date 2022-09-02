@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MultipageCommand extends IngwerCommand {
     public MultipageCommand() {
-        super("page", "for internal purposes");
+        super("page", "For internal purposes");
         for (int i = 0; i < 44; i++) {
             oneLinedMessageList.add(new StraightLineStringMessage(i + ": Test         -  TEST"));
         }
