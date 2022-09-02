@@ -95,26 +95,14 @@ public class Registerator<T> implements Iterable<T> {
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
-
-
-            @Override
-            public boolean hasNext() {
-                return getIndex().iterator().hasNext();
-            }
-
-            @Override
-            public T next() {
-                return getIndex().iterator().next();
-            }
-        };
+        return index.iterator();
     }
 
     public static class DuplicateEntryException extends Exception {
 
         String msg = "";
 
-        public DuplicateEntryException(Object entry, Registerator registerator) {
+        public DuplicateEntryException(Object entry, @NotNull Registerator registerator) {
             setMsg("de.bentzin.tools.register.Registerator \"" + registerator.getName() + "\" already contains the entry \"" + entry + "\"");
         }
 
