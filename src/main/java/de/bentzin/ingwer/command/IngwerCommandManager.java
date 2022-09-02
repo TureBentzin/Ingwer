@@ -44,7 +44,6 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
     public void preRunCommand(String input, IngwerCommandSender sender, @NotNull CommandTarget senderType) {
         if(!senderType.isLast()) try {
             throw new IllegalStateException("Unexpected value: " + senderType.name() + ". senderType cant be multi-reference!");
-        }catch (IllegalStateException e) { IngwerThrower.acceptS(e,ThrowType.COMMAND);}
         } catch (IllegalStateException e) { IngwerThrower.acceptS(e,ThrowType.COMMAND);}
         //run
         if(senderType.comesWithPrefix()) {
