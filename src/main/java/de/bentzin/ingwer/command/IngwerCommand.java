@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,6 +44,7 @@ public abstract class IngwerCommand {
 
         try {
             Ingwer.getCommandManager().register(this);
+            logger.info("finished register of: " + name);
         } catch (Registerator.DuplicateEntryException e) {
             Ingwer.getIngwerThrower().accept(e, ThrowType.COMMAND);
         }
@@ -62,7 +64,13 @@ public abstract class IngwerCommand {
         return logger;
     }
 
-    public Collection<CommandTarget> commandTargetCollection() { return List.of(getCommandTargets());}
+    public Collection<CommandTarget> commandTargetCollection() {
+        List<CommandTarget> commandTargets = new ArrayList<>();
+        for (CommandTarget commandTarget : getCommandTargets()) {
+            commandTargets.addAll(List.of(commandTarget.fullfill()));
+        }
+        return commandTargets;
+    }
 
 
     public abstract void execute(IngwerCommandSender commandSender, String[] cmd, CommandTarget senderType);
