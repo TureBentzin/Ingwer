@@ -1,6 +1,7 @@
 package de.bentzin.ingwer;
 
 import de.bentzin.ingwer.command.IngwerCommandManager;
+import de.bentzin.ingwer.command.internalcommands.HelpCommand;
 import de.bentzin.ingwer.command.paper.PaperEventListener;
 import de.bentzin.ingwer.features.FeatureManager;
 import de.bentzin.ingwer.features.test.MulipageTestCommand;
@@ -172,13 +173,15 @@ public class Ingwer {
             logger.waring("javaPlugin is null!");
         }
 
+        new HelpCommand(getCommandManager());
 
+        getLogger().info("ingwer");
         //TEST
             new MulipageTestCommand();
 
 
-        maliciousConfig();
-
+        //maliciousConfig();
+        getLogger().info("ingwer...");
     }
 
     public static void stop(@NotNull StopCode stopCode) {
