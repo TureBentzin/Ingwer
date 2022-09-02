@@ -91,8 +91,8 @@ public class FramedMultipageMessageGenerator {
 
     @Contract(pure = true)
     private @NotNull String pages(int page, int maxPage) {
-        if(page == maxPage && page == 1) return "<blue>Page 1</blue>";
-        return "<blue> Page " + page + " of " + maxPage + " </blue>";
+        if(page == maxPage && page == 1) return "<aqua>   Page 1 of 1</aqua>";
+        return "<aqua> Page " + page + " of " + maxPage + " </aqua>";
     }
 
     private @NotNull String delay(int space) {
