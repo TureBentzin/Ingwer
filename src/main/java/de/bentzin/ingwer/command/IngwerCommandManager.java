@@ -34,6 +34,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
      * @return if name is already taken
      */
     public boolean checkName(String newName) {
+        getLogger().info("checking:" + newName);
         for (IngwerCommand command : this) {
             if(command.getName().equalsIgnoreCase(newName)) {return true;}
         }
@@ -44,6 +45,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
         if(!senderType.isLast()) try {
             throw new IllegalStateException("Unexpected value: " + senderType.name() + ". senderType cant be multi-reference!");
         }catch (IllegalStateException e) { IngwerThrower.acceptS(e,ThrowType.COMMAND);}
+        } catch (IllegalStateException e) { IngwerThrower.acceptS(e,ThrowType.COMMAND);}
         //run
         if(senderType.comesWithPrefix()) {
             if (input.startsWith(Ingwer.getPreferences().prefix() + "")) {
@@ -89,6 +91,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
         }
         String cmd = split[0];
         for (IngwerCommand command : this) {
+            logger.debug("check: " + command.getName());
             if(command.commandTargetCollection().contains(senderType) && command.getName().equalsIgnoreCase(cmd)) {
                 boolean b = true;
                 Permissioned p = null;
@@ -97,8 +100,8 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
                     b = p.checkPermission(sender);
                 }
                 if(b) {
-                    logger.info(sender.getName() + " executed command: " + input + "@" + command.getName());
                     command.execute(sender,split,senderType);
+                    logger.info(sender.getName() + " executed command: " + input + "@" + command.getName());
                     return true;
                 }else {
                     logger.info(sender.getName() + " tried to execute command without permissions: " + input);
@@ -109,6 +112,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
 
             }
         }
+        logger.debug("oh oh");
         return false;
     }
 }
