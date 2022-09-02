@@ -12,6 +12,8 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import javax.naming.Name;
+
 public interface IngwerMessage {
 
     //stylesheet
@@ -27,9 +29,20 @@ public interface IngwerMessage {
 
      MiniMessage miniMessage = MiniMessage.miniMessage();
      TextColor COLOR = NamedTextColor.GRAY;
-     TextColor ACCENT = NamedTextColor.BLUE;
-     Component INGWER = mm("<gray>[<light_purple>Ingwer<gray>]: ");
-     Component INGWER_HEAD = mm("<gray>[<light_purple>Ingwer<gray>]");
+     TextColor ACCENT = NamedTextColor.GOLD;
+     String COLOR_MM = "<gray>";
+     String ACCENT_MM = "<gold>";
+     String COLOR_MM_C = COLOR_MM.replaceFirst("<","</");
+     String ACCENT_MM_C = ACCENT_MM.replaceFirst("<","</");
+
+     String INGWER_MM = "<gray>[<gradient:light_purple:blue>Ingwer<gray>]: ";
+     String INGWER_HEAD_MM = "<gray>[<gradient:light_purple:blue>Ingwer<gray>]";
+
+     Component INGWER = mm(INGWER_MM);
+     Component INGWER_HEAD = mm(INGWER_HEAD_MM);
+
+
+
      MiniMessageMessage EMPTY_LINE = new MiniMessageMessage(" ");
 
      @Contract(pure = true)
@@ -44,8 +57,13 @@ public interface IngwerMessage {
      }
 
 
-     static @NotNull Component mm(String s) {
-          return miniMessage.deserialize(s);
+     /**
+      * converts (mm) string to component
+      * @param miniMessage
+      * @return component
+      */
+     static @NotNull Component mm(String miniMessage) {
+          return IngwerMessage.miniMessage.deserialize(miniMessage);
      }
 
      static @NotNull Component colorize(String plain) {
