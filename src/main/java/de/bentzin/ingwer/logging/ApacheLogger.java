@@ -15,6 +15,7 @@ public class ApacheLogger extends Logger {
     public ApacheLogger(String name, @NotNull Logger parent, org.apache.logging.log4j.Logger logger) {
         super(name, parent);
         this.logger = logger;
+        setDebug(parent.isDebugEnabled());
     }
 
     public ApacheLogger(String name, org.apache.logging.log4j.Logger logger) {
