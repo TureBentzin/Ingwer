@@ -5,9 +5,6 @@ import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.logging.SystemLogger;
-import de.bentzin.ingwer.preferences.Preferences;
-import de.bentzin.ingwer.preferences.StartType;
 import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.thow.ThrowType;
 import org.jetbrains.annotations.Contract;
@@ -20,7 +17,6 @@ import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 public final class Sqlite {
@@ -111,7 +107,9 @@ public final class Sqlite {
         if (connection != null)
             try {
                 connection.close();
+                logger.warning("closed connection to database!");
             } catch (SQLException e) {
+                logger.warning("suspicious behavior of database detected! Check your storage and the conditions Ingwer is getting executed under immediately!");
                 IngwerThrower.acceptS(e);
             }
     }
@@ -126,6 +124,7 @@ public final class Sqlite {
 
 
     public Identity saveIdentity(@NotNull Identity identity) {
+        Identity.IDENTITY_SET.add(identity);
         try {
             Statement statement = connection.createStatement();
 
@@ -134,7 +133,7 @@ public final class Sqlite {
                             "VALUES (" + a(identity.getName()) + "," + a(identity.getUUID())
                             + "," + a(identity.getCodedPermissions()) + ")");
 
-
+            logger.info("saved: " + identity.getName());
         } catch (SQLException e) {
             IngwerThrower.acceptS(e, ThrowType.STORAGE);
         }
@@ -164,10 +163,42 @@ public final class Sqlite {
             statement.execute(
                     "SELECT * FROM identity WHERE player_uuid =" + a(uuid));
             ResultSet resultSet = statement.getResultSet();
+            if(resultSet.isClosed()) {
+                return null;
+            }
             Identity identity = new Identity(resultSet.getString("user_name"),
                     UUID.fromString(resultSet.getString("player_uuid")),
                     IngwerPermission.decodePermissions(resultSet.getLong("user_permissions")));
             return identity;
+        } catch (SQLException e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+        }
+        return null;
+    }
+
+    public @Nullable Collection<Identity> getAllIdentities() {
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(
+                    "SELECT * FROM identity");
+            ResultSet resultSet = statement.getResultSet();
+            if(resultSet.isClosed()) {
+                return null;
+            }
+            /*
+            Identity identity = new Identity(resultSet.getString("user_name"),
+                    UUID.fromString(resultSet.getString("player_uuid")),
+                    IngwerPermission.decodePermissions(resultSet.getLong("user_permissions")));
+            return identity;
+             */
+            Collection<Identity> identities = new ArrayList<>();
+            while (resultSet.next()) {
+                identities.add(new Identity(resultSet.getString("user_name"),
+                        UUID.fromString(resultSet.getString("player_uuid")),
+                        IngwerPermission.decodePermissions(resultSet.getLong("user_permissions"))));
+            }
+            return identities;
+
         } catch (SQLException e) {
             IngwerThrower.acceptS(e, ThrowType.STORAGE);
         }
@@ -190,13 +221,23 @@ public final class Sqlite {
         return null;
     }
 
+    public void removeIdentity(@NotNull Identity identity) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(
+                    "DELETE FROM identity WHERE user_name = " + a(identity.getName()));
+        } catch (SQLException e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+        }
+    }
+
     public boolean containsIdentityWithUUID(String uuid) {
         try {
             Statement statement = connection.createStatement();
             statement.execute(
                     "SELECT * FROM identity WHERE player_uuid = " + a(uuid));
             ResultSet resultSet = statement.getResultSet();
-            return resultSet != null;
+            return resultSet != null && !resultSet.isClosed(); // resultSet != null
         } catch (SQLException e) {
             IngwerThrower.acceptS(e, ThrowType.STORAGE);
         }
@@ -242,6 +283,19 @@ public final class Sqlite {
         }
 
         return getIdentityByUUID(suuid);
+    }
+
+    @Contract("_, _, _, _ -> param1")
+    /**
+     * @implNote If Identity is not present this will create a new one based on the given SINGLE parameters. In this case the given Identity would not be used or changed!!!
+     */
+    public Identity updateOrSaveIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
+        if(containsIdentityWithUUID(uuid.toString())) {
+            updateIdentity(identity,name,uuid,ingwerPermissions);
+        }else {
+            saveIdentity(new Identity(name,uuid,ingwerPermissions));
+        }
+        return getIdentityByUUID(uuid.toString());
     }
 
 

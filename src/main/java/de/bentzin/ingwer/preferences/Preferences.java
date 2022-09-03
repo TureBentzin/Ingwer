@@ -11,7 +11,8 @@ import java.util.UUID;
 
 public record Preferences(UUID superadmin, char prefix, StartType startType,
                           @Nullable File custom_sqliteLocation,
-                          @NotNull Logger ingwerLogger, JavaPlugin javaPlugin
+                          @NotNull Logger ingwerLogger, JavaPlugin javaPlugin,
+                          boolean debug
 
 
 
@@ -28,6 +29,6 @@ public record Preferences(UUID superadmin, char prefix, StartType startType,
 
 
         return new Preferences(
-                superadmin,'+', startType,null, new SystemLogger("Ingwer"), javaPlugin);
+                superadmin,'+', startType,null, new SystemLogger("Ingwer"), javaPlugin, false);
     }
 }

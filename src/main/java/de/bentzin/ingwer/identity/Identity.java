@@ -5,6 +5,7 @@ import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.message.IngwerMessage;
+import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.storage.Sqlite;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -86,18 +87,11 @@ public class Identity implements IngwerCommandSender {
         return name;
     }
 
-    @Override
-    public void sendMessage(IngwerMessage ingwerMessage) {
-        Player player = Bukkit.getPlayer(uuid);
-        if(player.isOnline()){
-            player.sendMessage(ingwerMessage.toString());
-        }
-    }
 
     @Override
     public void sendMessage(String raw) {
         Player player = Bukkit.getPlayer(uuid);
-        if(player.isOnline()){
+        if(player != null && player.isOnline()){
             player.sendMessage(raw);
         }
     }
@@ -105,9 +99,23 @@ public class Identity implements IngwerCommandSender {
     @Override
     public void sendMessage(Object o) {
         Player player = Bukkit.getPlayer(uuid);
-        if(player.isOnline()){
+        if(player != null && player.isOnline()){
             player.sendMessage(o.toString());
         }
+    }
+
+    /**
+     * @param oneLinedMessage message meant to be sent
+     * @implNote implement sending of message here
+     */
+    @Override
+    public void sendOneLinedMessage(OneLinedMessage oneLinedMessage) {
+        //TODO: Add
+        Player player = Bukkit.getPlayer(uuid);
+        if(player != null && player.isOnline()){
+            player.sendMessage(oneLinedMessage.getOneLinedComponent());
+        }
+
     }
 
     @Override

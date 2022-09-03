@@ -6,7 +6,7 @@
 
     <groupId>de.tdrstudios</groupId>
     <artifactId>ingwer</artifactId>
-    <version>0.1-BETA</version>
+    <version>0.2-BETA</version>
     <packaging>jar</packaging>
 
     <name>Ingwer</name>
@@ -63,9 +63,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.18.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

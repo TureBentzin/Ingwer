@@ -9,7 +9,8 @@ import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-public class SudoConsoleCommand extends IngwerCommand implements Permissioned {
+public class
+SudoConsoleCommand extends IngwerCommand implements Permissioned {
     private final Feature feature;
 
     public SudoConsoleCommand(Feature feature) {
@@ -26,7 +27,7 @@ public class SudoConsoleCommand extends IngwerCommand implements Permissioned {
                 if(i == 0) {continue;}
                 s.append(cmd[i]);
             }
-            commandSender.sendMessage("run command as console: " + s.toString());
+            commandSender.sendMessage("run command as console: " + s);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), s.toString());
         }else {
             commandSender.sendMessage("you need to enter a command");

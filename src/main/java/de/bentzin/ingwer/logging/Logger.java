@@ -9,6 +9,8 @@ public abstract class Logger {
     @Nullable
     private Logger parent = null;
 
+    private boolean debug = false;
+
 
     public Logger(String name,@NotNull Logger parent) {
         this.name = name;
@@ -20,13 +22,21 @@ public abstract class Logger {
         this.name = name;
     }
 
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
+    public boolean isDebugEnabled() {
+        return debug;
+    }
+
     public abstract void log(String message, LogLevel logLevel);
 
     public void info(String message) {
         log(message,LogLevel.INFO);
     }
 
-    public void waring(String message) {
+    public void warning(String message) {
         log(message,LogLevel.WARNING);
     }
 
@@ -35,7 +45,7 @@ public abstract class Logger {
     }
 
     public void debug(String message) {
-        log(message,LogLevel.DEBUG);
+        if(isDebugEnabled()) log(message,LogLevel.DEBUG);
     }
 
     public void cosmetic(String message) {
