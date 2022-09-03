@@ -30,10 +30,13 @@ public interface IngwerMessage {
      MiniMessage miniMessage = MiniMessage.miniMessage();
      TextColor COLOR = NamedTextColor.GRAY;
      TextColor ACCENT = NamedTextColor.GOLD;
+     TextColor ERROR = NamedTextColor.RED;
      String COLOR_MM = "<gray>";
      String ACCENT_MM = "<gold>";
+     String ERROR_MM = "<red>";
      String COLOR_MM_C = COLOR_MM.replaceFirst("<","</");
      String ACCENT_MM_C = ACCENT_MM.replaceFirst("<","</");
+     String ERROR_MM_C = ERROR_MM.replaceFirst("<","</");
 
      String INGWER_MM = "<gray>[<gradient:light_purple:blue>Ingwer<gray>]: ";
      String INGWER_HEAD_MM = "<gray>[<gradient:light_purple:blue>Ingwer<gray>]";

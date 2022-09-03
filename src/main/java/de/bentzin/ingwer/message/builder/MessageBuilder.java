@@ -4,6 +4,7 @@ import de.bentzin.ingwer.message.IngwerMessage;
 import de.bentzin.ingwer.message.MiniMessageMessage;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.utils.Hardcode;
+import org.checkerframework.dataflow.qual.SideEffectFree;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,13 +32,22 @@ public class MessageBuilder implements Cloneable{
         reset();
     }
 
-    public MessageBuilder add(String miniMessage) {
-        miniMessageBuilder.append(miniMessage);
+    /**
+     * @param s miniMessage
+     * @return this
+     */
+    public MessageBuilder add(String s) {
+        miniMessageBuilder.append(s);
         return this;
     }
 
-    public MessageBuilder add(@NotNull C c, String miniMessage) {
-        miniMessageBuilder.append(c.insert(miniMessage));
+    /**
+     * @param c color
+     * @param s miniMessage
+     * @return this
+     */
+    public MessageBuilder add(@NotNull C c, String s) {
+        miniMessageBuilder.append(c.insert(s));
         return this;
     }
 
@@ -74,6 +84,11 @@ public class MessageBuilder implements Cloneable{
 
     public MessageBuilder a() {
         miniMessageBuilder.append(IngwerMessage.ACCENT_MM);
+        return this;
+    }
+
+    public MessageBuilder e() {
+        miniMessageBuilder.append(IngwerMessage.ERROR_MM);
         return this;
     }
 

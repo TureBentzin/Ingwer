@@ -12,9 +12,14 @@ public enum C {
      */
     C(IngwerMessage.COLOR_MM, IngwerMessage.COLOR_MM_C),
     /**
-     * Color
+     * Accent
      */
     A(IngwerMessage.ACCENT_MM, IngwerMessage.ACCENT_MM_C),
+
+    /**
+     * Error
+     */
+    E(IngwerMessage.ERROR_MM,IngwerMessage.ERROR_MM_C),
     ;
     private final String open;
     private final String close;
