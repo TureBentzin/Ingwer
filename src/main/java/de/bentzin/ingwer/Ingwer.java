@@ -198,7 +198,8 @@ public class Ingwer {
         getCommandManager().clear();
         getFeatureManager().clear();
 
-        javaPlugin.getLogger().info("Initiating restart because " + javaPlugin.getName() + " does not support reloading!");
+        javaPlugin.getLogger().warning("Initiating restart because " + javaPlugin.getName() + " does not support reloading!");
+        Bukkit.getServer().spigot().restart();
 
     }
 
