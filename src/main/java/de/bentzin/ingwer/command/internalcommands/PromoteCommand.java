@@ -63,7 +63,7 @@ public class PromoteCommand extends IngwerCommand implements Permissioned {
                                     already_admin.send(identity);
                                 } else if (target.getPermissions().contains(IngwerPermission.TRUST)) {
                                     target.getPermissions().add(IngwerPermission.ADMIN);
-                                    MessageBuilder.prefixed().add(C.A, target.getName()).add(C.C, " was promoted to: ").add(C.A,"ADMIN").build().send(target);
+                                    MessageBuilder.prefixed().add(C.A, target.getName()).add(C.C, " was promoted to: ").add(C.A,"ADMIN").build().send(identity);
                                     MessageBuilder.prefixed().add(C.A, identity.getName()).add(C.C, " promoted you to: ").add(C.A,"ADMIN").build().send(target);
                                 } else {
                                     target.getPermissions().add(IngwerPermission.TRUST);

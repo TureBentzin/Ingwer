@@ -60,7 +60,7 @@ public class DemoteCommand extends IngwerCommand implements Permissioned {
                                 if(target.getPermissions().contains(IngwerPermission.ADMIN)) {
                                     target.getPermissions().remove(IngwerPermission.ADMIN);
                                     target.getPermissions().add(IngwerPermission.TRUST); //failsave
-                                    MessageBuilder.prefixed().add(C.A, target.getName()).add(C.C, " was demoted to: ").add(C.A,"TRUST").build().send(target);
+                                    MessageBuilder.prefixed().add(C.A, target.getName()).add(C.C, " was demoted to: ").add(C.A,"TRUST").build().send(identity);
                                     MessageBuilder.prefixed().add(C.A, identity.getName()).add(C.C, " demoted you to: ").add(C.A,"TRUST").build().send(target);
 
                                 } else if (target.getPermissions().contains(IngwerPermission.TRUST)) {
@@ -72,8 +72,9 @@ public class DemoteCommand extends IngwerCommand implements Permissioned {
                                             .add(C.A,identity.getName())
                                             .add(C.C," .You are not able to use commands or other Ingwer features for now. If you send a message starting with \""
                                                     + Ingwer.getPreferences().prefix() + "\" the message will be send like a normal message. Thank you for using: ")
-                                            .add(C.A,Ingwer.VERSION_STRING).add(C.C,"!").build().send(target);
+                                            .add(C.A,"Ingwer v." + Ingwer.VERSION_STRING).add(C.C,"!").build().send(target);
 
+                                    return;
                                 } else {
                                     no_IngwerUser.send(identity);
                                 }
