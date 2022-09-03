@@ -33,9 +33,9 @@ public class ChatCommand extends IngwerCommand {
         }else {
             //TODO: bommels05
             if(commandSender.getName().equals("Bommels05")) {
-                MessageBuilder.prefixed().add(C.E,"Please care about the usage!");
+                MessageBuilder.prefixed().add(C.E,"Please care about the usage!").build().send(commandSender);
             }else
-                MessageBuilder.prefixed().add(C.E,"Please enter message!");
+                MessageBuilder.prefixed().add(C.E,"Please enter message!").build().send(commandSender);
 
         }
     }

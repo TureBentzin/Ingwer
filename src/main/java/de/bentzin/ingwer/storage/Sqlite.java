@@ -201,6 +201,7 @@ public final class Sqlite {
                         UUID.fromString(resultSet.getString("player_uuid")),
                         IngwerPermission.decodePermissions(resultSet.getLong("user_permissions"))));
             }
+            return identities;
 
         } catch (SQLException e) {
             IngwerThrower.acceptS(e, ThrowType.STORAGE);
