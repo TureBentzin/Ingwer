@@ -63,7 +63,8 @@ public class CommandReturnSystem {
             try {
                 throw new NoSuchElementException("cant generate new command. Timeout");
             }catch (NoSuchElementException e) {
-                IngwerThrower.acceptS(e, ThrowType.GENERAL);
+                e.setMessage("Won in Lotto: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         return s;
