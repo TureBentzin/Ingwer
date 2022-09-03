@@ -43,7 +43,7 @@ public final class FeatureFinder {
                         logger.debug("Feature is already registered! - skip <> " + feature1.getName());
                     }
                 } catch (Exception e) {
-                    logger.waring("Error accorded while loading suspected Feature: "
+                    logger.warning("Error accorded while loading suspected Feature: "
                             + cl.getCanonicalName() + " v. "+ newFeature.version() +  " by: "+ newFeature.author() + " >> " + e.getMessage());
                     IngwerThrower.acceptS(e, ThrowType.FEATURE);
                 }

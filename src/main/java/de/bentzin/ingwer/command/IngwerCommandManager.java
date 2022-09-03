@@ -50,13 +50,13 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
                 String replaceFirst = saveRemoveFirst(input, Ingwer.getPreferences().prefix());
                 boolean b = runCommand(replaceFirst, sender, senderType);
                 if (!b) {
-                    logger.waring("failed to execute command: " + input);
+                    logger.warning("failed to execute command: " + input);
                 }
             }
         } else {
             boolean b = runCommand(input, sender, senderType);
             if (!b) {
-                logger.waring("failed to execute command: " + input);
+                logger.warning("failed to execute command: " + input);
             }
         }
 

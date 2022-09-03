@@ -19,13 +19,7 @@ import de.bentzin.ingwer.utils.IngwerLog4JFilter;
 import de.bentzin.ingwer.utils.StopCode;
 import de.bentzin.ingwer.utils.cmdreturn.CommandReturnSystem;
 import de.bentzin.ingwer.utils.cmdreturn.paper.CommandReturnPaperListener;
-import de.bentzin.tools.register.Registerator;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.message.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,7 +32,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.LogRecord;
 
 public class Ingwer {
 
@@ -138,7 +131,7 @@ public class Ingwer {
         }
 
         if(LogManager.getRootLogger().isDebugEnabled())
-             logger.waring("Log4J Debugger is enabled!");
+             logger.warning("Log4J Debugger is enabled!");
 
 
         if(preferences.hasCustomSqliteLocation())
@@ -171,7 +164,7 @@ public class Ingwer {
         if(javaPlugin != null) {
             registerPaperListeners();
         }else {
-            logger.waring("javaPlugin is null!");
+            logger.warning("javaPlugin is null!");
         }
 
         //internalCommands

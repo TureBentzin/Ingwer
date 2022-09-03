@@ -51,7 +51,7 @@ public final class FeatureManager extends Registerator<Feature>{
             object.onEnable();
             return super.register(object);
         }
-        getLogger().waring("failed to load " + object.getName() + "!");
+        getLogger().warning("failed to load " + object.getName() + "!");
         return object;
     }
 
@@ -60,7 +60,7 @@ public final class FeatureManager extends Registerator<Feature>{
         if(getIndex().contains(object))
              object.onDisable();
         else
-            logger.waring("failed to unregister: " + object + "!");
+            logger.warning("failed to unregister: " + object + "!");
         return super.unregister(object);
     }
 

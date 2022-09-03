@@ -5,9 +5,6 @@ import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.logging.SystemLogger;
-import de.bentzin.ingwer.preferences.Preferences;
-import de.bentzin.ingwer.preferences.StartType;
 import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.thow.ThrowType;
 import org.jetbrains.annotations.Contract;
@@ -20,7 +17,6 @@ import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 public final class Sqlite {
@@ -111,9 +107,9 @@ public final class Sqlite {
         if (connection != null)
             try {
                 connection.close();
-                logger.waring("closed connection to database!");
+                logger.warning("closed connection to database!");
             } catch (SQLException e) {
-                logger.waring("suspicious behavior of database detected! Check your storage and the conditions Ingwer is getting executed under immediately!");
+                logger.warning("suspicious behavior of database detected! Check your storage and the conditions Ingwer is getting executed under immediately!");
                 IngwerThrower.acceptS(e);
             }
     }

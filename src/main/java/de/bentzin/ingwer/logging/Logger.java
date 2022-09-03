@@ -36,7 +36,7 @@ public abstract class Logger {
         log(message,LogLevel.INFO);
     }
 
-    public void waring(String message) {
+    public void warning(String message) {
         log(message,LogLevel.WARNING);
     }
 

@@ -90,7 +90,7 @@ public class CommandReturnSystem {
                         return true;
                     }else {
                         Player player = Bukkit.getPlayer(uuid);
-                        getLogger().waring(
+                        getLogger().warning(
                                 player != null ? player.getName() : uuid +
                                         " tried to execute foreign returnCommand! >> " + command);
                     }
