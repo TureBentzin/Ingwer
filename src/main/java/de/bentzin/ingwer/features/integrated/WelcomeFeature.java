@@ -41,7 +41,7 @@ public class WelcomeFeature extends SimpleFeature implements Listener {
 
     @Override
     public IngwerPermission generalUsePermission() {
-        return IngwerPermission.FEATURE_WELCOME;
+        return IngwerPermission.TRUST;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class WelcomeFeature extends SimpleFeature implements Listener {
     @EventHandler
     public void onAdminJoin(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        Identity identity = Identity.searchSetByUUID(player.getUniqueId());
+        Identity identity = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
 
         if (identity != null) {
             getLogger().debug("Allied join: " + identity.getName());

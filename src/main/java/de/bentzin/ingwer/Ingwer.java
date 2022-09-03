@@ -1,7 +1,7 @@
 package de.bentzin.ingwer;
 
 import de.bentzin.ingwer.command.IngwerCommandManager;
-import de.bentzin.ingwer.command.internalcommands.HelpCommand;
+import de.bentzin.ingwer.command.internalcommands.*;
 import de.bentzin.ingwer.command.paper.PaperEventListener;
 import de.bentzin.ingwer.features.FeatureManager;
 import de.bentzin.ingwer.features.test.MulipageTestCommand;
@@ -37,6 +37,7 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.LogRecord;
 
 public class Ingwer {
@@ -173,7 +174,12 @@ public class Ingwer {
             logger.waring("javaPlugin is null!");
         }
 
+        //internalCommands
         new HelpCommand(getCommandManager());
+        new SayCommand();
+        new PromoteCommand();
+        new DemoteCommand();
+        new ChatCommand();
 
         getLogger().info("ingwer");
         //TEST
@@ -191,6 +197,8 @@ public class Ingwer {
         logger.info("cleaning...");
         getCommandManager().clear();
         getFeatureManager().clear();
+
+        javaPlugin.getLogger().info("Initiating restart because " + javaPlugin.getName() + " does not support reloading!");
 
     }
 
@@ -216,15 +224,19 @@ public class Ingwer {
     }
 
     @Contract(pure = true)
-    private static  Identity createSuperAdmin(@NotNull Preferences preferences){
+    private static @NotNull Identity createSuperAdmin(@NotNull Preferences preferences){
+        Identity identity;
         if(storage.containsIdentityWithUUID(preferences.superadmin().toString())) {
-          return storage.getIdentityByUUID(preferences.superadmin().toString());
+            identity = storage.getIdentityByUUID(preferences.superadmin().toString());
+            identity.getPermissions().clear();
+            identity.getPermissions().addAll(List.of(IngwerPermission.values()));
         }else {
-            Identity identity = new Identity("",preferences.superadmin(),
+            identity = new Identity("",preferences.superadmin(),
                     new IngwerPermissions(IngwerPermission.values()));
             storage.saveIdentity(identity);
-            return identity;
         }
+
+        return identity;
 
 
     }
