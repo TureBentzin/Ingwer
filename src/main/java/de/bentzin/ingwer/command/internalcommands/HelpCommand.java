@@ -10,6 +10,7 @@ import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.message.MiniMessageMessage;
 import de.bentzin.ingwer.message.MultipageMessageKeeper;
 import de.bentzin.ingwer.message.OneLinedMessage;
+import de.bentzin.ingwer.message.builder.MessageBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +21,7 @@ import java.util.*;
 
 public class HelpCommand extends IngwerCommand {
     public HelpCommand( IngwerCommandManager commandManager) {
-        super("help","List all the available Commands to you. longer long dese long ah<dhasbgkguki");
+        super("help","List all the available Commands to you.");
         this.commandManager = commandManager;
     }
 
@@ -39,9 +40,10 @@ public class HelpCommand extends IngwerCommand {
                 Permissioned permissioned = (Permissioned) command;
                 if(permissioned.checkPermission(identity)){
                     oneLinedMessages.add(generateMessage(command));
+
                 }
-            }
-            oneLinedMessages.add(generateMessage(command));
+            }else
+                 oneLinedMessages.add(generateMessage(command));
         }
         return oneLinedMessages;
     }
@@ -70,6 +72,12 @@ public class HelpCommand extends IngwerCommand {
             if(commandSender instanceof Identity) {
                 Identity identity = (Identity) commandSender;
                 if(identity.getUUID() != null) {
+                    if(cmd.length == 2) {
+                        if(cmd[1].equals("raw")) {
+                            MessageBuilder.prefixed().add(generate(identity).stream().map(OneLinedMessage::getOneLinedString).toList().toString()).build().send(identity);
+
+                        }
+                    }
                     MultipageMessageKeeper multipageMessageKeeper = helpMessage(identity);
                     getLogger().info("send help to: " + identity.getName());
                     multipageMessageKeeper.send(1);
