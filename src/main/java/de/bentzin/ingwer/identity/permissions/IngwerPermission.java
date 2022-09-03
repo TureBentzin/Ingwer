@@ -1,5 +1,6 @@
 package de.bentzin.ingwer.identity.permissions;
 
+import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.thow.IngwerException;
 import de.bentzin.ingwer.thow.IngwerThrower;
 import org.jetbrains.annotations.NotNull;
@@ -40,8 +41,9 @@ public enum IngwerPermission {
             if(chars.length > 0)
                 System.arraycopy(chars, 0, chars1, 0, chars.length);
 
-            for (char c : chars1) {
-                if( c == 0) c = '0';
+            for (int count = 0; count < chars1.length; count++) {
+                Ingwer.getLogger().info("count: " + count + " >> c: " + chars1[count]);
+                if( chars1[count] == 0) chars1[count] = '0';
             }
             chars = chars1;
         }
@@ -49,7 +51,11 @@ public enum IngwerPermission {
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
             if(c != '1' && c != '0') {
-                IngwerThrower.acceptS(new InvalidParameterException("permissions needs to be a binary chain!"));
+                try {
+                    throw new InvalidParameterException("permissions needs to be a binary chain! >> " + c);
+                }catch (InvalidParameterException parameterException) {
+                    IngwerThrower.acceptS(parameterException);
+                }
             }
             if(c == '1')
                 ingwerPermissions.add(values[i]);
