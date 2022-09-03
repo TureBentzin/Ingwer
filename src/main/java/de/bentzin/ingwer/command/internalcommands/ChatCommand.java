@@ -14,7 +14,7 @@ import java.util.Objects;
 public class ChatCommand extends IngwerCommand {
 
     public static MessageBuilder chatMessageBuilder(@NotNull IngwerCommandSender sender){
-        return MessageBuilder.empty().add(" [<gradient:yellow:aqua>Chat</gradient>]: ").add(C.A, "@" + sender.getName() +": ").c();
+        return MessageBuilder.prefixed().add("[<gradient:yellow:aqua>Chat</gradient>]: ").add(C.A, "@" + sender.getName() +": ").c();
     }
 
     //<gray>[<gradient:light_purple:blue>Ingwer<gray>]: [<gradient:yellow:aqua>Chat</gradient>]: <gold>@TDR_Minecraft: <gray>Hello i am using Ingwer Chat.
