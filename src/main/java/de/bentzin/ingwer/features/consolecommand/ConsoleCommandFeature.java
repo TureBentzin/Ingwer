@@ -20,7 +20,7 @@ public class ConsoleCommandFeature extends SimpleFeature {
 
     @Override
     public IngwerPermission generalUsePermission() {
-        return IngwerPermission.SUDO_COMMAND;
+        return IngwerPermission.SYSTEM_CTRL;
     }
 
     @Override
