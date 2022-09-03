@@ -3,7 +3,6 @@ package de.bentzin.ingwer.utils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class CollectionUtils {
