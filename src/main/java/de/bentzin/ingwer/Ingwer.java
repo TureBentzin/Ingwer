@@ -182,7 +182,6 @@ public class Ingwer {
 
 
         //maliciousConfig();
-        getLogger().info("ingwer...");
     }
 
     public static void stop(@NotNull StopCode stopCode) {
