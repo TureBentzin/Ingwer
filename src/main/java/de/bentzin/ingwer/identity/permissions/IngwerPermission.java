@@ -42,7 +42,6 @@ public enum IngwerPermission {
                 System.arraycopy(chars, 0, chars1, 0, chars.length);
 
             for (int count = 0; count < chars1.length; count++) {
-                Ingwer.getLogger().info("count: " + count + " >> c: " + chars1[count]);
                 if( chars1[count] == 0) chars1[count] = '0';
             }
             chars = chars1;

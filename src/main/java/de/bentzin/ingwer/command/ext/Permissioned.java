@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Permissioned {
     IngwerPermission getPermission();
 
-     default boolean checkPermission(@NotNull IngwerCommandSender ingwerCommandSender) {
+    default boolean checkPermission(@NotNull IngwerCommandSender ingwerCommandSender) {
         return ingwerCommandSender.getPermissions().contains(getPermission());
     }
 }

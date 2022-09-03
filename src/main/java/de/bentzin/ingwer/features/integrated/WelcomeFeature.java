@@ -36,7 +36,7 @@ public class WelcomeFeature extends SimpleFeature implements Listener {
 
 
     public WelcomeFeature() {
-        super("welcome","welcomes every ingwer user!");
+        super("welcome","Welcomes every ingwer user!");
     }
 
     @Override

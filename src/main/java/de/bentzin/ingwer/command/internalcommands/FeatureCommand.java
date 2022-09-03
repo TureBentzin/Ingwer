@@ -1,12 +1,13 @@
 package de.bentzin.ingwer.command.internalcommands;
 
-import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommand;
-import de.bentzin.ingwer.command.IngwerCommandManager;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.Permissioned;
+import de.bentzin.ingwer.features.Feature;
+import de.bentzin.ingwer.features.FeatureManager;
 import de.bentzin.ingwer.identity.Identity;
+import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.message.MiniMessageMessage;
 import de.bentzin.ingwer.message.MultipageMessageKeeper;
 import de.bentzin.ingwer.message.OneLinedMessage;
@@ -18,13 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @see HelpCommand
+ */
+public class FeatureCommand extends IngwerCommand implements Permissioned {
+    private final FeatureManager featureManager;
 
-public class HelpCommand extends IngwerCommand {
-    private final IngwerCommandManager commandManager;
-
-    public HelpCommand(IngwerCommandManager commandManager) {
-        super("help", "List all the available Commands to you.");
-        this.commandManager = commandManager;
+    public FeatureCommand(FeatureManager featureManager) {
+        super("features", "List all the loaded features.");
+        this.featureManager = featureManager;
     }
 
     @Contract("_ -> new")
@@ -35,34 +38,23 @@ public class HelpCommand extends IngwerCommand {
 
     private @NotNull List<OneLinedMessage> generate(@NotNull Identity identity) {
         List<OneLinedMessage> oneLinedMessages = new ArrayList<>();
-        for (IngwerCommand command : commandManager) {
-            if (command instanceof Permissioned) {
-                Permissioned permissioned = (Permissioned) command;
-                if (permissioned.checkPermission(identity)) {
-                    oneLinedMessages.add(generateMessage(command));
-
-                }
-            } else
-                oneLinedMessages.add(generateMessage(command));
+        for (Feature feature : featureManager) {
+            oneLinedMessages.add(generateMessage(feature));
         }
         return oneLinedMessages;
     }
 
-    //cmdName   : cmdDesc
-    // <click:suggest_command:'+say'><hover:show_text:'<gray>Full Description'><gray>+say   : Say things stating with +</click></hover>
     @NotNull
-    private OneLinedMessage generateMessage(@NotNull IngwerCommand ingwerCommand) {
-        char prefix = Ingwer.getPreferences().prefix();
-        return new MiniMessageMessage("<click:suggest_command:'" + prefix + ingwerCommand.getName() + "'>" +
-                "<hover:show_text:'<gray>" + ingwerCommand.getDescription() + "'>" +
-                "<gold>" + prefix + ingwerCommand.getName() + "<dark_gray> » <gray>" + trimDescription(ingwerCommand) + "</click>");
+    private OneLinedMessage generateMessage(@NotNull Feature feature) {
+        return new MiniMessageMessage(
+                "<gold>" + feature.getName() + "<dark_gray> » <gray>" + trimDescription(feature));
     }
 
-    protected String trimDescription(@NotNull IngwerCommand ingwerCommand) {
-        if (ingwerCommand.getDescription().length() > 40) {
-            return ingwerCommand.getDescription().substring(0, 35) + "...";
+    protected String trimDescription(@NotNull Feature feature) {
+        if (feature.getDescription().length() > 40) {
+            return feature.getDescription().substring(0, 35) + "...";
         } else
-            return ingwerCommand.getDescription();
+            return feature.getDescription();
 
     }
 
@@ -79,7 +71,6 @@ public class HelpCommand extends IngwerCommand {
                         }
                     }
                     MultipageMessageKeeper multipageMessageKeeper = helpMessage(identity);
-                    getLogger().info("send help to: " + identity.getName());
                     multipageMessageKeeper.send(1);
                 }
             }
@@ -89,5 +80,10 @@ public class HelpCommand extends IngwerCommand {
     @Override
     public CommandTarget[] getCommandTargets() {
         return CommandTarget.SAVE.fullfill();
+    }
+
+    @Override
+    public IngwerPermission getPermission() {
+        return IngwerPermission.SUPERADMIN;
     }
 }

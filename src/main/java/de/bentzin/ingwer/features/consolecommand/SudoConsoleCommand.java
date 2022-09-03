@@ -27,7 +27,7 @@ SudoConsoleCommand extends IngwerCommand implements Permissioned {
                 if(i == 0) {continue;}
                 s.append(cmd[i]);
             }
-            commandSender.sendMessage("run command as console: " + s.toString());
+            commandSender.sendMessage("run command as console: " + s);
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), s.toString());
         }else {
             commandSender.sendMessage("you need to enter a command");

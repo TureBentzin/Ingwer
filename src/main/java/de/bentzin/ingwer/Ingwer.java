@@ -181,6 +181,7 @@ public class Ingwer {
         new DemoteCommand();
         new ChatCommand();
         new VPermsCommand();
+        new FeatureCommand(getFeatureManager());
 
         getLogger().info("ingwer");
         //TEST

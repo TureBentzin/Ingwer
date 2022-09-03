@@ -33,7 +33,6 @@ public final class FeatureFinder {
         logger.info("searching for new features...");
         Reflections ref = new Reflections("de.");
         for (Class<?> cl : ref.getTypesAnnotatedWith(NewFeature.class)) {
-            logger.debug("found: " + cl.getSimpleName());
             NewFeature newFeature = cl.getAnnotation(NewFeature.class);
             try {
                     Feature feature1 = (Feature) cl.getConstructor().newInstance();

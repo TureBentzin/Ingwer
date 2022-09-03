@@ -13,29 +13,27 @@ import java.util.Objects;
 
 public class ChatCommand extends IngwerCommand {
 
-    public static MessageBuilder chatMessageBuilder(@NotNull IngwerCommandSender sender){
-        return MessageBuilder.prefixed().add("[<gradient:yellow:aqua>Chat</gradient>]: ").add(C.A, "@" + sender.getName() +": ").c();
+    public ChatCommand() {
+        super("chat", "Write messages to your fellow Ingwer users currently available.");
     }
 
-    //<gray>[<gradient:light_purple:blue>Ingwer<gray>]: [<gradient:yellow:aqua>Chat</gradient>]: <gold>@TDR_Minecraft: <gray>Hello i am using Ingwer Chat.
-
-    public ChatCommand() {
-        super("chat","Write messages to your fellow Ingwer users currently available.");
+    public static MessageBuilder chatMessageBuilder(@NotNull IngwerCommandSender sender) {
+        return MessageBuilder.prefixed().add("[<gradient:yellow:aqua>Chat</gradient>]: ").add(C.A, "@" + sender.getName() + ": ").c();
     }
 
     @Override
     public void execute(IngwerCommandSender commandSender, String @NotNull [] cmd, CommandTarget senderType) {
-        if(cmd.length > 1) {
+        if (cmd.length > 1) {
 
             OneLinedMessage build = chatMessageBuilder(commandSender).add(gen(cmd)).build();
             Objects.requireNonNull(Ingwer.getStorage().getAllIdentities()).forEach(build::send);
 
-        }else {
+        } else {
             //TODO: bommels05
-            if(commandSender.getName().equals("Bommels05")) {
-                MessageBuilder.prefixed().add(C.E,"Please care about the usage!").build().send(commandSender);
-            }else
-                MessageBuilder.prefixed().add(C.E,"Please enter message!").build().send(commandSender);
+            if (commandSender.getName().equals("Bommels05")) {
+                MessageBuilder.prefixed().add(C.E, "Please care about the usage!").build().send(commandSender);
+            } else
+                MessageBuilder.prefixed().add(C.E, "Please enter message!").build().send(commandSender);
 
         }
     }
@@ -48,10 +46,12 @@ public class ChatCommand extends IngwerCommand {
     public String gen(String @NotNull [] cmd) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < cmd.length; i++) {
-            if(i == 0) {continue;}
-            if(i == cmd.length - 1 ) {
+            if (i == 0) {
+                continue;
+            }
+            if (i == cmd.length - 1) {
                 builder.append(cmd[i]);
-            }else {
+            } else {
                 builder.append(cmd[i] + " ");
             }
         }
