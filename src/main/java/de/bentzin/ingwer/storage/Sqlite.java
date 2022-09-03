@@ -225,6 +225,16 @@ public final class Sqlite {
         return null;
     }
 
+    public void removeIdentity(@NotNull Identity identity) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(
+                    "DELETE FROM identity WHERE user_name = " + a(identity.getName()));
+        } catch (SQLException e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+        }
+    }
+
     public boolean containsIdentityWithUUID(String uuid) {
         try {
             Statement statement = connection.createStatement();
