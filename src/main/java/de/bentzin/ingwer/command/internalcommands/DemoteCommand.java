@@ -48,7 +48,6 @@ public class DemoteCommand extends IngwerCommand implements Permissioned {
                             target = Ingwer.getStorage().getIdentityByUUID(String.valueOf(player.getUniqueId()));
                         }
                         if(target == null) {
-                            player.sendMessage("db: null -> new id");
                             target = new Identity(player.getName(), player.getUniqueId(), new IngwerPermissions());
                         }
                             if(target.isSuperAdmin()) {
@@ -70,7 +69,7 @@ public class DemoteCommand extends IngwerCommand implements Permissioned {
                                     Ingwer.getStorage().removeIdentity(target);
                                     MessageBuilder.prefixed().add("Your authority to use Ingwer was revoked by ")
                                             .add(C.A,identity.getName())
-                                            .add(C.C," .You are not able to use commands or other Ingwer features for now. If you send a message starting with \""
+                                            .add(C.C,". You are not able to use commands or other Ingwer features for now. If you send a message starting with \""
                                                     + Ingwer.getPreferences().prefix() + "\" the message will be send like a normal message. Thank you for using: ")
                                             .add(C.A,"Ingwer v." + Ingwer.VERSION_STRING).add(C.C,"!").build().send(target);
 

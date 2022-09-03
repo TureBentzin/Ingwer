@@ -180,6 +180,7 @@ public class Ingwer {
         new PromoteCommand();
         new DemoteCommand();
         new ChatCommand();
+        new VPermsCommand();
 
         getLogger().info("ingwer");
         //TEST

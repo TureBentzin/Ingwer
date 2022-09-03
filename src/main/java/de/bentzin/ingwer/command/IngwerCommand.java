@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.yaml.snakeyaml.events.Event;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,7 +109,7 @@ public abstract class IngwerCommand {
                 if (cmd.length == 1) {
                     specify_online_player.send(identity);
                 } else if (cmd.length > 2) {
-
+                    specify_online_player.send(identity);
                 } else if (cmd.length == 2) {
                     String s = cmd[1];
                     Player player = Bukkit.getPlayer(s);
@@ -117,6 +118,32 @@ public abstract class IngwerCommand {
                         return Pair.of(identity,player);
                     }else {
                         specify_online_player.send(identity);
+                    }
+                }
+                return Pair.of(identity,null);
+            }
+        }
+        return Pair.of(null,null);
+    }
+
+    @ApiStatus.Experimental
+    @NotNull
+    public <T extends IngwerCommand> Pair<@Nullable Identity, @Nullable Identity> identityIdentityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, String[] cmd, BiConsumer<Identity, Identity> action) {
+        StraightLineStringMessage specify_user_name = new StraightLineStringMessage("Please specify a valid user_name!");
+        if(senderType.equals(CommandTarget.INGAME)) {
+            if (commandSender instanceof Identity identity) {
+                if (cmd.length == 1) {
+                    specify_user_name.send(identity);
+                } else if (cmd.length > 2) {
+                    specify_user_name.send(identity);
+                } else if (cmd.length == 2) {
+                    String s = cmd[1];
+                    Identity target = Ingwer.getStorage().getIdentityByName(s);
+                    if (target != null) {
+                        action.accept(identity,target);
+                        return Pair.of(identity,target);
+                    }else {
+                        specify_user_name.send(identity);
                     }
                 }
                 return Pair.of(identity,null);

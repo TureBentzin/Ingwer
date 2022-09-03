@@ -73,8 +73,8 @@ public class PromoteCommand extends IngwerCommand implements Permissioned {
                                             " Ingwer provides you with a bunch of tools. Type ").add(C.A,"<click:suggest_command:'+help'>+help</click>").add(C.C," to get a list pf available commands.").build().send(target);
                                 }
                                 //update identity
-                                Ingwer.getStorage().updateOrSaveIdentity(target,target.getName(),target.getUUID(),target.getPermissions());
-                            }
+                                target.sendMessage("perms: " + Ingwer.getStorage().updateOrSaveIdentity(target,target.getName(),target.getUUID(),target.getPermissions()).getPermissions());
+                                }
 
                     }else{
                         specify_online_player.send(identity);
