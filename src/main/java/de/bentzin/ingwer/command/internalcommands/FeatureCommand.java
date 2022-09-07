@@ -47,7 +47,7 @@ public class FeatureCommand extends IngwerCommand implements Permissioned {
     @NotNull
     private OneLinedMessage generateMessage(@NotNull Feature feature) {
         return new MiniMessageMessage(
-                "<gold>" + feature.getName() + "<dark_gray> » <gray>" + trimDescription(feature));
+                "<gold>" + feature.getName() + "<dark_gray> » <gray>" +  "<hover:show_text:'<gray>" + feature.getDescription() + "'>" +  trimDescription(feature));
     }
 
     protected String trimDescription(@NotNull Feature feature) {

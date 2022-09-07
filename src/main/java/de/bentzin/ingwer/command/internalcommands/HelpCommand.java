@@ -54,13 +54,15 @@ public class HelpCommand extends IngwerCommand {
     private OneLinedMessage generateMessage(@NotNull IngwerCommand ingwerCommand) {
         char prefix = Ingwer.getPreferences().prefix();
         return new MiniMessageMessage("<click:suggest_command:'" + prefix + ingwerCommand.getName() + "'>" +
-                "<hover:show_text:'<gray>" + ingwerCommand.getDescription() + "'>" +
-                "<gold>" + prefix + ingwerCommand.getName() + "<dark_gray> » <gray>" + trimDescription(ingwerCommand) + "</click>");
+                "<gold>" + prefix + ingwerCommand.getName() + "<hover:show_text:'<gray>" + ingwerCommand.getDescription() + "'>" + "<dark_gray> » <gray>" + trimDescription(ingwerCommand) + "</click>");
     }
 
     protected String trimDescription(@NotNull IngwerCommand ingwerCommand) {
-        if (ingwerCommand.getDescription().length() > 40) {
-            return ingwerCommand.getDescription().substring(0, 35) + "...";
+        int length = ingwerCommand.getDescription().length() + ingwerCommand.getName().length();
+        int max = 45;
+        int sub = 5;
+        if (length > max) {
+            return ingwerCommand.getDescription().substring(0, max - sub) + "...";
         } else
             return ingwerCommand.getDescription();
 
