@@ -2,8 +2,6 @@ package de.bentzin.ingwer.utils.cmdreturn;
 
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.logging.SystemLogger;
-import de.bentzin.ingwer.thow.IngwerThrower;
-import de.bentzin.ingwer.thow.ThrowType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -105,4 +103,83 @@ public class CommandReturnSystem {
         return commandList().contains(command);
     }
 
+
+    private static class NoSuchElementException extends java.util.NoSuchElementException {
+        private String message;
+
+        /**
+         * Constructs a {@code NoSuchElementException} with {@code null}
+         * as its error message string.
+         */
+        public NoSuchElementException() {
+        }
+
+        /**
+         * Constructs a {@code NoSuchElementException} with the specified detail
+         * message and cause.
+         *
+         * @param s     the detail message, or null
+         * @param cause the cause (which is saved for later retrieval by the
+         *              {@link #getCause()} method), or null
+         * @since 15
+         */
+        public NoSuchElementException(String s, Throwable cause) {
+            super(s, cause);
+        }
+
+        /**
+         * Constructs a {@code NoSuchElementException} with the specified cause.
+         * The detail message is set to {@code (cause == null ? null :
+         * cause.toString())} (which typically contains the class and
+         * detail message of {@code cause}).
+         *
+         * @param cause the cause (which is saved for later retrieval by the
+         *              {@link #getCause()} method)
+         * @since 15
+         */
+        public NoSuchElementException(Throwable cause) {
+            super(cause);
+        }
+
+        /**
+         * Constructs a {@code NoSuchElementException}, saving a reference
+         * to the error message string {@code s} for later retrieval by the
+         * {@code getMessage} method.
+         *
+         * @param s the detail message.
+         */
+        public NoSuchElementException(String s) {
+            super(s);
+        }
+
+        public void setMessage(String s) {
+            message = s;
+        }
+
+        /**
+         * Returns the detail message string of this throwable.
+         *
+         * @return the detail message string of this {@code Throwable} instance
+         * (which may be {@code null}).
+         */
+        @Override
+        public String getMessage() {
+            return message;
+        }
+
+        /**
+         * Creates a localized description of this throwable.
+         * Subclasses may override this method in order to produce a
+         * locale-specific message.  For subclasses that do not override this
+         * method, the default implementation returns the same result as
+         * {@code getMessage()}.
+         *
+         * @return The localized description of this throwable.
+         * @since 1.1
+         */
+        @Override
+        public String getLocalizedMessage() {
+            return message;
+        }
+    }
 }
