@@ -38,8 +38,8 @@ public interface IngwerMessage {
      String ACCENT_MM_C = ACCENT_MM.replaceFirst("<","</");
      String ERROR_MM_C = ERROR_MM.replaceFirst("<","</");
 
-     String INGWER_MM = "<gray>[<gradient:light_purple:blue>Ingwer<gray>]: ";
-     String INGWER_HEAD_MM = "<gray>[<gradient:light_purple:blue>Ingwer<gray>]";
+     String INGWER_MM = "<gray>[<gradient:light_purple:blue>Ingwer</gradient><gray>]: ";
+     String INGWER_HEAD_MM = "<gray>[<gradient:light_purple:blue>Ingwer</gradient><gray>]";
 
      Component INGWER = mm(INGWER_MM);
      Component INGWER_HEAD = mm(INGWER_HEAD_MM);

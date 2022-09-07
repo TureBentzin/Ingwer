@@ -59,7 +59,7 @@ public class HelpCommand extends IngwerCommand {
 
     protected String trimDescription(@NotNull IngwerCommand ingwerCommand) {
         int length = ingwerCommand.getDescription().length() + ingwerCommand.getName().length();
-        int max = 45;
+        int max = 37;
         int sub = 5;
         if (length > max) {
             return ingwerCommand.getDescription().substring(0, max - sub) + "...";

@@ -146,33 +146,6 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
 
     @Contract(pure = true)
     private @Nullable Heading getHeading(float yaw) {
-       /* if(yaw > 292.5 && yaw < 337.5) {
-            return IXZ;
-        }
-        if(yaw > 337.5 || yaw < 22.5){
-            return Z;
-        }
-        if(yaw > 22.5 && yaw < 67.5) {
-            return XZ;
-        }
-        if(yaw > 67.6 && yaw < 112.5) {
-            return X;
-        }
-        if(yaw > 112.5 && yaw < 157.5) {
-            return XIZ;
-        }
-        if(yaw > 157.5 && yaw < 202.5) {
-            return IZ;
-        }
-        if(yaw > 202.5 && yaw < 247.5) {
-            return IXIZ;
-        }
-        if(yaw > 247.5 && yaw < 292.5) {
-            return IX;
-        }
-        return null;
-
-        */
 
         if(yaw > -67.5 && yaw < - 22.5) {
             return IXZ;
