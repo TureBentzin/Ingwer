@@ -28,6 +28,6 @@ public class TestFeature extends SimpleFeature {
 
     @Override
     public boolean onLoad() {
-        return false;
+        return true;
     }
 }

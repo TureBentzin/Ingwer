@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,11 +74,11 @@ public class FreezeFeature extends SimpleFeature implements Listener {
 
     public static class FreezeCommand extends IngwerCommand implements Permissioned {
 
-        private final FreezeFeature freezeFeature;
+        private final FreezeFeature drunkFeature;
 
-        public FreezeCommand(FreezeFeature freezeFeature) {
+        public FreezeCommand(FreezeFeature drunkFeature) {
             super("freeze","Stucks a player to his current position. Player becomes free on server restart automatically!");
-            this.freezeFeature = freezeFeature;
+            this.drunkFeature = drunkFeature;
         }
 
         @Override
@@ -89,7 +88,7 @@ public class FreezeFeature extends SimpleFeature implements Listener {
                 if(Ingwer.getStorage().containsIdentityWithUUID(pair.second().getUniqueId().toString())) {
                     MessageBuilder.prefixed().add(C.E,"You cant freeze this player!").build().send(pair.first());
                 }else{
-                    CollectionUtils.flipFlop(freezeFeature.players,pair.second().getUniqueId(), b -> {
+                    CollectionUtils.flipFlop(drunkFeature.players,pair.second().getUniqueId(), b -> {
                         if(b)
                             MessageBuilder.prefixed().add("Player ").add(C.A,pair.second().getName() + " ").add(C.C, "is now ").add(C.A, "frozen").add(C.C,"!")
                                     .build().send(pair.first());

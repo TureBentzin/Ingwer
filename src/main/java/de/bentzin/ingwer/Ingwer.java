@@ -19,6 +19,7 @@ import de.bentzin.ingwer.utils.IngwerLog4JFilter;
 import de.bentzin.ingwer.utils.StopCode;
 import de.bentzin.ingwer.utils.cmdreturn.CommandReturnSystem;
 import de.bentzin.ingwer.utils.cmdreturn.paper.CommandReturnPaperListener;
+import de.bentzin.tools.register.Registerator;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -187,14 +188,22 @@ public class Ingwer {
 
     public static void stop(@NotNull StopCode stopCode) {
         logger.info("Stopping Ingwer: " + stopCode.name());
-        getStorage().close();
 
         logger.info("cleaning...");
-        getCommandManager().clear();
-        getFeatureManager().clear();
+        //getCommandManager().clear();
+        //getFeatureManager().clear();
 
-        javaPlugin.getLogger().warning("Initiating restart because " + javaPlugin.getName() + " does not support reloading!");
-        Bukkit.getServer().spigot().restart();
+        try {
+            getFeatureManager().temp_clean();
+        } catch (Registerator.NoSuchEntryException e) {
+            throw new RuntimeException(e);
+        }
+
+        logger.info("disconnecting...");
+        getStorage().close();
+
+        javaPlugin.getLogger().warning(  javaPlugin.getName() + " does not support reloading!");
+       // Bukkit.getServer().spigot().restart();
 
     }
 

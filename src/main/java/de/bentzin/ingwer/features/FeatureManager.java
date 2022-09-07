@@ -5,8 +5,10 @@ import de.bentzin.ingwer.features.test.TestFeature;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.thow.ThrowType;
 import de.bentzin.tools.register.Registerator;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.meta.Exclusive;
 
 
 public final class FeatureManager extends Registerator<Feature>{
@@ -62,6 +64,16 @@ public final class FeatureManager extends Registerator<Feature>{
         else
             logger.warning("failed to unregister: " + object + "!");
         return super.unregister(object);
+    }
+
+    @ApiStatus.Experimental
+    @Exclusive
+    @ApiStatus.Internal
+    public void temp_clean() throws NoSuchEntryException {
+        Feature[] features = getIndex().toArray(new Feature[0]);
+        for (Feature feature : features) {
+            unregister(feature);
+        }
     }
 
     public void registerInternalFeatures() {
