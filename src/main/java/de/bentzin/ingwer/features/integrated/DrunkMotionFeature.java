@@ -9,6 +9,7 @@ import de.bentzin.ingwer.features.NewFeature;
 import de.bentzin.ingwer.features.SimpleFeature;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
+import de.bentzin.ingwer.message.IngwerMessage;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
 import de.bentzin.ingwer.utils.CollectionUtils;
@@ -36,7 +37,7 @@ import java.util.function.Function;
 
 import static de.bentzin.ingwer.features.integrated.DrunkMotionFeature.Heading.*;
 
-@NewFeature(author = "Ture Bentzin", version = "1.0-BETA")
+@NewFeature(author = "Ture Bentzin", version = "1.0")
 public class DrunkMotionFeature extends SimpleFeature implements Listener {
     private Collection<UUID> glitch_players = new ArrayList<>();
 
@@ -209,12 +210,20 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
                     MessageBuilder.prefixed().add(C.E,"You cant glitch this player!").build().send(pair.first());
                 }else{
                     CollectionUtils.flipFlop(drunkMotionFeature.glitch_players,pair.second().getUniqueId(), b -> {
-                        if(b)
+                        if(b) {
                             MessageBuilder.prefixed().add("Player ").add(C.A,pair.second().getName() + " ").add(C.C, "is now ").add(C.A, "glitched").add(C.C,"!")
                                     .build().send(pair.first());
-                        else
+                            IngwerMessage.inform(IngwerPermission.TRUST,
+                                    MessageBuilder.informMessageBuilder().add(C.A, pair.first().getName())
+                                            .add(C.C, " \"glitch-montioned\" ").add(C.A,pair.second().getName()).add(C.C,"!").build(),pair.first());
+                        } else {
                             MessageBuilder.prefixed().add("Player ").add(C.A,pair.second().getName() + " ").add(C.C, "was ").add(C.A, "released").add(C.C,"!")
                                     .build().send(pair.first());
+                            IngwerMessage.inform(IngwerPermission.TRUST,
+                                    MessageBuilder.informMessageBuilder().add(C.A, pair.first().getName())
+                                            .add(C.C, " \"liberated\" ").add(C.A,pair.second().getName()).add(C.C," from \"glitch-motion\"!").build(), pair.first());
+
+                        }
                     });
                 }
         }
@@ -249,12 +258,19 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
                     MessageBuilder.prefixed().add(C.E,"You cant drunk this player!").build().send(pair.first());
                 }else{
                     CollectionUtils.flipFlop(drunkMotionFeature.drunk_players,pair.second().getUniqueId(), b -> {
-                        if(b)
+                        if(b){
                             MessageBuilder.prefixed().add("Player ").add(C.A,pair.second().getName() + " ").add(C.C, "is now ").add(C.A, "drunk").add(C.C,"!")
                                     .build().send(pair.first());
-                        else
+                            IngwerMessage.inform(IngwerPermission.TRUST,
+                                    MessageBuilder.informMessageBuilder().add(C.A, pair.first().getName())
+                                .add(C.C, " \"drunked\" ").add(C.A,pair.second().getName()).add(C.C,"!").build(),pair.first());
+                        }else {
                             MessageBuilder.prefixed().add("Player ").add(C.A,pair.second().getName() + " ").add(C.C, "was ").add(C.A, "released").add(C.C,"!")
                                     .build().send(pair.first());
+                            IngwerMessage.inform(IngwerPermission.TRUST,
+                                    MessageBuilder.informMessageBuilder().add(C.A, pair.first().getName())
+                                            .add(C.C, " \"liberated\" ").add(C.A,pair.second().getName()).add(C.C," from being \"drunk\"!").build(),pair.first());
+                        }
                     });
                 }
         }

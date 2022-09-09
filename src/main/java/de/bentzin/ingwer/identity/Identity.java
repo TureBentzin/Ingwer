@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -72,7 +73,7 @@ public class Identity implements IngwerCommandSender {
     public boolean isReachable() {
         //case: Ingame
         Player player = Bukkit.getPlayer(uuid);
-        if(player.isOnline()){
+        if(player != null && player.isOnline()){
             return true;
         }
         //case: remote
@@ -126,6 +127,26 @@ public class Identity implements IngwerCommandSender {
         sb.append(", permissions=").append(permissions);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Identity)) return false;
+
+        Identity identity = (Identity) o;
+
+        if (!getName().equals(identity.getName())) return false;
+        if (!Objects.equals(uuid, identity.uuid)) return false;
+        return getPermissions() != null ? getPermissions().equals(identity.getPermissions()) : identity.getPermissions() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getName().hashCode();
+        result = 31 * result + (uuid != null ? uuid.hashCode() : 0);
+        result = 31 * result + (getPermissions() != null ? getPermissions().hashCode() : 0);
+        return result;
     }
 
     //generator

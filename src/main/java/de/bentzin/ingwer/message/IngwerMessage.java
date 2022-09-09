@@ -2,6 +2,10 @@ package de.bentzin.ingwer.message;
 
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.IngwerCommandSender;
+import de.bentzin.ingwer.features.NewFeature;
+import de.bentzin.ingwer.identity.Identity;
+import de.bentzin.ingwer.identity.permissions.IngwerPermission;
+import de.bentzin.ingwer.message.builder.MessageBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -9,10 +13,13 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import javax.naming.Name;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public interface IngwerMessage {
 
@@ -85,8 +92,40 @@ public interface IngwerMessage {
           return PlainTextComponentSerializer.plainText().serialize(component);
      }
 
+     static void inform(@NotNull IngwerPermission ingwerPermission,@NotNull IngwerMessage ingwerMessage) {
+          inform(ingwerPermission,ingwerMessage,new Identity[0]);
+     }
 
-    //message
+     static void inform(@NotNull IngwerPermission ingwerPermission,@NotNull IngwerMessage ingwerMessage,@NotNull Identity... excluded) {
+          List<String> excludedList = Stream.of(excluded).map(Identity::getName).toList();
+          Objects.requireNonNull(Ingwer.getStorage().getAllIdentities()).forEach(identity -> {
+               if(!excludedList.contains(identity.getName()))
+                  if(identity.isReachable() && identity.getPermissions().contains(ingwerPermission)) {
+                     ingwerMessage.send(identity);
+                }
+          });
+     }
+
+     /**
+      * @deprecated used ONLY if no identity is available!!
+      * @see IngwerMessage#inform(IngwerPermission, IngwerMessage, Identity...)
+      */
+     @ApiStatus.Experimental
+     @Deprecated
+     static void inform_legacy(@NotNull IngwerPermission ingwerPermission,@NotNull IngwerMessage ingwerMessage,@NotNull IngwerCommandSender... excluded) {
+          List<String> excludedList = Stream.of(excluded).map(IngwerCommandSender::getName).toList();
+          Objects.requireNonNull(Ingwer.getStorage().getAllIdentities()).forEach(identity -> {
+               if(!excludedList.contains(identity.getName()))
+                    if(identity.isReachable() && identity.getPermissions().contains(ingwerPermission)) {
+                         ingwerMessage.send(identity);
+                    }
+          });
+     }
+
+
+
+
+     //message
 
 
      void send(CommandSender recipient);

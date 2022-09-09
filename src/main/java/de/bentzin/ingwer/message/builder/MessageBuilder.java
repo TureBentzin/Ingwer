@@ -24,6 +24,10 @@ public class MessageBuilder implements Cloneable{
     @Deprecated
     public static @NotNull MessageBuilder custom(String initial){return new MessageBuilder(initial);}
 
+    public static MessageBuilder informMessageBuilder() {
+        return MessageBuilder.prefixed().add("[<gradient:blue:aqua>INFORM</gradient>]:  ").c();
+    }
+
     private final String defaultMiniMessage;
     private StringBuilder miniMessageBuilder;
 
@@ -50,6 +54,7 @@ public class MessageBuilder implements Cloneable{
         miniMessageBuilder.append(c.insert(s));
         return this;
     }
+
 
     public MessageBuilder reset() {
         miniMessageBuilder = new StringBuilder(defaultMiniMessage);
