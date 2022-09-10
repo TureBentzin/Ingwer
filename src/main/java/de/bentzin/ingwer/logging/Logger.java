@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class Logger {
 
-    private String name;
+    private final String name;
     @Nullable
     private Logger parent = null;
 
@@ -15,6 +15,7 @@ public abstract class Logger {
     public Logger(String name,@NotNull Logger parent) {
         this.name = name;
         this.parent = parent;
+        debug = this.parent.isDebugEnabled();
         debug("creating new logger: " + genName() + "!");
     }
 
@@ -68,8 +69,12 @@ public abstract class Logger {
         return logLevel.name() +" >> " + prefix(message);
     }
 
-    public Logger getParent() {
+    public @Nullable Logger getParent() {
         return parent;
+    }
+
+    public boolean hasParent() {
+        return getParent() != null;
     }
 
     protected String genName() {
