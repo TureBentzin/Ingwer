@@ -4,7 +4,6 @@ import de.bentzin.ingwer.message.IngwerMessage;
 import de.bentzin.ingwer.message.MiniMessageMessage;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.utils.Hardcode;
-import org.checkerframework.dataflow.qual.SideEffectFree;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,7 +75,7 @@ public class MessageBuilder implements Cloneable{
     @Override
     public String toString() {
         String s = IngwerMessage.deserializePlain(build().getOneLinedComponent());
-        if(s == null || s == "") {
+        if(s == null || s.equals("")) {
             return "Empty MessageBuilder#" + hashCode();
         }
         return s;
@@ -101,6 +100,10 @@ public class MessageBuilder implements Cloneable{
         return defaultMiniMessage;
     }
 
+    /**
+     *
+     * @return new StringBuilder containing the "current" String.
+     */
     public StringBuilder exportBuilder() {
         return new StringBuilder(miniMessageBuilder.toString());
     }
@@ -108,5 +111,17 @@ public class MessageBuilder implements Cloneable{
     @Override
     public MessageBuilder clone(){
         return MessageBuilder.empty().add(getMiniMessage());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MessageBuilder that)) return false;
+        return miniMessageBuilder.toString().equals(that.miniMessageBuilder.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return miniMessageBuilder.hashCode();
     }
 }

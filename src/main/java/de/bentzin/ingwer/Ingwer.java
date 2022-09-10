@@ -39,7 +39,7 @@ public class Ingwer {
     public static JavaPlugin javaPlugin;
 
     //TODO dynamic
-    public static String VERSION_STRING = "0.1-BETA";
+    public static String VERSION_STRING = "0.3-BETA";
 
 
     public static String BANNER = "\n" +
@@ -170,12 +170,15 @@ public class Ingwer {
 
         //internalCommands
         new HelpCommand(getCommandManager());
+        new IngwerCommand();
         new SayCommand();
         new PromoteCommand();
         new DemoteCommand();
         new ChatCommand();
         new VPermsCommand();
         new FeatureCommand(getFeatureManager());
+        new ThreadsCommand();
+        new IngwerCommand();
 
         getLogger().info("ingwer");
         //TEST

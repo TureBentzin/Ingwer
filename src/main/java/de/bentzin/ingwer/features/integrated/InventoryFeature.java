@@ -4,6 +4,7 @@ import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommand;
 import de.bentzin.ingwer.command.IngwerCommandSender;
+import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.features.NewFeature;
 import de.bentzin.ingwer.features.SimpleFeature;
 import de.bentzin.ingwer.identity.Identity;
@@ -16,6 +17,8 @@ import it.unimi.dsi.fastutil.Pair;
 import net.kyori.adventure.sound.Sound;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +50,7 @@ public class InventoryFeature extends SimpleFeature {
         return true;
     }
 
-    public class InvSeeCommand extends IngwerCommand{
+    public class InvSeeCommand extends IngwerCommand implements Permissioned {
         public InvSeeCommand() {
             super("invsee", "View and manipulate another players inventory");
         }
@@ -90,27 +93,31 @@ public class InventoryFeature extends SimpleFeature {
         }
 
         protected void openInventory(@NotNull Identity identity, @NotNull Player target) {
-            if(Bukkit.getPlayer(identity.getUUID()) != null) {
-                Player player = Bukkit.getPlayer(identity.getUUID());
-
+            Player player = Bukkit.getPlayer(identity.getUUID());
+            if(player != null) {
                 OneLinedMessage used_invsee = MessageBuilder.informMessageBuilder().add(C.A,identity.getName())
                         .add(C.C,"  used invsee on ").add(C.A,target.getName()).build();
 
-                OneLinedMessage you_used_invsee = MessageBuilder.informMessageBuilder()
-                        .add(C.C,"opend ").add(C.A,target.getName()).add(C.C, " inventory").build();
+                OneLinedMessage you_used_invsee = MessageBuilder.prefixed()
+                        .add(C.C,"opened ").add(C.A,target.getName()).add(C.C, " inventory").build();
 
                 Sound sound = Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK.key(), Sound.Source.MASTER, 1f, 1.1f);
                 player.playSound(sound);
-                player.openInventory(target.getInventory());
+                Inventory inventory = target.getInventory();
+                Bukkit.getScheduler().runTask(Ingwer.javaPlugin,() -> player.openInventory(target.getInventory()));
                 you_used_invsee.send(identity);
-                IngwerMessage.inform(IngwerPermission.TRUST,used_invsee,identity
-                );
+                IngwerMessage.inform(IngwerPermission.TRUST,used_invsee,identity);
             }
         }
 
         @Override
         public CommandTarget[] getCommandTargets() {
             return new CommandTarget[]{CommandTarget.INGAME};
+        }
+
+        @Override
+        public IngwerPermission getPermission() {
+            return IngwerPermission.TRUST;
         }
     }
 
