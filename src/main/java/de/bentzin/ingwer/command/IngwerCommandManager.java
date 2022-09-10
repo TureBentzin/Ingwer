@@ -10,8 +10,10 @@ import de.bentzin.ingwer.message.builder.MessageBuilder;
 import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.thow.ThrowType;
 import de.bentzin.tools.register.Registerator;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class IngwerCommandManager extends Registerator<IngwerCommand> {
 
@@ -40,6 +42,19 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
             }
         }
         return false;
+    }
+
+    @ApiStatus.Internal
+    @Nullable
+    protected IngwerCommand getByName(String name) {
+        IngwerCommand ingwerCommand = null;
+        for (IngwerCommand command : this) {
+            if(command.getName().equalsIgnoreCase(name)) {
+                ingwerCommand = command;
+                break;
+            }
+        }
+        return ingwerCommand;
     }
 
     public void preRunCommand(String input, IngwerCommandSender sender, @NotNull CommandTarget senderType) {

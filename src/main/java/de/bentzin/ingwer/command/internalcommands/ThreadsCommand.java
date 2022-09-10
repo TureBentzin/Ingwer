@@ -11,7 +11,6 @@ import de.bentzin.ingwer.message.MiniMessageMessage;
 import de.bentzin.ingwer.message.MultipageMessageKeeper;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.utils.cmdreturn.CommandReturn;
-import de.bentzin.ingwer.utils.cmdreturn.CommandReturnSystem;
 import de.bentzin.tools.DevTools;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

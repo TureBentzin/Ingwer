@@ -20,6 +20,7 @@ public class CommandReturnPaperListener implements Listener {
     private final Logger logger;
 
     public CommandReturnPaperListener(@NotNull Logger parent) {
+        //noinspection SpellCheckingInspection
         this.logger = parent.adopt("CRPL");
         logger.setDebug(true);
     }
@@ -35,7 +36,7 @@ public class CommandReturnPaperListener implements Listener {
             preprocessEvent.setMessage("/?");
         }else {
            // logger.debug("fake output:");
-           // LogManager.getRootLogger().info("INGWER" + preprocessEvent.getPlayer().getName() + " issued server command: " + message);
+           // LogManager.getRootLogger4J().info("INGWER" + preprocessEvent.getPlayer().getName() + " issued server command: " + message);
         }
     }
 

@@ -27,7 +27,7 @@ import static de.bentzin.ingwer.message.IngwerMessage.*;
  */
 
 
-public class IngwerCommand extends de.bentzin.ingwer.command.IngwerCommand {
+public final class IngwerCommand extends de.bentzin.ingwer.command.IngwerCommand {
 
     public static @NotNull Collection<OneLinedMessage> message(IngwerCommandSender sender) {
         ArrayDeque<OneLinedMessage> arrayDeque = new ArrayDeque<>();

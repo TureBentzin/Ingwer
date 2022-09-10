@@ -185,12 +185,6 @@ public final class Sqlite {
             if(resultSet.isClosed()) {
                 return null;
             }
-            /*
-            Identity identity = new Identity(resultSet.getString("user_name"),
-                    UUID.fromString(resultSet.getString("player_uuid")),
-                    IngwerPermission.decodePermissions(resultSet.getLong("user_permissions")));
-            return identity;
-             */
             Collection<Identity> identities = new ArrayList<>();
             while (resultSet.next()) {
                 identities.add(new Identity(resultSet.getString("user_name"),

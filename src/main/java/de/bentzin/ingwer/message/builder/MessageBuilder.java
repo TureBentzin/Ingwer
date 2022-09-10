@@ -3,6 +3,7 @@ package de.bentzin.ingwer.message.builder;
 import de.bentzin.ingwer.message.IngwerMessage;
 import de.bentzin.ingwer.message.MiniMessageMessage;
 import de.bentzin.ingwer.message.OneLinedMessage;
+import de.bentzin.ingwer.message.PatternedMiniMessageMessage;
 import de.bentzin.ingwer.utils.Hardcode;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -66,6 +67,10 @@ public class MessageBuilder implements Cloneable{
      */
     public OneLinedMessage build() {
         return new MiniMessageMessage(miniMessageBuilder.toString());
+    }
+
+    public PatternedMiniMessageMessage toCompletableMessage() {
+        return PatternedMiniMessageMessage.fromMiniMessage(miniMessageBuilder.toString());
     }
 
     public String getMiniMessage() {

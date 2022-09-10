@@ -2,9 +2,6 @@ package de.bentzin.ingwer.features;
 
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.thow.ThrowType;
-import de.bentzin.tools.register.Registerator;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class SimpleFeature implements Feature{
 

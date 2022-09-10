@@ -11,11 +11,12 @@ import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class DemoteCommand extends IngwerCommand implements Permissioned {
+public class DemoteCommand extends IngwerCommand implements Permissioned, CommandUtils {
 
     private final OneLinedMessage specify_online_player = MessageBuilder.prefixed().add(C.E, "Please specify an online Player!").build();
 
@@ -41,13 +42,7 @@ public class DemoteCommand extends IngwerCommand implements Permissioned {
                     String s = cmd[1];
                     Player player = Bukkit.getPlayer(s);
                     if (player != null) {
-                        Identity target = null;
-                        if (Ingwer.getStorage().containsIdentityWithUUID(String.valueOf(player.getUniqueId()))) {
-                            target = Ingwer.getStorage().getIdentityByUUID(String.valueOf(player.getUniqueId()));
-                        }
-                        if (target == null) {
-                            target = new Identity(player.getName(), player.getUniqueId(), new IngwerPermissions());
-                        }
+                        Identity target = getOrCreateIdentity(player);
                         if (target.isSuperAdmin()) {
                             is_superadmin.send(identity);
                             MessageBuilder.prefixed().add(C.A, identity.getName()).add(C.E, " tried to change your permissions!").build().send(target);
@@ -55,7 +50,7 @@ public class DemoteCommand extends IngwerCommand implements Permissioned {
                             //target is normal user
                             if (target.getPermissions().contains(IngwerPermission.ADMIN)) {
                                 target.getPermissions().remove(IngwerPermission.ADMIN);
-                                target.getPermissions().add(IngwerPermission.TRUST); //failsave
+                                target.getPermissions().add(IngwerPermission.TRUST); //failsafe
                                 MessageBuilder.prefixed().add(C.A, target.getName()).add(C.C, " was demoted to: ").add(C.A, "TRUST").build().send(identity);
                                 MessageBuilder.prefixed().add(C.A, identity.getName()).add(C.C, " demoted you to: ").add(C.A, "TRUST").build().send(target);
 

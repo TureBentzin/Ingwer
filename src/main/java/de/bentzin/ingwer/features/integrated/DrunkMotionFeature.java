@@ -23,7 +23,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Contract;
@@ -213,18 +212,18 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
     protected enum Heading {
 
 
-        Z(aDouble -> new Vector(aDouble * Heading.multiplicator, 0, 0)),
-        X(aDouble -> new Vector(0, 0, aDouble * Heading.multiplicator)),
-        IX(aDouble -> new Vector(0, 0, -aDouble * Heading.multiplicator)),
-        IZ(aDouble -> new Vector(-aDouble * Heading.multiplicator, 0, 0)),
+        Z(aDouble -> new Vector(aDouble * Heading.multiplier, 0, 0)),
+        X(aDouble -> new Vector(0, 0, aDouble * Heading.multiplier)),
+        IX(aDouble -> new Vector(0, 0, -aDouble * Heading.multiplier)),
+        IZ(aDouble -> new Vector(-aDouble * Heading.multiplier, 0, 0)),
 
-        XZ(aDouble -> new Vector(0.5 * aDouble * Heading.multiplicator, 0, 0.5 * aDouble * Heading.multiplicator)),
-        XIZ(aDouble -> new Vector(0.5 * aDouble * Heading.multiplicator, 0, 0.5 * -aDouble * Heading.multiplicator)),
+        XZ(aDouble -> new Vector(0.5 * aDouble * Heading.multiplier, 0, 0.5 * aDouble * Heading.multiplier)),
+        XIZ(aDouble -> new Vector(0.5 * aDouble * Heading.multiplier, 0, 0.5 * -aDouble * Heading.multiplier)),
 
-        IXZ(aDouble -> new Vector(0.5 * -aDouble * Heading.multiplicator, 0, 0.5 * aDouble * Heading.multiplicator)),
-        IXIZ(aDouble -> new Vector(0.5 * -aDouble * Heading.multiplicator, 0, 0.5 * -aDouble * Heading.multiplicator));
+        IXZ(aDouble -> new Vector(0.5 * -aDouble * Heading.multiplier, 0, 0.5 * aDouble * Heading.multiplier)),
+        IXIZ(aDouble -> new Vector(0.5 * -aDouble * Heading.multiplier, 0, 0.5 * -aDouble * Heading.multiplier));
 
-        public static final double multiplicator = 0.05;
+        public static final double multiplier = 0.05;
         private final Function<Double, Vector> apply;
 
         Heading(Function<Double, Vector> apply) {

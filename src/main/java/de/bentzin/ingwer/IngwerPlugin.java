@@ -58,9 +58,9 @@ public class IngwerPlugin extends JavaPlugin {
         Logger.getGlobal().setFilter(filter);
         Logger.getAnonymousLogger().setFilter(filter);
         Bukkit.getLogger().setFilter(filter);
-        LogBuilder logBuilder = LogManager.getRootLogger().atInfo();
-        org.apache.logging.log4j.Logger rootLogger1 = LogManager.getRootLogger();
-        org.slf4j.Logger rootLogger = (org.slf4j.Logger) LogManager.getRootLogger()
+        LogBuilder logBuilder = LogManager.getRootLogger4J().atInfo();
+        org.apache.logging.log4j.Logger rootLogger1 = LogManager.getRootLogger4J();
+        org.slf4j.Logger rootLogger = (org.slf4j.Logger) LogManager.getRootLogger4J()
          */
 
         //setProp

@@ -15,7 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class PromoteCommand extends IngwerCommand implements Permissioned {
+public class PromoteCommand extends IngwerCommand implements Permissioned, CommandUtils {
 
     private final StraightLineStringMessage specify_online_player = new StraightLineStringMessage("Please specify an online Player!");
 
@@ -41,14 +41,9 @@ public class PromoteCommand extends IngwerCommand implements Permissioned {
                     String s = cmd[1];
                     Player player = Bukkit.getPlayer(s);
                     if (player != null) {
-                        Identity target = null;
-                        if (Ingwer.getStorage().containsIdentityWithUUID(String.valueOf(player.getUniqueId()))) {
-                            target = Ingwer.getStorage().getIdentityByUUID(String.valueOf(player.getUniqueId()));
-                        }
-                        if (target == null) {
-                            target = new Identity(player.getName(), player.getUniqueId(), new IngwerPermissions());
-                        }
-                        if (target.isSuperAdmin()) {
+                        Identity target = getOrCreateIdentity(player);
+                        if (target.isSuperAdmin()) //noinspection GrazieInspection
+                        {
                             is_superadmin.send(identity);
                             //new MiniMessageMessage(IM.ACCENT_MM + identity.getName() + IM.ACCENT_MM_C +  IM.COLOR_MM +" tried to change your permissions!" + IM.COLOR_MM_C).send(target);
                             MessageBuilder.prefixed().add(C.A, identity.getName()).add(C.C, " tried to change your permissions!").build().send(target);

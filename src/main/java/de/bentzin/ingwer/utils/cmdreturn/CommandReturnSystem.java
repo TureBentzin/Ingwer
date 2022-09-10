@@ -52,12 +52,12 @@ public class CommandReturnSystem {
     public String generateNewCommand() {
         List<String> strings = new ArrayList<>(commandList());
         String s = generateCommand(124);
-        int failsave = 0;
-        while (strings.contains(s) && failsave < 40){
+        int failsafe = 0;
+        while (strings.contains(s) && failsafe < 40){
             s = generateCommand(124);
-            failsave++;
+            failsafe++;
         }
-        if(failsave >= 39) {
+        if(failsafe >= 39) {
             try {
                 throw new NoSuchElementException("cant generate new command. Timeout");
             }catch (NoSuchElementException e) {

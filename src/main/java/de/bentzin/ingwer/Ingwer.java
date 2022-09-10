@@ -19,7 +19,6 @@ import de.bentzin.ingwer.utils.IngwerLog4JFilter;
 import de.bentzin.ingwer.utils.StopCode;
 import de.bentzin.ingwer.utils.cmdreturn.CommandReturnSystem;
 import de.bentzin.ingwer.utils.cmdreturn.paper.CommandReturnPaperListener;
-import de.bentzin.tools.register.Registerator;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -144,10 +143,7 @@ public class Ingwer {
         commandReturnSystem = new CommandReturnSystem(getLogger());
 
 
-
         org.apache.logging.log4j.core.Logger logger1 = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
-        logger1.info("kleiner Dese!");
-
 
         logger1.addFilter(new IngwerLog4JFilter());
 
@@ -178,12 +174,8 @@ public class Ingwer {
         new VPermsCommand();
         new FeatureCommand(getFeatureManager());
         new ThreadsCommand();
-        new IngwerCommand();
 
-        getLogger().info("ingwer");
-        //TEST
-            new MulipageTestCommand();
-
+        getLogger().info("completed boot of Ingwer!");
 
         //maliciousConfig();
     }
@@ -192,14 +184,8 @@ public class Ingwer {
         logger.info("Stopping Ingwer: " + stopCode.name());
 
         logger.info("cleaning...");
-        //getCommandManager().clear();
-        //getFeatureManager().clear();
-
-        try {
-            getFeatureManager().temp_clean();
-        } catch (Registerator.NoSuchEntryException e) {
-            throw new RuntimeException(e);
-        }
+        getCommandManager().clear();
+        getFeatureManager().clear();
 
         logger.info("disconnecting...");
         getStorage().close();
