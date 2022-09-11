@@ -197,7 +197,6 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
                             float yaw = player.getLocation().getYaw();
                             Vector vector = generateMotion(player.getUniqueId(), yaw);
                             applyMotion(player, vector);
-                            getLogger().info(String.valueOf(yaw));
                         } else {
                             getLogger().info(player.getUniqueId() + " is offline!");
                         }
