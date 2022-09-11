@@ -79,7 +79,6 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
         drunk_players.clear();
         silkworm.stop();
         bukkitTask.cancel();
-        getLogger().warning("WARN: DEBUG FEATURE SHUTDOWN!!!");
     }
 
     @Override
