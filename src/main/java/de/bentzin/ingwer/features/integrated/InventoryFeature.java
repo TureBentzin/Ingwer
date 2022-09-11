@@ -27,7 +27,7 @@ import java.util.function.Function;
 @NewFeature(author = "Ture Bentzin", version = "1.0")
 public class InventoryFeature extends SimpleFeature {
     public InventoryFeature() {
-        super("inventory","Manipulate inventory's");
+        super("inventory","Manipulate inventories");
     }
 
     @Override
