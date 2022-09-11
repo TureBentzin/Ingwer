@@ -18,16 +18,13 @@ import net.kyori.adventure.sound.Sound;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
 
 @NewFeature(author = "Ture Bentzin", version = "1.0")
 public class InventoryFeature extends SimpleFeature {
     public InventoryFeature() {
-        super("inventory","Manipulate inventories");
+        super("inventory", "Manipulate inventories");
     }
 
     @Override
@@ -64,49 +61,48 @@ public class InventoryFeature extends SimpleFeature {
             Pair<@Nullable Identity, @Nullable Player> identityPlayerPair
                     = this.identityPlayerCommand(commandSender, senderType, cmd, (identity, player) -> {
 
-                        OneLinedMessage tried_use_invsee = MessageBuilder.informMessageBuilder().add(C.A,identity.getName())
-                                .add(C.C," tried to use invsee on ").add(C.A,player.getName()).build();
+                OneLinedMessage tried_use_invsee = MessageBuilder.informMessageBuilder().add(C.A, identity.getName())
+                        .add(C.C, " tried to use invsee on ").add(C.A, player.getName()).build();
 
 
-
-                        if(Ingwer.getStorage().containsIdentityWithUUID(player.getUniqueId().toString())) {
-                            Identity target = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
-                            if(target.getPermissions().contains(IngwerPermission.ADMIN)) {
-                                if (identity.getPermissions().contains(IngwerPermission.SUPERADMIN))
-                                    openInventory(identity, player);
-                                 else {
-                                    cant_use_invsee.send(identity);
-                                    IngwerMessage.inform(IngwerPermission.TRUST, tried_use_invsee, identity);
-                                }
-                            }else if(target.getPermissions().contains(IngwerPermission.TRUST)) {
-                                if (identity.getPermissions().contains(IngwerPermission.ADMIN))
-                                    openInventory(identity, player);
-                                else {
-                                    cant_use_invsee.send(identity);
-                                    IngwerMessage.inform(IngwerPermission.TRUST, tried_use_invsee, identity);
-                                }
-                            }
-                        }else {
-                            openInventory(identity,player);
+                if (Ingwer.getStorage().containsIdentityWithUUID(player.getUniqueId().toString())) {
+                    Identity target = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
+                    if (target.getPermissions().contains(IngwerPermission.ADMIN)) {
+                        if (identity.getPermissions().contains(IngwerPermission.SUPERADMIN))
+                            openInventory(identity, player);
+                        else {
+                            cant_use_invsee.send(identity);
+                            IngwerMessage.inform(IngwerPermission.TRUST, tried_use_invsee, identity);
                         }
+                    } else if (target.getPermissions().contains(IngwerPermission.TRUST)) {
+                        if (identity.getPermissions().contains(IngwerPermission.ADMIN))
+                            openInventory(identity, player);
+                        else {
+                            cant_use_invsee.send(identity);
+                            IngwerMessage.inform(IngwerPermission.TRUST, tried_use_invsee, identity);
+                        }
+                    }
+                } else {
+                    openInventory(identity, player);
+                }
             });
         }
 
         protected void openInventory(@NotNull Identity identity, @NotNull Player target) {
             Player player = Bukkit.getPlayer(identity.getUUID());
-            if(player != null) {
-                OneLinedMessage used_invsee = MessageBuilder.informMessageBuilder().add(C.A,identity.getName())
-                        .add(C.C,"  used invsee on ").add(C.A,target.getName()).build();
+            if (player != null) {
+                OneLinedMessage used_invsee = MessageBuilder.informMessageBuilder().add(C.A, identity.getName())
+                        .add(C.C, "  used invsee on ").add(C.A, target.getName()).build();
 
                 OneLinedMessage you_used_invsee = MessageBuilder.prefixed()
-                        .add(C.C,"opened ").add(C.A,target.getName()).add(C.C, " inventory").build();
+                        .add(C.C, "opened ").add(C.A, target.getName()).add(C.C, " inventory").build();
 
                 Sound sound = Sound.sound(org.bukkit.Sound.UI_BUTTON_CLICK.key(), Sound.Source.MASTER, 1f, 1.1f);
                 player.playSound(sound);
                 Inventory inventory = target.getInventory();
-                Bukkit.getScheduler().runTask(Ingwer.javaPlugin,() -> player.openInventory(target.getInventory()));
+                Bukkit.getScheduler().runTask(Ingwer.javaPlugin, () -> player.openInventory(target.getInventory()));
                 you_used_invsee.send(identity);
-                IngwerMessage.inform(IngwerPermission.TRUST,used_invsee,identity);
+                IngwerMessage.inform(IngwerPermission.TRUST, used_invsee, identity);
             }
         }
 

@@ -5,5 +5,5 @@ public enum StopCode {
     FINISHED,
     REMOTE_SHUTDOWN,
     FATAL,
-    PANIC;
+    PANIC
 }

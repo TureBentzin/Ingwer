@@ -6,14 +6,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-public class CollectionUtils {
+public final class CollectionUtils {
+    private CollectionUtils() {
+    }
 
     @Independent
     @Contract("_, _ -> param1")
-    public static <E,C extends Collection<E>> @NotNull C flipFlop(@NotNull C collection, E element) {
-        if(collection.contains(element)) {
+    public static <E, C extends Collection<E>> @NotNull C flipFlop(@NotNull C collection, E element) {
+        if (collection.contains(element)) {
             collection.remove(element);
-        }else {
+        } else {
             collection.add(element);
         }
         return collection;
@@ -21,19 +23,19 @@ public class CollectionUtils {
 
     /**
      * @param consumer boolean is getting populated with "true" if element was added to collection and with "false" when otherwise
+     * @param <E>      element
+     * @param <C>      collection
      * @return changed collection
-     * @param <E> element
-     * @param <C> collection
      */
     @Independent
-    public static <E,C extends Collection<E>> @NotNull C flipFlop(@NotNull C collection, E element, Consumer<Boolean> consumer) {
-        if(collection.contains(element)) {
+    public static <E, C extends Collection<E>> @NotNull C flipFlop(@NotNull C collection, E element, Consumer<Boolean> consumer) {
+        if (collection.contains(element)) {
             collection.remove(element);
             consumer.accept(false);
-        }else {
+        } else {
             consumer.accept(collection.add(element));
         }
         return collection;
     }
-    
+
 }

@@ -3,20 +3,19 @@ package de.bentzin.ingwer.features;
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.logging.Logger;
 
-public abstract class SimpleFeature implements Feature{
-
-    private String name;
-    private String description;
-    private Logger logger;
+public abstract class SimpleFeature implements Feature {
 
     protected boolean valid;
+    private final String name;
+    private final String description;
+    private Logger logger;
 
     public SimpleFeature(String name, String description) {
         this.name = name;
         this.description = description;
-        if(!FeatureManager.getInstance().checkName(name)) {
-           logger = Ingwer.getFeatureManager().getLogger().adopt(name);
-        }else {
+        if (!FeatureManager.getInstance().checkName(name)) {
+            logger = Ingwer.getFeatureManager().getLogger().adopt(name);
+        } else {
             Ingwer.getFeatureManager().getLogger().error("ambiguous naming of: " + name + "!");
             valid = false;
             return;
@@ -34,7 +33,7 @@ public abstract class SimpleFeature implements Feature{
 
     @Override
     public boolean load() {
-        if(!valid) return false;
+        if (!valid) return false;
         return onLoad();
     }
 

@@ -5,16 +5,21 @@ import de.bentzin.ingwer.logging.Logger;
 
 public interface Feature {
     String getName();
-    default String getFeatureName()  {
+
+    default String getFeatureName() {
         return getName() + "-feature";
     }
+
     IngwerPermission generalUsePermission();
+
     String getDescription();
+
     Logger getLogger();
 
     boolean load();
 
     void onEnable();
+
     void onDisable();
 
 }

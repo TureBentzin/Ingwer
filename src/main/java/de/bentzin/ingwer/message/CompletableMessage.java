@@ -7,7 +7,7 @@ import java.security.PrivilegedActionException;
 /**
  * @implNote This Message should be completed before it's been sent
  */
-public interface CompletableMessage{
+public interface CompletableMessage {
     boolean isCompleted();
 
     /**
@@ -22,10 +22,10 @@ public interface CompletableMessage{
      * @throws UncompletedMessageException when this {@link CompletableMessage#isCompleted()} returns false!
      */
     default void checkAndThrow() throws UncompletedMessageException {
-        if(!isCompleted()) throw new UncompletedMessageException();
+        if (!isCompleted()) throw new UncompletedMessageException();
     }
 
-    class UncompletedMessageException extends IllegalStateException{
+    class UncompletedMessageException extends IllegalStateException {
         /**
          * Constructs an UncompletedMessageException with default message.
          * A detail message is a String that describes this particular exception.

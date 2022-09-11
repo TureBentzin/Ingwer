@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class ThreadsCommand extends IngwerCommand implements Permissioned {
     public ThreadsCommand() {
-        super("threads","list all threads");
+        super("threads", "list all threads");
     }
 
 
@@ -36,7 +36,7 @@ public class ThreadsCommand extends IngwerCommand implements Permissioned {
         List<OneLinedMessage> oneLinedMessages = new ArrayList<>();
 
         for (Thread thread : DevTools.getSilkWormController().getThreads()) {
-                oneLinedMessages.add(generateMessage(thread,identity.getUUID()));
+            oneLinedMessages.add(generateMessage(thread, identity.getUUID()));
         }
 
 
@@ -49,15 +49,15 @@ public class ThreadsCommand extends IngwerCommand implements Permissioned {
     private OneLinedMessage generateMessage(@NotNull Thread thread, UUID uuid) {
         char prefix = Ingwer.getPreferences().prefix();
 
-        CommandReturn kill = Ingwer.getCommandReturnSystem().addNewReturn(thread::interrupt,uuid);
+        CommandReturn kill = Ingwer.getCommandReturnSystem().addNewReturn(thread::interrupt, uuid);
 
-        return new MiniMessageMessage("<gray>["+ (thread.isAlive() ? "alive" : "dead") +"] " + "<gold>" +  thread.getName() + "<hover:show_text:'<gray>" + "prio: " + thread.getPriority() + " group: " + thread.getThreadGroup().getName() + " id: " + thread.getId()+  "'>" + "<dark_gray> » <gray>" + thread.getState().name()
-        + "<dark_red><click:run_command:'" + kill.command() + "'> [KILL]</click>");
+        return new MiniMessageMessage("<gray>[" + (thread.isAlive() ? "alive" : "dead") + "] " + "<gold>" + thread.getName() + "<hover:show_text:'<gray>" + "prio: " + thread.getPriority() + " group: " + thread.getThreadGroup().getName() + " id: " + thread.getId() + "'>" + "<dark_gray> » <gray>" + thread.getState().name()
+                + "<dark_red><click:run_command:'" + kill.command() + "'> [KILL]</click>");
     }
 
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, CommandTarget senderType) {
-        identityCommand(commandSender,senderType,identity -> threadMessage(identity).send(1));
+        identityCommand(commandSender, senderType, identity -> threadMessage(identity).send(1));
     }
 
     @Override

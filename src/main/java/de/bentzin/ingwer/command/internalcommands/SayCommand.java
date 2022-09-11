@@ -8,13 +8,12 @@ import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.command.paper.PaperEventListener;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 
-public class SayCommand extends IngwerCommand implements Permissioned, CommandUtils{
+public class SayCommand extends IngwerCommand implements Permissioned, CommandUtils {
     public SayCommand() {
         super("say", "Say things starting with + into the chat");
     }

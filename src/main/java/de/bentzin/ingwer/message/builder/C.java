@@ -19,19 +19,19 @@ public enum C {
     /**
      * Error
      */
-    E(IngwerMessage.ERROR_MM,IngwerMessage.ERROR_MM_C),
+    E(IngwerMessage.ERROR_MM, IngwerMessage.ERROR_MM_C),
     ;
     private final String open;
     private final String close;
-
-    @Contract(pure = true)
-    protected @NotNull String insert(String message) {
-        return open + message + close;
-    }
 
     C(String open, String close) {
         this.open = open;
 
         this.close = close;
+    }
+
+    @Contract(pure = true)
+    protected @NotNull String insert(String message) {
+        return open + message + close;
     }
 }

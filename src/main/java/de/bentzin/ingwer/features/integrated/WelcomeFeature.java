@@ -7,9 +7,7 @@ import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.message.IngwerMessage;
 import de.bentzin.ingwer.message.MiniMessageMessage;
-import de.bentzin.ingwer.message.StraightLineStringMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,7 +34,7 @@ public class WelcomeFeature extends SimpleFeature implements Listener {
 
 
     public WelcomeFeature() {
-        super("welcome","Welcomes every ingwer user!");
+        super("welcome", "Welcomes every ingwer user!");
     }
 
     @Override
@@ -66,7 +64,7 @@ public class WelcomeFeature extends SimpleFeature implements Listener {
 
         if (identity != null) {
             getLogger().debug("Allied join: " + identity.getName());
-            if(identity.isEnabled()) {
+            if (identity.isEnabled()) {
                 identity.sendMessage(getRandomMessage());
             }
         }

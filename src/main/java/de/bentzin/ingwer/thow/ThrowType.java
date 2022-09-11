@@ -11,10 +11,16 @@ public enum ThrowType {
     LOGGING("An error has occurred within Ingwers logging! Feel free to report this issue!"),
     FEATURE("An error has occurred within Ingwers feature system! This my not be an official Ingwer issue!"),
     COMMAND("Error while executing IngwerCommand procedures!"),
-    MESSAGE("Error occurred handling IngwerMessage!")
+    MESSAGE("Error occurred handling IngwerMessage!");
+    private final String message;
 
-    ;
-    private String message;
+    ThrowType(String message) {
+        this.message = message;
+    }
+
+    ThrowType() {
+        this.message = null;
+    }
 
     public boolean hasMessage() {
         return message != null;
@@ -22,16 +28,9 @@ public enum ThrowType {
 
     @Contract(pure = true)
     public @NotNull String getMessage() {
-        if(message == null) {
+        if (message == null) {
             return "";
         }
-        return message +  " <> Running Ingwer v." + de.bentzin.ingwer.Ingwer.VERSION_STRING + "!";
-    }
-
-    ThrowType(String message) {
-        this.message = message;
-    }
-    ThrowType() {
-        this.message = null;
+        return message + " <> Running Ingwer v." + de.bentzin.ingwer.Ingwer.VERSION_STRING + "!";
     }
 }

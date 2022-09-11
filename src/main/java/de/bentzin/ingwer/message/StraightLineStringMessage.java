@@ -6,7 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-public class StraightLineStringMessage implements OneLinedMessage{
+public class StraightLineStringMessage implements OneLinedMessage {
 
     @NotNull
     private final String message;
@@ -20,15 +20,15 @@ public class StraightLineStringMessage implements OneLinedMessage{
     @Override
     public void send(@NotNull CommandSender recipient) {
         recipient.sendMessage(component);
-        log(recipient.getName(),message);
+        log(recipient.getName(), message);
     }
 
     @Override
     public void send(@NotNull IngwerCommandSender recipient) {
-        if(recipient instanceof Identity) {
+        if (recipient instanceof Identity) {
             recipient.sendOneLinedMessage(this);
         }
-        log(recipient.getName(),message);
+        log(recipient.getName(), message);
     }
 
 

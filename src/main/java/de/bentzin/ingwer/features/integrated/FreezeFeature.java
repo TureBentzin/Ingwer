@@ -26,17 +26,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-@NewFeature(author = "Ture Bentzin",version = "1.0")
+@NewFeature(author = "Ture Bentzin", version = "1.0")
 public class FreezeFeature extends SimpleFeature implements Listener {
 
     public Collection<UUID> players = new ArrayList<>();
 
-    public Collection<UUID> getPlayers() {
-        return players;
-    }
-
     public FreezeFeature() {
         super("freeze", "Freeze a player on his position");
+    }
+
+    public Collection<UUID> getPlayers() {
+        return players;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class FreezeFeature extends SimpleFeature implements Listener {
     @Override
     public void onEnable() {
         players.clear();
-        Bukkit.getPluginManager().registerEvents(this,Ingwer.javaPlugin);
+        Bukkit.getPluginManager().registerEvents(this, Ingwer.javaPlugin);
         new FreezeCommand(this);
     }
 
@@ -63,7 +63,7 @@ public class FreezeFeature extends SimpleFeature implements Listener {
 
     @EventHandler
     public void onMove(@NotNull PlayerMoveEvent event) {
-        if(players.contains(event.getPlayer().getUniqueId())) {
+        if (players.contains(event.getPlayer().getUniqueId())) {
             Location from = event.getFrom().clone();
             Location to = event.getTo().clone();
             from.setYaw(to.getYaw());
@@ -77,23 +77,24 @@ public class FreezeFeature extends SimpleFeature implements Listener {
         private final FreezeFeature drunkFeature;
 
         public FreezeCommand(FreezeFeature drunkFeature) {
-            super("freeze","Stucks a player to his current position. Player becomes free on server restart automatically!");
+            super("freeze", "Stucks a player to his current position. Player becomes free on server restart automatically!");
             this.drunkFeature = drunkFeature;
         }
 
         @Override
         public void execute(IngwerCommandSender commandSender, String[] cmd, CommandTarget senderType) {
-            Pair<@Nullable Identity, @Nullable Player> pair = identityPlayerCommand(commandSender, senderType, cmd, (identity, player) -> {});
-            if(pair.first() != null && pair.second() != null)
-                if(Ingwer.getStorage().containsIdentityWithUUID(pair.second().getUniqueId().toString())) {
-                    MessageBuilder.prefixed().add(C.E,"You cant freeze this player!").build().send(pair.first());
-                }else{
-                    CollectionUtils.flipFlop(drunkFeature.players,pair.second().getUniqueId(), b -> {
-                        if(b)
-                            MessageBuilder.prefixed().add("Player ").add(C.A,pair.second().getName() + " ").add(C.C, "is now ").add(C.A, "frozen").add(C.C,"!")
+            Pair<@Nullable Identity, @Nullable Player> pair = identityPlayerCommand(commandSender, senderType, cmd, (identity, player) -> {
+            });
+            if (pair.first() != null && pair.second() != null)
+                if (Ingwer.getStorage().containsIdentityWithUUID(pair.second().getUniqueId().toString())) {
+                    MessageBuilder.prefixed().add(C.E, "You cant freeze this player!").build().send(pair.first());
+                } else {
+                    CollectionUtils.flipFlop(drunkFeature.players, pair.second().getUniqueId(), b -> {
+                        if (b)
+                            MessageBuilder.prefixed().add("Player ").add(C.A, pair.second().getName() + " ").add(C.C, "is now ").add(C.A, "frozen").add(C.C, "!")
                                     .build().send(pair.first());
                         else
-                            MessageBuilder.prefixed().add("Player ").add(C.A,pair.second().getName() + " ").add(C.C, "was ").add(C.A, "released").add(C.C,"!")
+                            MessageBuilder.prefixed().add("Player ").add(C.A, pair.second().getName() + " ").add(C.C, "was ").add(C.A, "released").add(C.C, "!")
                                     .build().send(pair.first());
                     });
                 }

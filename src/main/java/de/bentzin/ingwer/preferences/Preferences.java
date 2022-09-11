@@ -15,20 +15,18 @@ public record Preferences(UUID superadmin, char prefix, StartType startType,
                           boolean debug
 
 
+) {
 
-
-                          ) {
-
-
-    public boolean hasCustomSqliteLocation() {
-        return custom_sqliteLocation != null;
-    }
 
     public static @NotNull Preferences getDefaults(
             UUID superadmin, StartType startType, JavaPlugin javaPlugin) {
 
 
         return new Preferences(
-                superadmin,'+', startType,null, new SystemLogger("Ingwer"), javaPlugin, false);
+                superadmin, '+', startType, null, new SystemLogger("Ingwer"), javaPlugin, false);
+    }
+
+    public boolean hasCustomSqliteLocation() {
+        return custom_sqliteLocation != null;
     }
 }

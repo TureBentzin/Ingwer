@@ -2,29 +2,17 @@ package de.bentzin.ingwer;
 
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.logging.ApacheLogger;
-import de.bentzin.ingwer.logging.JavaLogger;
-import de.bentzin.ingwer.logging.PaperLogger;
-import de.bentzin.ingwer.logging.SLF4JLogger;
 import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
 import de.bentzin.ingwer.utils.StopCode;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.internal.LogManagerStatus;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.LoggerFactory;
 
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
-public class IngwerPlugin extends JavaPlugin {
+public final class IngwerPlugin extends JavaPlugin {
 
 
     @Override
@@ -45,8 +33,8 @@ public class IngwerPlugin extends JavaPlugin {
              */
             @Override
             public boolean isLoggable(@NotNull LogRecord record) {
-                getLogger().info("*" +record.getMessage());
-                if(record.getMessage().contains("issued server command")) {
+                getLogger().info("*" + record.getMessage());
+                if (record.getMessage().contains("issued server command")) {
                     getLogger().warning("suppressed: " + record.getLoggerName() + " -> " + record.getMessage());
                     return false;
                 }
@@ -64,11 +52,11 @@ public class IngwerPlugin extends JavaPlugin {
          */
 
         //setProp
-       // System.getProperties().setProperty("org.apache.logging.log4j.simplelog.StatusLogger.level",""); //enable log4J Debug
+        // System.getProperties().setProperty("org.apache.logging.log4j.simplelog.StatusLogger.level",""); //enable log4J Debug
 
 
-        Ingwer.start(new Preferences(Identity.DEVELOPER_UUID,'+',StartType.JAVA_PLUGIN_STANDALONE,
-                null,new ApacheLogger("Ingwer",LogManager.getRootLogger()),this, true));
+        Ingwer.start(new Preferences(Identity.DEVELOPER_UUID, '+', StartType.JAVA_PLUGIN_STANDALONE,
+                null, new ApacheLogger("Ingwer", LogManager.getRootLogger()), this, true));
     }
 
     @Override

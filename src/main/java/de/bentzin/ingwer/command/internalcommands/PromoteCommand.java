@@ -7,7 +7,6 @@ import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
-import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.message.StraightLineStringMessage;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;

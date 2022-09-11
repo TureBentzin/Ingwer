@@ -14,19 +14,7 @@ import java.util.Objects;
  * Hardcode that makes your life easy when dealing with simple messages
  */
 @Hardcode
-public class MessageBuilder implements Cloneable{
-
-    @Contract(" -> new")
-    public static @NotNull MessageBuilder empty() {return new MessageBuilder("");}
-    @Contract(" -> new")
-    public static @NotNull MessageBuilder prefixed(){return new MessageBuilder(IngwerMessage.INGWER_MM);}
-
-    @Deprecated
-    public static @NotNull MessageBuilder custom(String initial){return new MessageBuilder(initial);}
-
-    public static MessageBuilder informMessageBuilder() {
-        return MessageBuilder.prefixed().add("[<gradient:blue:aqua>INFORM</gradient>]:  ").c();
-    }
+public class MessageBuilder implements Cloneable {
 
     private final String defaultMiniMessage;
     private StringBuilder miniMessageBuilder;
@@ -34,6 +22,25 @@ public class MessageBuilder implements Cloneable{
     protected MessageBuilder(String defaultMiniMessage) {
         this.defaultMiniMessage = Objects.requireNonNull(defaultMiniMessage);
         reset();
+    }
+
+    @Contract(" -> new")
+    public static @NotNull MessageBuilder empty() {
+        return new MessageBuilder("");
+    }
+
+    @Contract(" -> new")
+    public static @NotNull MessageBuilder prefixed() {
+        return new MessageBuilder(IngwerMessage.INGWER_MM);
+    }
+
+    @Deprecated
+    public static @NotNull MessageBuilder custom(String initial) {
+        return new MessageBuilder(initial);
+    }
+
+    public static MessageBuilder informMessageBuilder() {
+        return MessageBuilder.prefixed().add("[<gradient:blue:aqua>INFORM</gradient>]:  ").c();
     }
 
     /**
@@ -62,7 +69,6 @@ public class MessageBuilder implements Cloneable{
     }
 
     /**
-     *
      * @return new OneLinedMessage with deserialized minimessage inside
      */
     public OneLinedMessage build() {
@@ -80,7 +86,7 @@ public class MessageBuilder implements Cloneable{
     @Override
     public String toString() {
         String s = IngwerMessage.deserializePlain(build().getOneLinedComponent());
-        if(s == null || s.equals("")) {
+        if (s == null || s.equals("")) {
             return "Empty MessageBuilder#" + hashCode();
         }
         return s;
@@ -106,7 +112,6 @@ public class MessageBuilder implements Cloneable{
     }
 
     /**
-     *
      * @return new StringBuilder containing the "current" String.
      */
     public StringBuilder exportBuilder() {
@@ -114,7 +119,7 @@ public class MessageBuilder implements Cloneable{
     }
 
     @Override
-    public MessageBuilder clone(){
+    public MessageBuilder clone() {
         return MessageBuilder.empty().add(getMiniMessage());
     }
 

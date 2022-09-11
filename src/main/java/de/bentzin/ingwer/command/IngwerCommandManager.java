@@ -49,7 +49,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
     protected IngwerCommand getByName(String name) {
         IngwerCommand ingwerCommand = null;
         for (IngwerCommand command : this) {
-            if(command.getName().equalsIgnoreCase(name)) {
+            if (command.getName().equalsIgnoreCase(name)) {
                 ingwerCommand = command;
                 break;
             }
@@ -119,10 +119,10 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
                 if (b) {
                     command.execute(sender, split, senderType);
                     logger.info(sender.getName() + " executed command: " + input + "@" + command.getName());
-                    if(!sender.getPermissions().contains(IngwerPermission.ADMIN))
-                     IngwerMessage.inform(IngwerPermission.ADMIN, MessageBuilder.informMessageBuilder().add(C.A, sender.getName())
-                                    .add(C.C, " executed command: \"").add(C.A,input).add(C.C,"\"!")
-                            .build());
+                    if (!sender.getPermissions().contains(IngwerPermission.ADMIN))
+                        IngwerMessage.inform(IngwerPermission.ADMIN, MessageBuilder.informMessageBuilder().add(C.A, sender.getName())
+                                .add(C.C, " executed command: \"").add(C.A, input).add(C.C, "\"!")
+                                .build());
                     return true;
                 } else {
                     logger.info(sender.getName() + " tried to execute command without permissions: " + input);

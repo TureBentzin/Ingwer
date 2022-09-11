@@ -6,8 +6,6 @@ import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 public interface CommandUtils {
 
     /**

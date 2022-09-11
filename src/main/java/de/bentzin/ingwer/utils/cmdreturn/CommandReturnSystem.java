@@ -7,65 +7,18 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
-public class CommandReturnSystem {
+public final class CommandReturnSystem {
 
     private final Logger logger;
-
-    protected Logger getLogger() {
-        return logger;
-    }
-
-    private List<CommandReturn> commandReturnList = new ArrayList<>();
+    private final List<CommandReturn> commandReturnList = new ArrayList<>();
 
     public CommandReturnSystem(@NotNull Logger parent) {
         this.logger = parent.adopt("CRS");
-    }
-
-    private List<String> commandList() {
-        return commandReturnList.stream().map(CommandReturn::command).toList();
-    }
-
-    public CommandReturn addNewReturn(Runnable action, UUID owner) {
-        CommandReturn commandReturn = new CommandReturn(generateNewCommand(),action,owner);
-        commandReturnList.add(commandReturn);
-        return commandReturn;
-    }
-
-
-    public String generateCommand(int length) {
-        Random random = new Random();
-        int leftLimit = 97; //a
-        int rightLimit = 122; //z
-
-
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
-                .limit(length)
-                .collect(() -> new StringBuilder("/"), StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-
-        getLogger().debug("generated: \"" + generatedString +"\"");
-        return generatedString;
-    }
-
-    public String generateNewCommand() {
-        List<String> strings = new ArrayList<>(commandList());
-        String s = generateCommand(124);
-        int failsafe = 0;
-        while (strings.contains(s) && failsafe < 40){
-            s = generateCommand(124);
-            failsafe++;
-        }
-        if(failsafe >= 39) {
-            try {
-                throw new NoSuchElementException("cant generate new command. Timeout");
-            }catch (NoSuchElementException e) {
-                e.setMessage("Won in Lotto: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-        return s;
     }
 
     @TestOnly
@@ -79,15 +32,63 @@ public class CommandReturnSystem {
 
     }
 
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    private List<String> commandList() {
+        return commandReturnList.stream().map(CommandReturn::command).toList();
+    }
+
+    public @NotNull CommandReturn addNewReturn(Runnable action, UUID owner) {
+        CommandReturn commandReturn = new CommandReturn(generateNewCommand(), action, owner);
+        commandReturnList.add(commandReturn);
+        return commandReturn;
+    }
+
+    public @NotNull String generateCommand(int length) {
+        Random random = new Random();
+        int leftLimit = 97; //a
+        int rightLimit = 122; //z
+
+
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+                .limit(length)
+                .collect(() -> new StringBuilder("/"), StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        getLogger().debug("generated: \"" + generatedString + "\"");
+        return generatedString;
+    }
+
+    public String generateNewCommand() {
+        List<String> strings = new ArrayList<>(commandList());
+        String s = generateCommand(124);
+        int failsafe = 0;
+        while (strings.contains(s) && failsafe < 40) {
+            s = generateCommand(124);
+            failsafe++;
+        }
+        if (failsafe >= 39) {
+            try {
+                throw new NoSuchElementException("cant generate new command. Timeout");
+            } catch (NoSuchElementException e) {
+                e.setMessage("Won in Lotto: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return s;
+    }
+
     public boolean runThrough(String command, UUID uuid) {
         List<String> strings = commandList();
-        if(strings.contains(command)) {
+        if (strings.contains(command)) {
             for (CommandReturn commandReturn : commandReturnList) {
-                if(commandReturn.command().equals(command)) {
-                    if(commandReturn.owner().equals(uuid)) {
+                if (commandReturn.command().equals(command)) {
+                    if (commandReturn.owner().equals(uuid)) {
                         commandReturn.run();
                         return true;
-                    }else {
+                    } else {
                         Player player = Bukkit.getPlayer(uuid);
                         getLogger().warning(
                                 player != null ? player.getName() : uuid +
@@ -96,7 +97,7 @@ public class CommandReturnSystem {
                 }
             }
         }
-            return false;
+        return false;
     }
 
     public boolean check(String command) {
@@ -152,10 +153,6 @@ public class CommandReturnSystem {
             super(s);
         }
 
-        public void setMessage(String s) {
-            message = s;
-        }
-
         /**
          * Returns the detail message string of this throwable.
          *
@@ -165,6 +162,10 @@ public class CommandReturnSystem {
         @Override
         public String getMessage() {
             return message;
+        }
+
+        public void setMessage(String s) {
+            message = s;
         }
 
         /**

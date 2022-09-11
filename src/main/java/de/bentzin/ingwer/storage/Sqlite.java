@@ -163,7 +163,7 @@ public final class Sqlite {
             statement.execute(
                     "SELECT * FROM identity WHERE player_uuid =" + a(uuid));
             ResultSet resultSet = statement.getResultSet();
-            if(resultSet.isClosed()) {
+            if (resultSet.isClosed()) {
                 return null;
             }
             Identity identity = new Identity(resultSet.getString("user_name"),
@@ -182,7 +182,7 @@ public final class Sqlite {
             statement.execute(
                     "SELECT * FROM identity");
             ResultSet resultSet = statement.getResultSet();
-            if(resultSet.isClosed()) {
+            if (resultSet.isClosed()) {
                 return null;
             }
             Collection<Identity> identities = new ArrayList<>();
@@ -270,8 +270,6 @@ public final class Sqlite {
                             ", user_permissions = " + a(IngwerPermission.generatePermissions(ingwerPermissions)) +
                             "WHERE user_name = " + a(identity.getName()));
 
-            ;
-
         } catch (SQLException e) {
             IngwerThrower.acceptS(e, ThrowType.STORAGE);
         }
@@ -284,10 +282,10 @@ public final class Sqlite {
      * @implNote If Identity is not present this will create a new one based on the given SINGLE parameters. In this case the given Identity would not be used or changed!!!
      */
     public Identity updateOrSaveIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
-        if(containsIdentityWithUUID(uuid.toString())) {
-            updateIdentity(identity,name,uuid,ingwerPermissions);
-        }else {
-            saveIdentity(new Identity(name,uuid,ingwerPermissions));
+        if (containsIdentityWithUUID(uuid.toString())) {
+            updateIdentity(identity, name, uuid, ingwerPermissions);
+        } else {
+            saveIdentity(new Identity(name, uuid, ingwerPermissions));
         }
         return getIdentityByUUID(uuid.toString());
     }

@@ -1,6 +1,5 @@
 package de.bentzin.ingwer.identity.permissions;
 
-import de.bentzin.ingwer.Ingwer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

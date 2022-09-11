@@ -8,7 +8,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
 
-public class IngwerLog4JFilter implements Filter {
+public final class IngwerLog4JFilter implements Filter {
     @Override
     public Result getOnMismatch() {
         return null;
@@ -88,11 +88,11 @@ public class IngwerLog4JFilter implements Filter {
     public Result filter(LogEvent event) {
         //System.out.println(event.getMessage());
         String formattedMessage = event.getMessage().getFormattedMessage();
-        String[] split = formattedMessage.split(":",2);
-        if(split.length != 2){
+        String[] split = formattedMessage.split(":", 2);
+        if (split.length != 2) {
             return Result.NEUTRAL;
         }
-        if(Ingwer.getCommandReturnSystem().check(split[1])) {
+        if (Ingwer.getCommandReturnSystem().check(split[1])) {
             //System.out.println("deny: " + event.getMessage().getFormattedMessage());
             return Result.DENY;
         }

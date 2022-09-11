@@ -16,6 +16,7 @@ import java.util.Set;
 /**
  * Pattern definition:
  * {0} {1} ... {patternCount - 1}
+ *
  * @implNote In this: "pattern" & "query" have the same meaning!
  */
 public class PatternedMiniMessageMessage implements CompletableMessage {
@@ -39,9 +40,9 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
     public static @NotNull PatternedMiniMessageMessage fromMiniMessage(String mm) {
         int i = 0;
         for (String patternQuery : generatePatternQueries(50)) {
-            if(mm.contains(patternQuery)) i ++;
+            if (mm.contains(patternQuery)) i++;
         }
-        return new PatternedMiniMessageMessage(mm,i);
+        return new PatternedMiniMessageMessage(mm, i);
     }
 
     /**

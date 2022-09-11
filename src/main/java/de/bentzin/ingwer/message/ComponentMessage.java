@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-public class ComponentMessage implements OneLinedMessage{
+public class ComponentMessage implements OneLinedMessage {
 
     private final Component message;
 
@@ -22,7 +22,7 @@ public class ComponentMessage implements OneLinedMessage{
     @Override
     public void send(@NotNull IngwerCommandSender recipient) {
         recipient.sendOneLinedMessage(this);
-        log(recipient.getName(),getOneLinedString());
+        log(recipient.getName(), getOneLinedString());
     }
 
     @Override

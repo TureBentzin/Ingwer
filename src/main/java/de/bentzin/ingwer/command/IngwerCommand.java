@@ -37,7 +37,7 @@ public abstract class IngwerCommand {
         } else {
             IngwerCommand already = Ingwer.getCommandManager().getByName(name);
             Ingwer.getCommandManager().getLogger().error("ambiguous naming of: " + name + "!" +
-                    (already != null? " Name is already in use by: " + already.getClass().getName(): ""));
+                    (already != null ? " Name is already in use by: " + already.getClass().getName() : ""));
 
             //final logger
             logger = Ingwer.getCommandManager().getLogger().adopt("err");

@@ -10,42 +10,42 @@ import org.jetbrains.annotations.NotNull;
 
 public final class FeatureManager extends Registerator<Feature> {
 
-    private FeatureFinder featureFinder;
-
-    public static FeatureManager getInstance() {
-        return Ingwer.getFeatureManager();
-    }
-
-    private Logger logger;
-
-    public Logger getLogger() {
-        return logger;
-    }
+    private final FeatureFinder featureFinder;
+    private final Logger logger;
 
     public FeatureManager() {
         this.logger = Ingwer.getLogger().adopt("Features");
         featureFinder = new FeatureFinder(this);
     }
 
+    public static FeatureManager getInstance() {
+        return Ingwer.getFeatureManager();
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
     /**
-     *
      * @param newName
      * @return if name is already taken
      */
     public boolean checkName(String newName) {
         for (Feature feature : this) {
-            if(feature.getName().equalsIgnoreCase(newName)) {return true;}
+            if (feature.getName().equalsIgnoreCase(newName)) {
+                return true;
+            }
         }
         return false;
     }
 
     @Override
     public Feature register(@NotNull Feature object) throws DuplicateEntryException {
-        if(getIndex().contains(object)) {
-            throw new DuplicateEntryException(object,this);
+        if (getIndex().contains(object)) {
+            throw new DuplicateEntryException(object, this);
         }
         getLogger().info("loading " + object.getName() + "!");
-        if(object.load()) {
+        if (object.load()) {
             getLogger().info("enabling " + object.getName() + "!");
             object.onEnable();
             return super.register(object);
@@ -56,8 +56,8 @@ public final class FeatureManager extends Registerator<Feature> {
 
     @Override
     public Feature unregister(@NotNull Feature object) throws NoSuchEntryException {
-        if(getIndex().contains(object))
-             object.onDisable();
+        if (getIndex().contains(object))
+            object.onDisable();
         else
             logger.warning("failed to unregister: " + object + "!");
         return super.unregister(object);
@@ -71,7 +71,6 @@ public final class FeatureManager extends Registerator<Feature> {
             Ingwer.getIngwerThrower().accept(e, ThrowType.FEATURE);
         }
     }
-
 
 
     public void findFeatures() {
