@@ -5,7 +5,7 @@ import de.bentzin.ingwer.logging.Logger;
 
 public abstract class SimpleFeature implements Feature {
 
-    protected boolean valid;
+    protected final boolean valid;
     private final String name;
     private final String description;
     private Logger logger;

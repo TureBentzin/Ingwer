@@ -10,7 +10,7 @@ public interface IngwerCommandSender {
     String getName();
 
     /**
-     * @param ingwerMessage
+     * @param ingwerMessage the message to send
      * @implNote NEVER CALL FROM A {@link IngwerMessage#send(IngwerCommandSender)}!!!
      */
     default void sendMessage(@NotNull IngwerMessage ingwerMessage) {

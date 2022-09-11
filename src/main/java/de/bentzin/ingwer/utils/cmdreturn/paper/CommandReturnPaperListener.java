@@ -21,17 +21,13 @@ public class CommandReturnPaperListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onCommand(PlayerCommandPreprocessEvent preprocessEvent) {
-        logger.debug("call");
+    public void onCommand(@NotNull PlayerCommandPreprocessEvent preprocessEvent) {
         UUID uniqueId = preprocessEvent.getPlayer().getUniqueId();
         String message = preprocessEvent.getMessage();
         if (Ingwer.getCommandReturnSystem().runThrough(message, uniqueId)) {
             logger.debug("handled returnCommand of " + uniqueId);
             preprocessEvent.setCancelled(true);
             preprocessEvent.setMessage("/?");
-        } else {
-            // logger.debug("fake output:");
-            // LogManager.getRootLogger4J().info("INGWER" + preprocessEvent.getPlayer().getName() + " issued server command: " + message);
         }
     }
 

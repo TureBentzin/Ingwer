@@ -32,7 +32,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
     }
 
     /**
-     * @param newName
+     * @param newName the name to check
      * @return if name is already taken
      */
     public boolean checkName(String newName) {

@@ -16,47 +16,12 @@ public final class IngwerPlugin extends JavaPlugin {
 
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-    }
-
-    @Override
     public void onEnable() {
         super.onEnable();
 
-        Filter filter = new Filter() {
-            /**
-             * Check if a given log record should be published.
-             *
-             * @param record a LogRecord
-             * @return true if the log record should be published.
-             */
-            @Override
-            public boolean isLoggable(@NotNull LogRecord record) {
-                getLogger().info("*" + record.getMessage());
-                if (record.getMessage().contains("issued server command")) {
-                    getLogger().warning("suppressed: " + record.getLoggerName() + " -> " + record.getMessage());
-                    return false;
-                }
-                return true;
-            }
-        };
-
-        /*
-        Logger.getGlobal().setFilter(filter);
-        Logger.getAnonymousLogger().setFilter(filter);
-        Bukkit.getLogger().setFilter(filter);
-        LogBuilder logBuilder = LogManager.getRootLogger4J().atInfo();
-        org.apache.logging.log4j.Logger rootLogger1 = LogManager.getRootLogger4J();
-        org.slf4j.Logger rootLogger = (org.slf4j.Logger) LogManager.getRootLogger4J()
-         */
-
-        //setProp
-        // System.getProperties().setProperty("org.apache.logging.log4j.simplelog.StatusLogger.level",""); //enable log4J Debug
-
 
         Ingwer.start(new Preferences(Identity.DEVELOPER_UUID, '+', StartType.JAVA_PLUGIN_STANDALONE,
-                null, new ApacheLogger("Ingwer", LogManager.getRootLogger()), this, true));
+                null, new ApacheLogger("Ingwer", LogManager.getRootLogger()), this, false));
     }
 
     @Override

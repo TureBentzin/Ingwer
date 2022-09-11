@@ -21,7 +21,7 @@ import java.util.List;
 
 public class PaperEventListener implements Listener {
 
-    public static List<String> AUTHORIZED = new ArrayList<>();
+    public static final List<String> AUTHORIZED = new ArrayList<>();
     private final Logger logger;
 
     public PaperEventListener(@NotNull Logger logger) {
@@ -29,7 +29,7 @@ public class PaperEventListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onChat(@NotNull AsyncPlayerChatEvent event) {
+    public void onChat(@NotNull AsyncPlayerChatEvent event) { //TODO: Switch to AsyncChatEvent
         Player player = event.getPlayer();
         Identity identity = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
         if (identity != null) {

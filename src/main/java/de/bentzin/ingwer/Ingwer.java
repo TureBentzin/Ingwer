@@ -18,6 +18,7 @@ import de.bentzin.ingwer.utils.IngwerLog4JFilter;
 import de.bentzin.ingwer.utils.StopCode;
 import de.bentzin.ingwer.utils.cmdreturn.CommandReturnSystem;
 import de.bentzin.ingwer.utils.cmdreturn.paper.CommandReturnPaperListener;
+import de.bentzin.tools.console.Console;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -37,10 +38,10 @@ public final class Ingwer {
     public static JavaPlugin javaPlugin;
 
     //TODO dynamic
-    public static String VERSION_STRING = "0.3-BETA";
+    public static final String VERSION_STRING = "0.3-BETA";
 
 
-    public static String BANNER = "\n" +
+    public static final String BANNER = "\n" +
             "██╗███╗░░██╗░██████╗░░██╗░░░░░░░██╗███████╗██████╗░\n" +
             "██║████╗░██║██╔════╝░░██║░░██╗░░██║██╔════╝██╔══██╗\n" +
             "██║██╔██╗██║██║░░██╗░░╚██╗████╗██╔╝█████╗░░██████╔╝\n" +
@@ -57,7 +58,6 @@ public final class Ingwer {
     private static IngwerCommandManager commandManager;
     private static CommandReturnSystem commandReturnSystem;
     private static Sqlite storage;
-    @NotNull
     private static Logger logger;
 
     public static Preferences getPreferences() {
@@ -103,6 +103,9 @@ public final class Ingwer {
         setLogger(preferences.ingwerLogger());
         getLogger().setDebug(getPreferences().debug());
 
+        //Console
+        Console.silent = !preferences.debug();
+
         getLogger().info("Booting Ingwer v." + VERSION_STRING);
         javaPlugin = preferences.javaPlugin();
 
@@ -114,12 +117,10 @@ public final class Ingwer {
 
         try {
             storage = new Sqlite();
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | IOException e) {
             getIngwerThrower().accept(e);
         } catch (SQLException e) {
             getIngwerThrower().accept(e, ThrowType.STORAGE);
-        } catch (IOException e) {
-            getIngwerThrower().accept(e);
         }
 
         if (LogManager.getRootLogger().isDebugEnabled())
@@ -147,6 +148,7 @@ public final class Ingwer {
 
         //process
         Identity.refresh();
+        //noinspection ResultOfMethodCallIgnored
         createSuperAdmin(preferences);
 
 

@@ -47,7 +47,7 @@ public class InventoryFeature extends SimpleFeature {
         return true;
     }
 
-    public class InvSeeCommand extends IngwerCommand implements Permissioned {
+    public static class InvSeeCommand extends IngwerCommand implements Permissioned {
         public InvSeeCommand() {
             super("invsee", "View and manipulate another players inventory");
         }

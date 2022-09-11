@@ -19,7 +19,7 @@ import java.util.Random;
 @NewFeature(author = "Ture Bentzin", version = "1.0")
 public class WelcomeFeature extends SimpleFeature implements Listener {
 
-    public static String[] WELCOME_MESSAGES = new String[]{
+    public static final String[] WELCOME_MESSAGES = new String[]{
             "Welcome to Ingwer, Captain!",
             "Welcome to Ingwer, Boss!",
             "Welcome to Ingwer, Admin!",

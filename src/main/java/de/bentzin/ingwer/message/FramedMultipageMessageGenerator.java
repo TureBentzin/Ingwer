@@ -24,11 +24,6 @@ public class FramedMultipageMessageGenerator {
     }
 
 
-    public void doRoutine(int pageLength, UUID uuid) {
-
-    }
-
-
     public ArrayList<FramedMessage> generate(int pageLength, UUID uuid, Consumer<Integer> consumer) {
         pageLength = pageLength + 1; //user interface
         Queue<Collection<OneLinedMessage>> queue = new LinkedList<>();
@@ -61,9 +56,9 @@ public class FramedMultipageMessageGenerator {
     }
 
     /**
-     * @param page
-     * @param maxPage
-     * @return
+     * @param page the page
+     * @param maxPage the last page of this block
+     * @return footer
      */
     public Component generatePageFooter(int footer_space, int page, int maxPage, Consumer<Integer> pageSelect, UUID uuid) {
         //<gray>               [<-] <blue>Page 2 of 4 <gray>[->]
@@ -93,10 +88,6 @@ public class FramedMultipageMessageGenerator {
     }
 
     private @NotNull String delay(int space) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < space; i++) {
-            builder.append(" ");
-        }
-        return builder.toString();
+        return " ".repeat(Math.max(0, space));
     }
 }

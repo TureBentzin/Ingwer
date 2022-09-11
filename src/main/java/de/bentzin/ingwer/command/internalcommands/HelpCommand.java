@@ -36,8 +36,7 @@ public class HelpCommand extends IngwerCommand {
     private @NotNull List<OneLinedMessage> generate(@NotNull Identity identity) {
         List<OneLinedMessage> oneLinedMessages = new ArrayList<>();
         for (IngwerCommand command : commandManager) {
-            if (command instanceof Permissioned) {
-                Permissioned permissioned = (Permissioned) command;
+            if (command instanceof Permissioned permissioned) {
                 if (permissioned.checkPermission(identity)) {
                     oneLinedMessages.add(generateMessage(command));
 
@@ -71,8 +70,7 @@ public class HelpCommand extends IngwerCommand {
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, @NotNull CommandTarget senderType) {
         if (senderType.equals(CommandTarget.INGAME)) {
-            if (commandSender instanceof Identity) {
-                Identity identity = (Identity) commandSender;
+            if (commandSender instanceof Identity identity) {
                 if (identity.getUUID() != null) {
                     if (cmd.length == 2) {
                         if (cmd[1].equals("raw")) {

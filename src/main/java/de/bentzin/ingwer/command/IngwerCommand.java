@@ -26,7 +26,7 @@ public abstract class IngwerCommand {
     private final String name;
     @Nullable
     private final String description;
-    protected boolean valid;
+    protected final boolean valid;
 
     public IngwerCommand(@NotNull String name, @Nullable String description) {
         // this.logger = IngwerCommandManager.getInstance().getLogger().adopt(name);
@@ -86,8 +86,7 @@ public abstract class IngwerCommand {
     @ApiStatus.Experimental
     public <T extends IngwerCommand> Identity identityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, Consumer<Identity> action) {
         if (senderType.equals(CommandTarget.INGAME)) {
-            if (commandSender instanceof Identity) {
-                Identity identity = (Identity) commandSender;
+            if (commandSender instanceof Identity identity) {
                 action.accept(identity);
                 return identity;
             }
@@ -101,8 +100,7 @@ public abstract class IngwerCommand {
     public <T extends IngwerCommand> Pair<@Nullable Identity, @Nullable Player> identityPlayerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, String[] cmd, BiConsumer<Identity, Player> action) {
         StraightLineStringMessage specify_online_player = new StraightLineStringMessage("Please specify an online Player!");
         if (senderType.equals(CommandTarget.INGAME)) {
-            if (commandSender instanceof Identity) {
-                Identity identity = (Identity) commandSender;
+            if (commandSender instanceof Identity identity) {
                 if (cmd.length == 1) {
                     specify_online_player.send(identity);
                 } else if (cmd.length > 2) {

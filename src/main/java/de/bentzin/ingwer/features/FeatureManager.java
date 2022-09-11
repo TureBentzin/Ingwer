@@ -27,7 +27,7 @@ public final class FeatureManager extends Registerator<Feature> {
     }
 
     /**
-     * @param newName
+     * @param newName the name to check
      * @return if name is already taken
      */
     public boolean checkName(String newName) {

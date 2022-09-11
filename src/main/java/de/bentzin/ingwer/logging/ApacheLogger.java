@@ -31,18 +31,10 @@ public class ApacheLogger extends Logger {
         }
         switch (logLevel) {
 
-            case INFO -> {
-                logger.info(prefix(message, logLevel));
-            }
-            case WARNING -> {
-                logger.warn(prefix(message));
-            }
-            case ERROR -> {
-                logger.error(prefix(message));
-            }
-            case COSMETIC -> {
-                logger.info(message);
-            }
+            case INFO -> logger.info(prefix(message, logLevel));
+            case WARNING -> logger.warn(prefix(message));
+            case ERROR -> logger.error(prefix(message));
+            case COSMETIC -> logger.info(message);
             case DEBUG -> {
                 if (logger.isDebugEnabled())
                     logger.debug(prefix(message, logLevel));

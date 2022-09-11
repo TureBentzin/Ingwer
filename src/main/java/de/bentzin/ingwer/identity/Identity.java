@@ -19,9 +19,9 @@ import java.util.UUID;
 public class Identity implements IngwerCommandSender {
 
 
-    public static UUID DEVELOPER_UUID = UUID.fromString("be6e2c93-694b-4cdf-827f-83d6f2d42fb9");
+    public static final UUID DEVELOPER_UUID = UUID.fromString("be6e2c93-694b-4cdf-827f-83d6f2d42fb9");
 
-    public static Set<Identity> IDENTITY_SET = new HashSet<>();
+    public static final Set<Identity> IDENTITY_SET = new HashSet<>();
     //Identity
     private final String name;
     private final UUID uuid;
@@ -112,7 +112,7 @@ public class Identity implements IngwerCommandSender {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Identity{");
+        final StringBuilder sb = new StringBuilder("Identity{");
         sb.append("name='").append(name).append('\'');
         sb.append(", uuid=").append(uuid);
         sb.append(", permissions=").append(permissions);
@@ -123,9 +123,7 @@ public class Identity implements IngwerCommandSender {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Identity)) return false;
-
-        Identity identity = (Identity) o;
+        if (!(o instanceof Identity identity)) return false;
 
         if (!getName().equals(identity.getName())) return false;
         if (!Objects.equals(uuid, identity.uuid)) return false;

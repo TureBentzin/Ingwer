@@ -16,10 +16,8 @@ public class VPermsCommand extends IngwerCommand implements Permissioned {
 
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, CommandTarget senderType) {
-        identityIdentityCommand(commandSender, senderType, cmd, (identity, identity2) -> {
-            MessageBuilder.prefixed().add("Permisisons of: ").add(C.A, identity2.getName() + ": ").add(C.C, identity2.getPermissions().toString())
-                    .build().send(identity);
-        });
+        identityIdentityCommand(commandSender, senderType, cmd, (identity, identity2) -> MessageBuilder.prefixed().add("Permisisons of: ").add(C.A, identity2.getName() + ": ").add(C.C, identity2.getPermissions().toString())
+                .build().send(identity));
     }
 
     @Override

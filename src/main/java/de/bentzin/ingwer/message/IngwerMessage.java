@@ -67,7 +67,7 @@ public interface IngwerMessage {
     /**
      * converts (mm) string to component
      *
-     * @param miniMessage
+     * @param miniMessage the message to convert
      * @return component
      */
     static @NotNull Component mm(String miniMessage) {

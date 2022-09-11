@@ -55,6 +55,10 @@ public class Log4JFeature extends SimpleFeature {
         return rootLogger4J;
     }
 
+    public Mute4JCommand getMute4JCommand() {
+        return mute4JCommand;
+    }
+
     public class Mute4JCommand extends IngwerCommand {
 
         /**
@@ -104,7 +108,7 @@ public class Log4JFeature extends SimpleFeature {
         /**
          * Benny
          *
-         * @param enabled
+         * @param enabled true = enable log4j false = disable log4j
          */
         protected void log4j(boolean enabled) {
             if (enabled) {

@@ -23,8 +23,7 @@ public class MulipageTestCommand extends IngwerCommand {
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, CommandTarget senderType) {
 
-        if (commandSender instanceof Identity) {
-            Identity identity = (Identity) commandSender;
+        if (commandSender instanceof Identity identity) {
             MultipageMessageKeeper multipageMessageKeeper = new MultipageMessageKeeper(identity.getUUID(), oneLinedMessages, 8);
             multipageMessageKeeper.send(1);
         }

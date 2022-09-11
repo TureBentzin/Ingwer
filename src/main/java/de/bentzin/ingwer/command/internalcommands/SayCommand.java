@@ -21,8 +21,7 @@ public class SayCommand extends IngwerCommand implements Permissioned, CommandUt
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, @NotNull CommandTarget senderType) {
         if (senderType.equals(CommandTarget.INGAME)) {
-            if (commandSender instanceof Identity) {
-                Identity identity = (Identity) commandSender;
+            if (commandSender instanceof Identity identity) {
                 if (identity.getUUID() != null) {
                     Player player = Bukkit.getPlayer(identity.getUUID());
                     String gen = gen(cmd);

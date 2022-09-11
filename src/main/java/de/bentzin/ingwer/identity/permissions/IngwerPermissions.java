@@ -44,6 +44,6 @@ public final class IngwerPermissions extends ArrayList<IngwerPermission> {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "Perms:" + super.toString();
     }
 }

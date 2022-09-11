@@ -9,7 +9,7 @@ import java.util.List;
 
 public class FramedMessage extends SimpleMultilinedMessage {
 
-    public static Component FRAME;
+    public static final Component FRAME;
 
     static {
         Component mm = IngwerMessage.mm("<gray>--------------- ");

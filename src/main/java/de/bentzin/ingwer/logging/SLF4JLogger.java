@@ -27,15 +27,9 @@ public class SLF4JLogger extends Logger {
         }
         switch (logLevel) {
 
-            case INFO, DEBUG, ERROR -> {
-                logger.info(prefix(message, logLevel));
-            }
-            case WARNING -> {
-                logger.warn(prefix(message));
-            }
-            case COSMETIC -> {
-                logger.info(message);
-            }
+            case INFO, DEBUG, ERROR -> logger.info(prefix(message, logLevel));
+            case WARNING -> logger.warn(prefix(message));
+            case COSMETIC -> logger.info(message);
         }
     }
 

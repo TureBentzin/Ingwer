@@ -105,6 +105,7 @@ public final class CommandReturnSystem {
     }
 
 
+    @SuppressWarnings("unused")
     private static class NoSuchElementException extends java.util.NoSuchElementException {
         private String message;
 

@@ -30,8 +30,7 @@ public class DemoteCommand extends IngwerCommand implements Permissioned, Comman
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, @NotNull CommandTarget senderType) {
         if (senderType.equals(CommandTarget.INGAME)) {
-            if (commandSender instanceof Identity) {
-                Identity identity = (Identity) commandSender;
+            if (commandSender instanceof Identity identity) {
                 if (cmd.length == 1) {
                     specify_online_player.send(identity);
                 } else if (cmd.length > 2) {

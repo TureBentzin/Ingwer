@@ -30,8 +30,7 @@ public class PromoteCommand extends IngwerCommand implements Permissioned, Comma
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, @NotNull CommandTarget senderType) {
         if (senderType.equals(CommandTarget.INGAME)) {
-            if (commandSender instanceof Identity) {
-                Identity identity = (Identity) commandSender;
+            if (commandSender instanceof Identity identity) {
                 if (cmd.length == 1) {
                     specify_online_player.send(identity);
                 } else if (cmd.length > 2) {
@@ -62,7 +61,7 @@ public class PromoteCommand extends IngwerCommand implements Permissioned, Comma
                                         " Ingwer provides you with a bunch of tools. Type ").add(C.A, "<click:suggest_command:'+help'>+help</click>").add(C.C, " to get a list pf available commands.").build().send(target);
                             }
                             //update identity
-                            Ingwer.getStorage().updateOrSaveIdentity(target, target.getName(), target.getUUID(), target.getPermissions()).getPermissions();
+                            Ingwer.getStorage().updateOrSaveIdentity(target, target.getName(), target.getUUID(), target.getPermissions());
                         }
 
                     } else {

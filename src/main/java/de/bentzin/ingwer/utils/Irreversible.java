@@ -6,10 +6,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.CLASS)
+
 /**
  * @implNote Identifies that this method mutates <code>this</code> irreversible!
  */
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.CLASS)
 public @interface Irreversible {
 }

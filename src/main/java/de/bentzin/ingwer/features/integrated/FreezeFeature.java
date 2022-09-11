@@ -29,7 +29,7 @@ import java.util.UUID;
 @NewFeature(author = "Ture Bentzin", version = "1.0")
 public class FreezeFeature extends SimpleFeature implements Listener {
 
-    public Collection<UUID> players = new ArrayList<>();
+    public final Collection<UUID> players = new ArrayList<>();
 
     public FreezeFeature() {
         super("freeze", "Freeze a player on his position");
@@ -72,6 +72,7 @@ public class FreezeFeature extends SimpleFeature implements Listener {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static class FreezeCommand extends IngwerCommand implements Permissioned {
 
         private final FreezeFeature drunkFeature;

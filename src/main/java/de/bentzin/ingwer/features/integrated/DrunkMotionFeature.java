@@ -188,7 +188,6 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
         return drunk_players;
     }
 
-    @Contract("_ -> new")
     private @NotNull Silkworm silkworm() {
         return new Silkworm() {
             @Override
@@ -235,8 +234,10 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static class GlitchMotionCommand extends IngwerCommand implements Permissioned {
 
+        @SuppressWarnings("CanBeFinal")
         public static boolean TEST = true;
         private final DrunkMotionFeature drunkMotionFeature;
 
@@ -283,8 +284,10 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static class DrunkMotionCommand extends IngwerCommand implements Permissioned {
 
+        @SuppressWarnings("CanBeFinal")
         public static boolean TEST = true;
         private final DrunkMotionFeature drunkMotionFeature;
 

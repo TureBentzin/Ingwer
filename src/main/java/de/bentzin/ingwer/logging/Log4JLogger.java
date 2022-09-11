@@ -21,18 +21,10 @@ public class Log4JLogger extends Logger {
 
         switch (logLevel) {
 
-            case INFO, DEBUG -> {
-                logger.info(prefix(message, logLevel));
-            }
-            case WARNING -> {
-                logger.warn(prefix(message));
-            }
-            case COSMETIC -> {
-                logger.info(message);
-            }
-            case ERROR -> {
-                logger.error(prefix(message));
-            }
+            case INFO, DEBUG -> logger.info(prefix(message, logLevel));
+            case WARNING -> logger.warn(prefix(message));
+            case COSMETIC -> logger.info(message);
+            case ERROR -> logger.error(prefix(message));
         }
     }
 

@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public final class Sqlite {
 
-    public Logger logger;
+    public final Logger logger;
     private File db;
     private Connection connection;
 
@@ -48,7 +48,7 @@ public final class Sqlite {
         return db;
     }
 
-    public void init() throws URISyntaxException, IOException {
+    public void init() throws IOException {
 
         logger.debug("database File: " + db);
         db.createNewFile();
@@ -277,10 +277,11 @@ public final class Sqlite {
         return getIdentityByUUID(suuid);
     }
 
-    @Contract("_, _, _, _ -> param1")
+
     /**
      * @implNote If Identity is not present this will create a new one based on the given SINGLE parameters. In this case the given Identity would not be used or changed!!!
      */
+    @Contract("_, _, _, _ -> param1")
     public Identity updateOrSaveIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
         if (containsIdentityWithUUID(uuid.toString())) {
             updateIdentity(identity, name, uuid, ingwerPermissions);
@@ -292,7 +293,7 @@ public final class Sqlite {
 
 
     /**
-     * @param s
+     * @param s s
      * @return s but with "'"
      */
     @Contract(pure = true)

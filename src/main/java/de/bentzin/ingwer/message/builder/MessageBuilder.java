@@ -118,6 +118,7 @@ public class MessageBuilder implements Cloneable {
         return new StringBuilder(miniMessageBuilder.toString());
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public MessageBuilder clone() {
         return MessageBuilder.empty().add(getMiniMessage());

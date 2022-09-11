@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public final class IngwerThrower {
 
-    public static boolean SQL_DEBUGMODE = true;
+    public static final boolean SQL_DEBUGMODE = true;
     private final Logger logger;
 
     public IngwerThrower() {
@@ -33,8 +33,7 @@ public final class IngwerThrower {
 
     public void accept(Throwable throwable, ThrowType type) throws IngwerException {
         //TODO
-        if (throwable instanceof SQLException && SQL_DEBUGMODE == false) {
-            SQLException sqlException = (SQLException) throwable;
+        if (throwable instanceof SQLException sqlException && !SQL_DEBUGMODE) {
             logger.error(sqlException.getSQLState() + " : " + sqlException.getMessage() + " [" + sqlException.getErrorCode() + "]!");
             StackTraceElement element = sqlException.getStackTrace()[sqlException.getStackTrace().length - 1];
             logger.error(element.toString());

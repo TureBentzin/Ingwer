@@ -22,7 +22,7 @@ public interface CommandUtils {
             if (i == cmd.length - 1) {
                 builder.append(cmd[i]);
             } else {
-                builder.append(cmd[i] + " ");
+                builder.append(cmd[i]).append(" ");
             }
         }
         return builder.toString();

@@ -22,7 +22,7 @@ import java.util.Set;
 public class PatternedMiniMessageMessage implements CompletableMessage {
 
     private final int patternCount;
-    Set<String> patternQueries;
+    final Set<String> patternQueries;
     private String miniMessage;
 
 
