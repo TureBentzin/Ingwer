@@ -67,9 +67,9 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
     }
 
     public static int resolveQuery(@NotNull String query) throws ResolutionException {
-        int i = -1;
-        String s = query.replaceAll("\\{", "");
-        s = s.replaceAll("\\}", "");
+        int i;
+        String s = query.replace("\\{", "");
+        s = s.replace("\\}", "");
         try {
             i = Integer.parseInt(s);
         } catch (NumberFormatException numberFormatException) {
@@ -112,7 +112,7 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
 
     @Irreversible
     public void insert(int query, String insertion) {
-        miniMessage = miniMessage.replaceAll(generateQuery(query), insertion);
+        miniMessage = miniMessage.replace(generateQuery(query), insertion);
     }
 
     @Irreversible
