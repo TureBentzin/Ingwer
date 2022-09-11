@@ -21,7 +21,7 @@ public abstract class SimpleFeature implements Feature{
             valid = false;
             return;
         }
-        logger.info("finished creating of: " + name);
+        logger.info("finished creating of: " + name + "-feature");
         valid = true;
 
        /* try {
