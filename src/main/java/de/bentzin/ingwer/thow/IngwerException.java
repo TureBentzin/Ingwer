@@ -2,7 +2,7 @@ package de.bentzin.ingwer.thow;
 
 import de.bentzin.ingwer.Ingwer;
 
-public class IngwerException extends RuntimeException{
+public class IngwerException extends RuntimeException {
 
     private final ThrowType type;
 
@@ -22,7 +22,7 @@ public class IngwerException extends RuntimeException{
     }
 
     public IngwerException(Throwable cause, ThrowType type) {
-        super("Error executing Ingwer v. "+ Ingwer.VERSION_STRING,cause);
+        super("Error executing Ingwer v. " + Ingwer.VERSION_STRING, cause);
         this.type = type;
     }
 

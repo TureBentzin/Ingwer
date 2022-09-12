@@ -1,10 +1,7 @@
 package de.bentzin.ingwer.features.test;
 
-import de.bentzin.ingwer.features.Feature;
 import de.bentzin.ingwer.features.SimpleFeature;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
-
-import javax.xml.stream.FactoryConfigurationError;
 
 public class TestFeature extends SimpleFeature {
     public TestFeature() {
@@ -28,6 +25,6 @@ public class TestFeature extends SimpleFeature {
 
     @Override
     public boolean onLoad() {
-        return false;
+        return true;
     }
 }

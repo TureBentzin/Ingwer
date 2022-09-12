@@ -6,17 +6,17 @@ import java.io.PrintStream;
 
 public class PrintSteamLogger extends Logger {
 
-    public static PrintSteamLogger SYSTEM_LOGGER = new PrintSteamLogger("SYSTEM",System.out);
+    public static PrintSteamLogger SYSTEM_LOGGER = new PrintSteamLogger("SYSTEM", System.out);
 
 
-    private PrintStream printStream;
+    private final PrintStream printStream;
 
-    public PrintSteamLogger(@NotNull String name,@NotNull PrintStream printStream,@NotNull Logger parent) {
+    public PrintSteamLogger(@NotNull String name, @NotNull PrintStream printStream, @NotNull Logger parent) {
         super(name, parent);
         this.printStream = printStream;
     }
 
-    public PrintSteamLogger(@NotNull String name,@NotNull PrintStream printStream) {
+    public PrintSteamLogger(@NotNull String name, @NotNull PrintStream printStream) {
         super(name);
         this.printStream = printStream;
     }
@@ -33,16 +33,16 @@ public class PrintSteamLogger extends Logger {
 
     @Override
     public void log(String message, @NotNull LogLevel logLevel) {
-        if(logLevel.equals(LogLevel.COSMETIC)){
+        if (logLevel.equals(LogLevel.COSMETIC)) {
             printStream.println(message);
-        }else
-                printStream.println(prefix(message,logLevel));
+        } else
+            printStream.println(prefix(message, logLevel));
 
     }
 
     @Override
     public Logger adopt(String name) {
-        return new PrintSteamLogger(name,getPrintStream(),this);
+        return new PrintSteamLogger(name, getPrintStream(), this);
     }
 
 

@@ -47,7 +47,7 @@ public class FeatureCommand extends IngwerCommand implements Permissioned {
     @NotNull
     private OneLinedMessage generateMessage(@NotNull Feature feature) {
         return new MiniMessageMessage(
-                "<gold>" + feature.getName() + "<dark_gray> » <gray>" + trimDescription(feature));
+                "<gold>" + feature.getName() + "<dark_gray> » <gray>" + "<hover:show_text:'<gray>" + feature.getDescription() + "'>" + trimDescription(feature));
     }
 
     protected String trimDescription(@NotNull Feature feature) {
@@ -61,8 +61,7 @@ public class FeatureCommand extends IngwerCommand implements Permissioned {
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, @NotNull CommandTarget senderType) {
         if (senderType.equals(CommandTarget.INGAME)) {
-            if (commandSender instanceof Identity) {
-                Identity identity = (Identity) commandSender;
+            if (commandSender instanceof Identity identity) {
                 if (identity.getUUID() != null) {
                     if (cmd.length == 2) {
                         if (cmd[1].equals("raw")) {

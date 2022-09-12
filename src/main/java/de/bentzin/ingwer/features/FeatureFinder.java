@@ -18,15 +18,21 @@ import org.reflections.Reflections;
  */
 @ApiStatus.Internal
 public final class FeatureFinder {
-    private Logger logger;
+    private final Logger logger;
 
-    public FeatureFinder(@NotNull FeatureManager manager){
-       logger = manager.getLogger().adopt("finder");
-       logger.info("successfully initialized: " + this.getClass().getSimpleName());
+    public FeatureFinder(@NotNull FeatureManager manager) {
+        logger = manager.getLogger().adopt("finder");
+        logger.info("successfully initialized: " + this.getClass().getSimpleName());
     }
 
-    public FeatureFinder(Logger logger){
-       this.logger = logger;
+    public FeatureFinder(Logger logger) {
+        this.logger = logger;
+    }
+
+    public static void main(String[] args) {
+        Ingwer.start(Preferences.getDefaults(null, null, null));
+        FeatureFinder featureFinder = new FeatureFinder(new SystemLogger("Finder"));
+        featureFinder.find();
     }
 
     public void find() {
@@ -35,26 +41,19 @@ public final class FeatureFinder {
         for (Class<?> cl : ref.getTypesAnnotatedWith(NewFeature.class)) {
             NewFeature newFeature = cl.getAnnotation(NewFeature.class);
             try {
-                    Feature feature1 = (Feature) cl.getConstructor().newInstance();
-                    logger.info("initialized feature: " + feature1.getName() + " v." + newFeature.version() +  " by: "+ newFeature.author());
-                    try {
-                        FeatureManager.getInstance().register(feature1); //register feature
-                    }catch (Registerator.DuplicateEntryException e) {
-                        logger.debug("Feature is already registered! - skip <> " + feature1.getName());
-                    }
-                } catch (Exception e) {
-                    logger.warning("Error accorded while loading suspected Feature: "
-                            + cl.getCanonicalName() + " v. "+ newFeature.version() +  " by: "+ newFeature.author() + " >> " + e.getMessage());
-                    IngwerThrower.acceptS(e, ThrowType.FEATURE);
+                Feature feature1 = (Feature) cl.getConstructor().newInstance();
+                logger.info("initialized feature: " + feature1.getName() + " v." + newFeature.version() + " by: " + newFeature.author());
+                try {
+                    FeatureManager.getInstance().register(feature1); //register feature
+                } catch (Registerator.DuplicateEntryException e) {
+                    logger.debug("Feature is already registered! - skip <> " + feature1.getName());
                 }
+            } catch (Exception e) {
+                logger.warning("Error accorded while loading suspected Feature: "
+                        + cl.getCanonicalName() + " v. " + newFeature.version() + " by: " + newFeature.author() + " >> " + e.getMessage());
+                IngwerThrower.acceptS(e, ThrowType.FEATURE);
+            }
 
         }
-    }
-
-
-    public static void main(String[] args) {
-        Ingwer.start(Preferences.getDefaults(null,null, null));
-        FeatureFinder featureFinder = new FeatureFinder(new SystemLogger("Finder"));
-        featureFinder.find();
     }
 }

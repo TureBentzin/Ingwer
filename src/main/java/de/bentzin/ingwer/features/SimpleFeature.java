@@ -2,29 +2,25 @@ package de.bentzin.ingwer.features;
 
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.thow.ThrowType;
-import de.bentzin.tools.register.Registerator;
-import org.jetbrains.annotations.NotNull;
 
-public abstract class SimpleFeature implements Feature{
+public abstract class SimpleFeature implements Feature {
 
-    private String name;
-    private String description;
+    protected final boolean valid;
+    private final String name;
+    private final String description;
     private Logger logger;
-
-    protected boolean valid;
 
     public SimpleFeature(String name, String description) {
         this.name = name;
         this.description = description;
-        if(!FeatureManager.getInstance().checkName(name)) {
-           logger = Ingwer.getFeatureManager().getLogger().adopt(name);
-        }else {
+        if (!FeatureManager.getInstance().checkName(name)) {
+            logger = Ingwer.getFeatureManager().getLogger().adopt(name);
+        } else {
             Ingwer.getFeatureManager().getLogger().error("ambiguous naming of: " + name + "!");
             valid = false;
             return;
         }
-        logger.info("finished creating of: " + name);
+        logger.info("finished creating of: " + name + "-feature");
         valid = true;
 
        /* try {
@@ -37,7 +33,7 @@ public abstract class SimpleFeature implements Feature{
 
     @Override
     public boolean load() {
-        if(!valid) return false;
+        if (!valid) return false;
         return onLoad();
     }
 

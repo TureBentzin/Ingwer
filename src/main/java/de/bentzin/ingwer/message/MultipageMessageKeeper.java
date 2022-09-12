@@ -36,7 +36,7 @@ public class MultipageMessageKeeper {
             validatePage(page);
             Player player = Bukkit.getPlayer(recipient);
             if (player != null) {
-                messages.get(page -1).send(player); //execute!
+                messages.get(page - 1).send(player); //execute!
             } else {
                 try {
                     throw new IllegalArgumentException("uuid is not associated with a player! >> " + recipient);

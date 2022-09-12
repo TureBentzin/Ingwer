@@ -41,6 +41,7 @@ public enum CommandTarget {
         return commandTargets;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public CommandTarget @NotNull [] fullfill() {
         Set<CommandTarget> set = new HashSet<>();
         if (isLast()) set.add(this);

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 import java.util.List;
 
-public class SimpleMultilinedMessage implements MultilinedMessage{
+public class SimpleMultilinedMessage implements MultilinedMessage {
 
     private final List<OneLinedMessage> messageList;
 
@@ -19,7 +19,7 @@ public class SimpleMultilinedMessage implements MultilinedMessage{
 
     @Override
     public void send(@NotNull CommandSender recipient) {
-        get().forEachRemaining( oneLinedMessage -> recipient.sendMessage(oneLinedMessage.getOneLinedComponent()));
+        get().forEachRemaining(oneLinedMessage -> recipient.sendMessage(oneLinedMessage.getOneLinedComponent()));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SimpleMultilinedMessage implements MultilinedMessage{
         get().forEachRemaining(oneLinedMessage -> {
             //unsave?! dangerous? yes maybe...
             for (int i = 0; i < strings.length; i++) {
-                if(strings[i] == null) {
+                if (strings[i] == null) {
                     strings[i] = LegacyComponentSerializer.legacyAmpersand().serialize(oneLinedMessage.getOneLinedComponent());
                 }
             }
@@ -51,7 +51,7 @@ public class SimpleMultilinedMessage implements MultilinedMessage{
         String[] strings = new String[getDepth()];
         get().forEachRemaining(oneLinedMessage -> {
             for (int i = 0; i < strings.length; i++) {
-                if(strings[i] == null) {
+                if (strings[i] == null) {
                     strings[i] = PlainTextComponentSerializer.plainText().serialize(oneLinedMessage.getOneLinedComponent());
                 }
             }

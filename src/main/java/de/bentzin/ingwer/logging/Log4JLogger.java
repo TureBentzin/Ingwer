@@ -2,7 +2,7 @@ package de.bentzin.ingwer.logging;
 
 import org.jetbrains.annotations.NotNull;
 
-public class Log4JLogger extends Logger{
+public class Log4JLogger extends Logger {
 
     private final org.apache.logging.log4j.Logger logger;
 
@@ -19,25 +19,17 @@ public class Log4JLogger extends Logger{
     @Override
     public void log(String message, @NotNull LogLevel logLevel) {
 
-        switch (logLevel){
+        switch (logLevel) {
 
-            case INFO, DEBUG -> {
-                logger.info(prefix(message,logLevel));
-            }
-            case WARNING -> {
-                logger.warn(prefix(message));
-            }
-            case COSMETIC -> {
-                logger.info(message);
-            }
-            case ERROR -> {
-                logger.error(prefix(message));
-            }
+            case INFO, DEBUG -> logger.info(prefix(message, logLevel));
+            case WARNING -> logger.warn(prefix(message));
+            case COSMETIC -> logger.info(message);
+            case ERROR -> logger.error(prefix(message));
         }
     }
 
     @Override
     public Logger adopt(String name) {
-        return new Log4JLogger(name,this,logger);
+        return new Log4JLogger(name, this, logger);
     }
 }

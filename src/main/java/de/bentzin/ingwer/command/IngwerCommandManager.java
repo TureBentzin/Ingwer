@@ -2,12 +2,18 @@ package de.bentzin.ingwer.command;
 
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.ext.Permissioned;
+import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.logging.Logger;
+import de.bentzin.ingwer.message.IngwerMessage;
+import de.bentzin.ingwer.message.builder.C;
+import de.bentzin.ingwer.message.builder.MessageBuilder;
 import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.thow.ThrowType;
 import de.bentzin.tools.register.Registerator;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class IngwerCommandManager extends Registerator<IngwerCommand> {
 
@@ -26,7 +32,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
     }
 
     /**
-     * @param newName
+     * @param newName the name to check
      * @return if name is already taken
      */
     public boolean checkName(String newName) {
@@ -36,6 +42,19 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
             }
         }
         return false;
+    }
+
+    @ApiStatus.Internal
+    @Nullable
+    protected IngwerCommand getByName(String name) {
+        IngwerCommand ingwerCommand = null;
+        for (IngwerCommand command : this) {
+            if (command.getName().equalsIgnoreCase(name)) {
+                ingwerCommand = command;
+                break;
+            }
+        }
+        return ingwerCommand;
     }
 
     public void preRunCommand(String input, IngwerCommandSender sender, @NotNull CommandTarget senderType) {
@@ -100,6 +119,10 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
                 if (b) {
                     command.execute(sender, split, senderType);
                     logger.info(sender.getName() + " executed command: " + input + "@" + command.getName());
+                    if (!sender.getPermissions().contains(IngwerPermission.ADMIN))
+                        IngwerMessage.inform(IngwerPermission.ADMIN, MessageBuilder.informMessageBuilder().add(C.A, sender.getName())
+                                .add(C.C, " executed command: \"").add(C.A, input).add(C.C, "\"!")
+                                .build());
                     return true;
                 } else {
                     logger.info(sender.getName() + " tried to execute command without permissions: " + input);

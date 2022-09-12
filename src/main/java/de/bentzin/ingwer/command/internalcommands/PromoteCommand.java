@@ -7,7 +7,6 @@ import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
-import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.message.StraightLineStringMessage;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
@@ -15,7 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class PromoteCommand extends IngwerCommand implements Permissioned {
+public class PromoteCommand extends IngwerCommand implements Permissioned, CommandUtils {
 
     private final StraightLineStringMessage specify_online_player = new StraightLineStringMessage("Please specify an online Player!");
 
@@ -31,8 +30,7 @@ public class PromoteCommand extends IngwerCommand implements Permissioned {
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, @NotNull CommandTarget senderType) {
         if (senderType.equals(CommandTarget.INGAME)) {
-            if (commandSender instanceof Identity) {
-                Identity identity = (Identity) commandSender;
+            if (commandSender instanceof Identity identity) {
                 if (cmd.length == 1) {
                     specify_online_player.send(identity);
                 } else if (cmd.length > 2) {
@@ -41,14 +39,9 @@ public class PromoteCommand extends IngwerCommand implements Permissioned {
                     String s = cmd[1];
                     Player player = Bukkit.getPlayer(s);
                     if (player != null) {
-                        Identity target = null;
-                        if (Ingwer.getStorage().containsIdentityWithUUID(String.valueOf(player.getUniqueId()))) {
-                            target = Ingwer.getStorage().getIdentityByUUID(String.valueOf(player.getUniqueId()));
-                        }
-                        if (target == null) {
-                            target = new Identity(player.getName(), player.getUniqueId(), new IngwerPermissions());
-                        }
-                        if (target.isSuperAdmin()) {
+                        Identity target = getOrCreateIdentity(player);
+                        if (target.isSuperAdmin()) //noinspection GrazieInspection
+                        {
                             is_superadmin.send(identity);
                             //new MiniMessageMessage(IM.ACCENT_MM + identity.getName() + IM.ACCENT_MM_C +  IM.COLOR_MM +" tried to change your permissions!" + IM.COLOR_MM_C).send(target);
                             MessageBuilder.prefixed().add(C.A, identity.getName()).add(C.C, " tried to change your permissions!").build().send(target);
@@ -68,7 +61,7 @@ public class PromoteCommand extends IngwerCommand implements Permissioned {
                                         " Ingwer provides you with a bunch of tools. Type ").add(C.A, "<click:suggest_command:'+help'>+help</click>").add(C.C, " to get a list pf available commands.").build().send(target);
                             }
                             //update identity
-                            Ingwer.getStorage().updateOrSaveIdentity(target, target.getName(), target.getUUID(), target.getPermissions()).getPermissions();
+                            Ingwer.getStorage().updateOrSaveIdentity(target, target.getName(), target.getUUID(), target.getPermissions());
                         }
 
                     } else {

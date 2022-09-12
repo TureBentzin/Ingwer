@@ -3,8 +3,8 @@ package de.bentzin.ingwer.message.builder;
 import de.bentzin.ingwer.message.IngwerMessage;
 import de.bentzin.ingwer.message.MiniMessageMessage;
 import de.bentzin.ingwer.message.OneLinedMessage;
+import de.bentzin.ingwer.message.PatternedMiniMessageMessage;
 import de.bentzin.ingwer.utils.Hardcode;
-import org.checkerframework.dataflow.qual.SideEffectFree;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,15 +14,7 @@ import java.util.Objects;
  * Hardcode that makes your life easy when dealing with simple messages
  */
 @Hardcode
-public class MessageBuilder implements Cloneable{
-
-    @Contract(" -> new")
-    public static @NotNull MessageBuilder empty() {return new MessageBuilder("");}
-    @Contract(" -> new")
-    public static @NotNull MessageBuilder prefixed(){return new MessageBuilder(IngwerMessage.INGWER_MM);}
-
-    @Deprecated
-    public static @NotNull MessageBuilder custom(String initial){return new MessageBuilder(initial);}
+public class MessageBuilder implements Cloneable {
 
     private final String defaultMiniMessage;
     private StringBuilder miniMessageBuilder;
@@ -30,6 +22,25 @@ public class MessageBuilder implements Cloneable{
     protected MessageBuilder(String defaultMiniMessage) {
         this.defaultMiniMessage = Objects.requireNonNull(defaultMiniMessage);
         reset();
+    }
+
+    @Contract(" -> new")
+    public static @NotNull MessageBuilder empty() {
+        return new MessageBuilder("");
+    }
+
+    @Contract(" -> new")
+    public static @NotNull MessageBuilder prefixed() {
+        return new MessageBuilder(IngwerMessage.INGWER_MM);
+    }
+
+    @Deprecated
+    public static @NotNull MessageBuilder custom(String initial) {
+        return new MessageBuilder(initial);
+    }
+
+    public static MessageBuilder informMessageBuilder() {
+        return MessageBuilder.prefixed().add("[<gradient:blue:aqua>INFORM</gradient>]:  ").c();
     }
 
     /**
@@ -51,17 +62,21 @@ public class MessageBuilder implements Cloneable{
         return this;
     }
 
+
     public MessageBuilder reset() {
         miniMessageBuilder = new StringBuilder(defaultMiniMessage);
         return this;
     }
 
     /**
-     *
      * @return new OneLinedMessage with deserialized minimessage inside
      */
     public OneLinedMessage build() {
         return new MiniMessageMessage(miniMessageBuilder.toString());
+    }
+
+    public PatternedMiniMessageMessage toCompletableMessage() {
+        return PatternedMiniMessageMessage.fromMiniMessage(miniMessageBuilder.toString());
     }
 
     public String getMiniMessage() {
@@ -71,7 +86,7 @@ public class MessageBuilder implements Cloneable{
     @Override
     public String toString() {
         String s = IngwerMessage.deserializePlain(build().getOneLinedComponent());
-        if(s == null || s == "") {
+        if (s == null || s.equals("")) {
             return "Empty MessageBuilder#" + hashCode();
         }
         return s;
@@ -96,12 +111,28 @@ public class MessageBuilder implements Cloneable{
         return defaultMiniMessage;
     }
 
+    /**
+     * @return new StringBuilder containing the "current" String.
+     */
     public StringBuilder exportBuilder() {
         return new StringBuilder(miniMessageBuilder.toString());
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
-    public MessageBuilder clone(){
+    public MessageBuilder clone() {
         return MessageBuilder.empty().add(getMiniMessage());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MessageBuilder that)) return false;
+        return miniMessageBuilder.toString().equals(that.miniMessageBuilder.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return miniMessageBuilder.hashCode();
     }
 }

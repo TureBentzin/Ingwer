@@ -2,7 +2,7 @@ package de.bentzin.ingwer.logging;
 
 import org.jetbrains.annotations.NotNull;
 
-public class VoidLogger extends Logger{
+public class VoidLogger extends Logger {
     public VoidLogger(String name, @NotNull Logger parent) {
         super(name, parent);
     }
@@ -18,6 +18,6 @@ public class VoidLogger extends Logger{
 
     @Override
     public Logger adopt(String name) {
-        return new VoidLogger(name,this);
+        return new VoidLogger(name, this);
     }
 }

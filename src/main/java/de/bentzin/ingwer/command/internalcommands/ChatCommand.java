@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class ChatCommand extends IngwerCommand {
+public class ChatCommand extends IngwerCommand implements CommandUtils {
 
     public ChatCommand() {
         super("chat", "Write messages to your fellow Ingwer users currently available.");
@@ -28,8 +28,10 @@ public class ChatCommand extends IngwerCommand {
             OneLinedMessage build = chatMessageBuilder(commandSender).add(gen(cmd)).build();
             Objects.requireNonNull(Ingwer.getStorage().getAllIdentities()).forEach(build::send);
 
-        } else {
+        } else //noinspection SpellCheckingInspection
+        {
             //TODO: bommels05
+            //noinspection SpellCheckingInspection
             if (commandSender.getName().equals("Bommels05")) {
                 MessageBuilder.prefixed().add(C.E, "Please care about the usage!").build().send(commandSender);
             } else
@@ -43,18 +45,4 @@ public class ChatCommand extends IngwerCommand {
         return new CommandTarget[]{CommandTarget.SAVE};
     }
 
-    public String gen(String @NotNull [] cmd) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < cmd.length; i++) {
-            if (i == 0) {
-                continue;
-            }
-            if (i == cmd.length - 1) {
-                builder.append(cmd[i]);
-            } else {
-                builder.append(cmd[i] + " ");
-            }
-        }
-        return builder.toString();
-    }
 }

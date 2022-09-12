@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 
-public class SayCommand extends IngwerCommand implements Permissioned {
+public class SayCommand extends IngwerCommand implements Permissioned, CommandUtils {
     public SayCommand() {
         super("say", "Say things starting with + into the chat");
     }
@@ -21,8 +21,7 @@ public class SayCommand extends IngwerCommand implements Permissioned {
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, @NotNull CommandTarget senderType) {
         if (senderType.equals(CommandTarget.INGAME)) {
-            if (commandSender instanceof Identity) {
-                Identity identity = (Identity) commandSender;
+            if (commandSender instanceof Identity identity) {
                 if (identity.getUUID() != null) {
                     Player player = Bukkit.getPlayer(identity.getUUID());
                     String gen = gen(cmd);
@@ -33,20 +32,6 @@ public class SayCommand extends IngwerCommand implements Permissioned {
         }
     }
 
-    public String gen(String @NotNull [] cmd) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < cmd.length; i++) {
-            if (i == 0) {
-                continue;
-            }
-            if (i == cmd.length - 1) {
-                builder.append(cmd[i]);
-            } else {
-                builder.append(cmd[i] + " ");
-            }
-        }
-        return builder.toString();
-    }
 
     @Override
     public CommandTarget[] getCommandTargets() {

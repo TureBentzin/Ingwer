@@ -1,6 +1,5 @@
 package de.bentzin.ingwer.identity.permissions;
 
-import de.bentzin.ingwer.Ingwer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -45,6 +44,6 @@ public final class IngwerPermissions extends ArrayList<IngwerPermission> {
 
     @Override
     public String toString() {
-        return super.toString();
+        return "Perms:" + super.toString();
     }
 }

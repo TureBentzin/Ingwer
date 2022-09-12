@@ -36,8 +36,7 @@ public class HelpCommand extends IngwerCommand {
     private @NotNull List<OneLinedMessage> generate(@NotNull Identity identity) {
         List<OneLinedMessage> oneLinedMessages = new ArrayList<>();
         for (IngwerCommand command : commandManager) {
-            if (command instanceof Permissioned) {
-                Permissioned permissioned = (Permissioned) command;
+            if (command instanceof Permissioned permissioned) {
                 if (permissioned.checkPermission(identity)) {
                     oneLinedMessages.add(generateMessage(command));
 
@@ -54,13 +53,15 @@ public class HelpCommand extends IngwerCommand {
     private OneLinedMessage generateMessage(@NotNull IngwerCommand ingwerCommand) {
         char prefix = Ingwer.getPreferences().prefix();
         return new MiniMessageMessage("<click:suggest_command:'" + prefix + ingwerCommand.getName() + "'>" +
-                "<hover:show_text:'<gray>" + ingwerCommand.getDescription() + "'>" +
-                "<gold>" + prefix + ingwerCommand.getName() + "<dark_gray> » <gray>" + trimDescription(ingwerCommand) + "</click>");
+                "<gold>" + prefix + ingwerCommand.getName() + "<hover:show_text:'<gray>" + ingwerCommand.getDescription() + "'>" + "<dark_gray> » <gray>" + trimDescription(ingwerCommand) + "</click>");
     }
 
     protected String trimDescription(@NotNull IngwerCommand ingwerCommand) {
-        if (ingwerCommand.getDescription().length() > 40) {
-            return ingwerCommand.getDescription().substring(0, 35) + "...";
+        int length = ingwerCommand.getDescription().length() + ingwerCommand.getName().length();
+        int max = 37;
+        int sub = 5;
+        if (length > max) {
+            return ingwerCommand.getDescription().substring(0, max - sub) + "...";
         } else
             return ingwerCommand.getDescription();
 
@@ -69,8 +70,7 @@ public class HelpCommand extends IngwerCommand {
     @Override
     public void execute(IngwerCommandSender commandSender, String[] cmd, @NotNull CommandTarget senderType) {
         if (senderType.equals(CommandTarget.INGAME)) {
-            if (commandSender instanceof Identity) {
-                Identity identity = (Identity) commandSender;
+            if (commandSender instanceof Identity identity) {
                 if (identity.getUUID() != null) {
                     if (cmd.length == 2) {
                         if (cmd[1].equals("raw")) {

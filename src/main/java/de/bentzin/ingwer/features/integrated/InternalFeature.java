@@ -3,9 +3,9 @@ package de.bentzin.ingwer.features.integrated;
 import de.bentzin.ingwer.features.SimpleFeature;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 
-public class InternalFeature  extends SimpleFeature {
+public class InternalFeature extends SimpleFeature {
     public InternalFeature() {
-        super("internal","internal");
+        super("internal", "internal");
     }
 
     @Override

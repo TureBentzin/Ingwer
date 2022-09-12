@@ -5,16 +5,17 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class Logger {
 
-    private String name;
+    private final String name;
     @Nullable
     private Logger parent = null;
 
     private boolean debug = false;
 
 
-    public Logger(String name,@NotNull Logger parent) {
+    public Logger(String name, @NotNull Logger parent) {
         this.name = name;
         this.parent = parent;
+        debug = this.parent.isDebugEnabled();
         debug("creating new logger: " + genName() + "!");
     }
 
@@ -33,31 +34,23 @@ public abstract class Logger {
     public abstract void log(String message, LogLevel logLevel);
 
     public void info(String message) {
-        log(message,LogLevel.INFO);
+        log(message, LogLevel.INFO);
     }
 
     public void warning(String message) {
-        log(message,LogLevel.WARNING);
+        log(message, LogLevel.WARNING);
     }
 
     public void error(String message) {
-        log(message,LogLevel.ERROR);
+        log(message, LogLevel.ERROR);
     }
 
     public void debug(String message) {
-        if(isDebugEnabled()) log(message,LogLevel.DEBUG);
+        if (isDebugEnabled()) log(message, LogLevel.DEBUG);
     }
 
     public void cosmetic(String message) {
-        log(message,LogLevel.COSMETIC);
-    }
-
-    public enum LogLevel{
-        INFO,
-        WARNING,
-        ERROR,
-        COSMETIC,
-        DEBUG,
+        log(message, LogLevel.COSMETIC);
     }
 
     public String prefix(String message) {
@@ -65,18 +58,30 @@ public abstract class Logger {
     }
 
     public String prefix(String message, @NotNull LogLevel logLevel) {
-        return logLevel.name() +" >> " + prefix(message);
+        return logLevel.name() + " >> " + prefix(message);
     }
 
-    public Logger getParent() {
+    public @Nullable Logger getParent() {
         return parent;
     }
 
+    public boolean hasParent() {
+        return getParent() != null;
+    }
+
     protected String genName() {
-        if(parent != null)
-         return parent.genName() +"/"+ name;
-        else return  name;
+        if (parent != null)
+            return parent.genName() + "/" + name;
+        else return name;
     }
 
     public abstract Logger adopt(String name);
+
+    public enum LogLevel {
+        INFO,
+        WARNING,
+        ERROR,
+        COSMETIC,
+        DEBUG,
+    }
 }
