@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -84,6 +85,7 @@ public abstract class IngwerCommand {
 
 
     @ApiStatus.Experimental
+    @Nullable
     public <T extends IngwerCommand> Identity identityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, Consumer<Identity> action) {
         if (senderType.equals(CommandTarget.INGAME)) {
             if (commandSender instanceof Identity identity) {
@@ -145,6 +147,23 @@ public abstract class IngwerCommand {
             }
         }
         return Pair.of(null, null);
+    }
+
+
+    /**
+     *
+     * @implNote not depending on length or existence of arguments!!
+     * @param action player and identity of commandSender
+     * @return player and identity of commandSender
+     */
+    @ApiStatus.Experimental
+    public Pair<Player, Identity> playerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, BiConsumer<Player,Identity> action){
+        AtomicReference<Player> player = new AtomicReference<>();
+        Identity identity = identityCommand(commandSender, senderType, (id) -> {
+            player.set(Bukkit.getPlayer(id.getUUID()));
+        });
+        if(identity == null || player.get() == null) return null;
+        return Pair.of(player.get(),identity);
     }
 
 }

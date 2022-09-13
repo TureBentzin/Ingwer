@@ -1,5 +1,8 @@
 package de.bentzin.ingwer.message;
 
+import de.bentzin.ingwer.command.IngwerCommand;
+import de.bentzin.ingwer.command.IngwerCommandSender;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.security.PrivilegedActionException;
@@ -7,7 +10,7 @@ import java.security.PrivilegedActionException;
 /**
  * @implNote This Message should be completed before it's been sent
  */
-public interface CompletableMessage {
+public interface CompletableMessage extends IngwerMessage {
     boolean isCompleted();
 
     /**
@@ -23,6 +26,16 @@ public interface CompletableMessage {
      */
     default void checkAndThrow() throws UncompletedMessageException {
         if (!isCompleted()) throw new UncompletedMessageException();
+    }
+
+    @Override
+    default void send(@NotNull IngwerCommandSender recipient) {
+        get().send(recipient);
+    }
+
+    @Override
+    default void send(@NotNull CommandSender recipient) {
+        get().send(recipient);
     }
 
     class UncompletedMessageException extends IllegalStateException {

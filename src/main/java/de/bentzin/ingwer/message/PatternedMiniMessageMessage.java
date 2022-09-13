@@ -111,11 +111,14 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
         return remaining;
     }
 
+    @Contract(mutates = "this")
     @Irreversible
-    public void insert(int query, String insertion) {
+    public PatternedMiniMessageMessage insert(int query, String insertion) {
         miniMessage = miniMessage.replace(generateQuery(query), insertion);
+        return this;
     }
 
+    @Contract(mutates = "this")
     @Irreversible
     public void deleteRemainingQueries() {
         getRemainingPatterns().forEach(s -> {

@@ -127,7 +127,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
                 } else {
                     logger.info(sender.getName() + " tried to execute command without permissions: " + input);
                     if (p != null) {
-                        sender.sendMessage("Lacking permission: " + p.getPermission().name());
+                        Permissioned.lacking(sender, p.getPermission());
                     }
                 }
 
