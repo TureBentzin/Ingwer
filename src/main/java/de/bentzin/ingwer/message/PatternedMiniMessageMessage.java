@@ -90,6 +90,17 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
         return new MiniMessageMessage(miniMessage);
     }
 
+    private boolean origin = false;
+
+    /**
+     * @implNote origin() sets the message to a state where it cant be completed. To complete it, you need to call clone();
+     */
+    @Override
+    public PatternedMiniMessageMessage origin() {
+        origin = true;
+        return this;
+    }
+
     public int getPatternCount() {
         return patternCount;
     }
@@ -114,6 +125,7 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
     @Contract(mutates = "this")
     @Irreversible
     public PatternedMiniMessageMessage insert(int query, String insertion) {
+        checkOriginAndThrow();
         miniMessage = miniMessage.replace(generateQuery(query), insertion);
         return this;
     }
@@ -128,6 +140,19 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
                 IngwerThrower.acceptS(e, ThrowType.MESSAGE);
             }
         });
+    }
+
+    @Override
+    public PatternedMiniMessageMessage clone() {
+        try {
+            super.clone();
+        } catch (CloneNotSupportedException ignored) {}
+        return new PatternedMiniMessageMessage(miniMessage,patternCount);
+    }
+
+    @Override
+    public boolean isOrigin() {
+        return origin;
     }
 
     public static class ResolutionException extends Exception {
