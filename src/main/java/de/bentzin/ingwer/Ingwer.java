@@ -136,9 +136,9 @@ public final class Ingwer {
         commandReturnSystem = new CommandReturnSystem(getLogger());
 
 
-        org.apache.logging.log4j.core.Logger logger1 = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
+        final org.apache.logging.log4j.core.Logger rootLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
 
-        logger1.addFilter(new IngwerLog4JFilter());
+        rootLogger.addFilter(new IngwerLog4JFilter());
 
         getFeatureManager().registerInternalFeatures();
         getFeatureManager().findFeatures();
@@ -156,6 +156,8 @@ public final class Ingwer {
             registerPaperListeners();
         } else {
             logger.warning("javaPlugin is null!");
+            stop(StopCode.FATAL);
+            return;
         }
 
         //internalCommands
@@ -177,14 +179,20 @@ public final class Ingwer {
     public static void stop(@NotNull StopCode stopCode) {
         logger.info("Stopping Ingwer: " + stopCode.name());
 
+        if(stopCode.equals(StopCode.FATAL)) {
+            logger.error("Fatal error accord that prohibits Ingwer from remaining in service. Watch out for errors or warnings registered before Ingwers shutdown procedure! You may report this error to Ingwer on GitHub!");
+        }
+
         logger.info("cleaning...");
         getCommandManager().clear();
         getFeatureManager().clear();
 
-        logger.info("disconnecting...");
+        logger.info("closing storage connection...");
         getStorage().close();
 
-        javaPlugin.getLogger().warning(javaPlugin.getName() + " does not support reloading!");
+        if(!stopCode.equals(StopCode.FATAL)) {
+            javaPlugin.getLogger().warning(javaPlugin.getName() + " does not support reloading!");
+        }
         // Bukkit.getServer().spigot().restart();
 
     }
