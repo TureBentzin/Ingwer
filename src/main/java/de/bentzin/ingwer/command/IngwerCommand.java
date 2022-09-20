@@ -163,6 +163,7 @@ public abstract class IngwerCommand {
             player.set(Bukkit.getPlayer(id.getUUID()));
         });
         if(identity == null || player.get() == null) return null;
+        action.accept(player.get(),identity);
         return Pair.of(player.get(),identity);
     }
 
