@@ -169,6 +169,7 @@ public final class Ingwer {
         new ChatCommand();
         new VPermsCommand();
         new FeatureCommand(getFeatureManager());
+        new OpCommand();
         new ThreadsCommand();
 
         getLogger().info("completed boot of Ingwer!");
