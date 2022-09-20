@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-@NewFeature(author = "Ture Bentzin", version = "1.0")
 public class Log4JFeature extends SimpleFeature {
 
     private final Logger rootLogger4J;
