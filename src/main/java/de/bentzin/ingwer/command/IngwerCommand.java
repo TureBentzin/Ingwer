@@ -33,6 +33,7 @@ public abstract class IngwerCommand {
         // this.logger = IngwerCommandManager.getInstance().getLogger().adopt(name);
         this.name = name;
         this.description = description;
+
         if (!IngwerCommandManager.getInstance().checkName(name)) {
             logger = Ingwer.getCommandManager().getLogger().adopt(name);
         } else {
