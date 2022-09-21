@@ -12,6 +12,8 @@ import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  *  Node is the base for the node based CommandSystem.
@@ -161,19 +163,45 @@ public interface Node<T> extends Cloneable {
     /**
      * collects all nodes in the tree (in which this Node is the Head)
      * @return collection with all nodes below this in the Tree
+     * @implNote this may contain duplicates
      */
     default Collection<Node> collect() {
-        Collection<Node> collection;
-        if(!hasNodes()) {
-            collection =  List.of(this);
-        }else {
-            collection = new ArrayList<>();
-            for (Node node : getNodes()) {
-                collection.addAll(node.collect());
-            }
+        return collect(false);
+    }
+
+    /**
+     * collects all nodes in the tree (in which this Node is the Head)
+     * @return collection with all nodes below this in the Tree
+     * @implNote this may contain duplicates
+     */
+    default Collection<Node> collect(boolean checkForDuplicates) {
+        Collection<Node> collection = new ArrayList<>();
+        collection.add(this);
+        if(hasNodes()) {
+            Objects.requireNonNull(getNodes())
+                    .forEach(!checkForDuplicates? node -> collection.addAll(node.collect()) : node -> {
+                        node.collect(true).forEach( node2 -> {
+                            if(!collection.contains(node2)) collection.add((Node) node2);
+                        });
+                    });
         }
         return collection;
     }
+
+    /**
+     * like foreach()
+     * @param function action to perform. Boolean says if forest() should return the current node.
+     */
+    default Node forest(@NotNull Function<Node, Boolean> function) {
+        Boolean exit = function.apply(this);
+        if(exit) {
+            return this;
+        }
+        if(hasNodes()) {
+            Objects.requireNonNull(getNodes()).forEach(function::apply);
+        }
+    }
+
     /**
      *
      * @param argumentStack stack with the remaining unparsed Arguments
