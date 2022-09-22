@@ -200,23 +200,24 @@ public interface Node<T> extends Cloneable {
         if(hasNodes()) {
             Objects.requireNonNull(getNodes()).forEach(function::apply);
         }
+        return this;
     }
 
     /**
      *
-     * @param argumentStack stack with the remaining unparsed Arguments
+     * @param argumentQueue queue with the remaining unparsed Arguments
      * @param traceBuilder should be build while executing
      * @param data data to be passed to execute
      * @return the final node
      */
-    default Node<T> walk(Stack<String> argumentStack, NodeTraceBuilder traceBuilder, CommandData data) {
+    default Node<T> walk(Queue<String> argumentQueue, NodeTraceBuilder traceBuilder, CommandData data) {
         if(getCommandNode().isEmpty()) {
             //initialization error
             return this;
         }
         //rec
-        String argument = argumentStack.pop();
-        final boolean last = argumentStack.isEmpty();
+        String argument = argumentQueue.poll();
+        final boolean last = argumentQueue.isEmpty();
         traceBuilder.append(this);
         //code
 
@@ -231,13 +232,13 @@ public interface Node<T> extends Cloneable {
                     if(node.resembles(argument)) {
                         //found
                         found = true;
-                        return node.walk(argumentStack,traceBuilder,data);
+                        return node.walk(argumentQueue,traceBuilder,data);
                     }
                 }
-                //usage wrong
+                getCommandNode().get().usage().accept(data,traceBuilder.build());
 
             }else {
-                //usage wrong
+                getCommandNode().get().usage().accept(data,traceBuilder.build());
             }
         }
         throw new IllegalStateException("method reached dead code!");

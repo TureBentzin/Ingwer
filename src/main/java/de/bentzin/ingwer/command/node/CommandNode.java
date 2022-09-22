@@ -1,17 +1,19 @@
 package de.bentzin.ingwer.command.node;
+import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommand;
+import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.CommandData;
+import de.bentzin.ingwer.command.node.preset.UsageNodeExecutor;
 import de.bentzin.ingwer.logging.Logger;
 import org.checkerframework.checker.optional.qual.MaybePresent;
+import org.checkerframework.checker.units.qual.N;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Entry point of command building
@@ -35,6 +37,14 @@ public abstract class CommandNode implements Node<String>{
         return createOfIngwerCommand(ingwerCommand,NodeExecutor.ignore);
     }
 
+    /**
+     * generates a new UsageNodeExecutor based on this CommandNode
+     * @return new UsageNodeExecutor
+     */
+    public UsageNodeExecutor usage() {
+        return UsageNodeExecutor.generate(this);
+    }
+
 
     @NotNull
     private final Logger logger;
@@ -56,9 +66,27 @@ public abstract class CommandNode implements Node<String>{
 
     @Override
     public CommandNode append(Node node) {
-
+        Node.checkCommandNodeAndThrow(node);
+        nodes.add(node);
         return this;
     }
+
+    /**
+     * This needs to be called before the CommandNode can be used and execute a command
+     * after calling this you should not add more nodes to the tree or modify it. After modification there
+     * is a high chance that nodes may not work properly or execution fails due to a lack of initialization
+     * of the individual nodes
+     * @return this
+     */
+    public CommandNode finish() {
+        getLogger().debug("starting to initialize command: " + command_name + "!");
+        Collection<Node> collect = collect();
+        getLogger().debug("collected " + collect.size() + " nodes!");
+        collect.forEach(node -> node.initialize(this));
+        getLogger().info("successfully initialized node tree of: "+ command_name);
+        return this;
+    }
+
 
     @Override
     public @NotNull String getName() {
@@ -76,6 +104,28 @@ public abstract class CommandNode implements Node<String>{
         return description;
     }
 
+    @ApiStatus.Internal
+    /**
+     *
+     * @param v1 executor
+     * @param v2 should contain at lease the commandName
+     * @param v3 targets as defined...
+     * @return the node {@link this#walk(Queue, NodeTraceBuilder, CommandData)}
+     */
+    protected Node startWalking(IngwerCommandSender v1, String[] v2, CommandTarget v3) {
+        CommandData data = new CommandData(v1,v2,v3);
+        Queue<String> argumentQueue = new LinkedList<>();
+        Collections.addAll(argumentQueue, v2);
+        NodeTraceBuilder nodeTraceBuilder = new NodeTraceBuilder();
+        String poll = argumentQueue.poll();
+        if(poll.equals(command_name))
+            getLogger().debug("dequeue because start... " + poll);
+        else {
+            throw new IllegalStateException("cant match commandNode and commandName");
+        }
+        return walk(argumentQueue,nodeTraceBuilder,data);
+    }
+
     @Override
     public Collection<String> values() {
         return List.of(command_name);
@@ -90,11 +140,16 @@ public abstract class CommandNode implements Node<String>{
      */
     @NotNull
     @Override
-    public String parse(@NotNull String input, @NotNull NodeTrace nodeTrace) throws InvalidParameterException {
+    public final String parse(@NotNull String input, @NotNull NodeTrace nodeTrace) throws InvalidParameterException {
         if(!nodeTrace.isEmpty())
             throw new InvalidParameterException("this node is a CommandNode and can only be placed at the beginning of a nodeTrace");
         if(!input.equals(command_name))
             throw new InvalidParameterException("the given input does not match the associated commandName");
+        return command_name;
+    }
+
+    @Override
+    public String toString() {
         return command_name;
     }
 

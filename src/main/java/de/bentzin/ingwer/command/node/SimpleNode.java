@@ -79,6 +79,11 @@ public abstract class SimpleNode<T> implements Node<T> {
         return values;
     }
 
+    @Override
+    public String toString() {
+        return name + "<" + nodes.size() + ">";
+    }
+
     /**
      * @return for this trace unique name
      * @implNote the CommandNode at the top of a trace always returns "root"
