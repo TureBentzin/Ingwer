@@ -2,12 +2,19 @@ package de.bentzin.ingwer.command.node;
 
 import com.google.common.annotations.Beta;
 import com.google.common.reflect.TypeToken;
+import com.google.errorprone.annotations.ForOverride;
+import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.ext.CommandData;
+import de.bentzin.ingwer.command.ext.Permissioned;
+import de.bentzin.ingwer.identity.permissions.IngwerPermission;
+import de.bentzin.ingwer.logging.Logger;
+import de.bentzin.ingwer.utils.DoNotOverride;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.text.html.Option;
 import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -103,6 +110,7 @@ public interface Node<T> extends Cloneable {
      * @param commandData commandData
      * @param nodeTrace trace to this (last)
      */
+
     void execute(CommandData commandData, NodeTrace nodeTrace);
 
     /**
@@ -210,6 +218,7 @@ public interface Node<T> extends Cloneable {
      * @param data data to be passed to execute
      * @return the final node
      */
+    @DoNotOverride
     default Node<T> walk(Queue<String> argumentQueue, NodeTraceBuilder traceBuilder, CommandData data) {
         if(getCommandNode().isEmpty()) {
             //initialization error
@@ -222,7 +231,14 @@ public interface Node<T> extends Cloneable {
         //code
 
         if (last) {
-            execute(data,traceBuilder.build());
+            getPermission().ifPresentOrElse(ingwerPermission -> {
+                if(data.commandSender().getPermissions().contains(ingwerPermission)) {
+                    execute(data,traceBuilder.build());
+                }else {
+                    Permissioned.lacking(data.commandSender(),ingwerPermission);
+                }
+            },() -> execute(data,traceBuilder.build()));
+
             return this;
             //last -> execute
         }else {
@@ -244,7 +260,35 @@ public interface Node<T> extends Cloneable {
         throw new IllegalStateException("method reached dead code!");
     }
 
+    /**
+     * Get the permission that is required to execute THIS node
+     * (that should not affect children of this)
+     * @implNote The Permission might be present.
+     * @return
+     * @see Optional<IngwerPermission>
+     * @see Node#execute(CommandData, NodeTrace)
+     */
+    @MaybePresent
+    default Optional<IngwerPermission> getPermission() {
+        if(this instanceof Permissioned p)
+            return Optional.of(p.getPermission());
+        return Optional.empty();
+    }
 
+    /**
+     *
+     * @return true if the Optional from {@link this#getPermission()} is present!
+     * @implNote should only be used if further investigation of a permission is not required
+     * if you need to read out a permission use: {@link Node#getPermission()} & {@link Optional#isPresent()} or {@link Optional#ifPresent(Consumer)}
+     */
+    default boolean hasPermission()  {
+        return getPermission().isPresent();
+    }
+
+
+    /**
+     * Used to execute a node
+     */
     interface NodeExecutor extends BiConsumer<CommandData, NodeTrace> {
 
         /**

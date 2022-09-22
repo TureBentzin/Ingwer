@@ -277,7 +277,7 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
         }
 
         @Override
-        public IngwerPermission getPermission() {
+        public @NotNull IngwerPermission getPermission() {
             return IngwerPermission.TRUST;
         }
     }
@@ -326,7 +326,7 @@ public class DrunkMotionFeature extends SimpleFeature implements Listener {
         }
 
         @Override
-        public IngwerPermission getPermission() {
+        public @NotNull IngwerPermission getPermission() {
             return IngwerPermission.TRUST;
         }
     }

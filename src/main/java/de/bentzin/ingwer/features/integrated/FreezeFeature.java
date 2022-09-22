@@ -107,7 +107,7 @@ public class FreezeFeature extends SimpleFeature implements Listener {
         }
 
         @Override
-        public IngwerPermission getPermission() {
+        public @NotNull IngwerPermission getPermission() {
             return IngwerPermission.TRUST;
         }
     }

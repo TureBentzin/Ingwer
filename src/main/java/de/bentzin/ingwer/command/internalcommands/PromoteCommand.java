@@ -78,7 +78,7 @@ public class PromoteCommand extends IngwerCommand implements Permissioned, Comma
     }
 
     @Override
-    public IngwerPermission getPermission() {
+    public @NotNull IngwerPermission getPermission() {
         return IngwerPermission.SUPERADMIN;
     }
 }

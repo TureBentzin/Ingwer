@@ -31,6 +31,7 @@ public interface Permissioned {
         }
     }
 
+    @NotNull
     IngwerPermission getPermission();
 
     default boolean checkPermission(@NotNull IngwerCommandSender ingwerCommandSender) {
