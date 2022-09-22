@@ -12,8 +12,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerChatTabCompleteEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.server.TabCompleteEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -43,6 +45,11 @@ public class PaperEventListener implements Listener {
             }
         }
 
+    }
+
+    @EventHandler
+    public void onTab(TabCompleteEvent event) {
+        event.getSender().sendMessage(event.getBuffer());
     }
 
     @EventHandler
