@@ -71,4 +71,18 @@ public class NodeTrace {
         nodes.clear();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("NodeTrace: [");
+        boolean first = true;
+        for (Node node : nodes) {
+            if(first)
+                builder.append(node);
+            else builder.append(" -> ").append(node);
+            first = false;
+        }
+        builder.append("] ").append("<").append(size()).append(">");
+        return builder.toString();
+    }
 }

@@ -4,14 +4,12 @@ import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommand;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.CommandData;
-import org.checkerframework.checker.units.qual.C;
+import org.checkerframework.checker.initialization.qual.UnknownInitialization;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.concurrent.SynchronousQueue;
+import java.util.Arrays;
+
 
 public class IngwerNodeCommand extends IngwerCommand {
     private final CommandNode commandNode;
@@ -24,18 +22,46 @@ public class IngwerNodeCommand extends IngwerCommand {
         this.commandTargets = commandTargets;
     }
 
-    public CommandNode getCommandNode() {
+    @ApiStatus.Experimental
+    public IngwerNodeCommand(@NotNull CommandTarget @NotNull[] commandTargets, String commandName,
+                             String description, Node.NodeExecutor node_action) {
+        super(commandName, description);
+        this.commandNode = new CommandNode(getLogger(),getName(),getDescription()) {
+            @Override
+            public void execute(CommandData commandData, NodeTrace nodeTrace) {
+                node_action.accept(commandData,nodeTrace);
+            }
+        };
+        this.commandTargets = commandTargets;
+    }
+
+    /**
+     * Access the CommandNod
+     * @return commandNode
+     */
+    protected final CommandNode getCommandNode() {
         return commandNode;
     }
 
-    @Override
-    public void execute(IngwerCommandSender v1, String[] v2, CommandTarget v3) {
-        Node node = commandNode.startWalking(v1, v2, v3);
-        getLogger().info("finished at: " + node.getName());
+    /**
+     * Copy the CommandNode
+     * @return commandNode
+     */
+    public final CommandNode getCommandNodeClone() {
+        return commandNode.clone();
     }
 
     @Override
-    public CommandTarget[] getCommandTargets() {
+    public final void execute(IngwerCommandSender v1, String[] v2, CommandTarget v3) {
+        Node node = getCommandNode().startWalking(v1, v2, v3);
+        if(node == null) {
+            getLogger().warning("failed to execute: \"" + Arrays.toString(v2) + "\"");
+        }else
+            getLogger().info("finished at: " + node.getName());
+    }
+
+    @Override
+    public final CommandTarget[] getCommandTargets() {
         return commandTargets;
     }
 }

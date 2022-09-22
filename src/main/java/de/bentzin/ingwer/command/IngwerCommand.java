@@ -57,17 +57,17 @@ public abstract class IngwerCommand {
         }
     }
 
-    public @NotNull String getName() {
+    public final @NotNull String getName() {
         return name;
     }
 
     @NotNull
-    public String getDescription() {
+    public final String getDescription() {
         if (description == null) return "";
         else return description;
     }
 
-    public @NotNull Logger getLogger() {
+    public final @NotNull Logger getLogger() {
         return logger;
     }
 
@@ -87,7 +87,7 @@ public abstract class IngwerCommand {
 
     @ApiStatus.Experimental
     @Nullable
-    public <T extends IngwerCommand> Identity identityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, Consumer<Identity> action) {
+    public final <T extends IngwerCommand> Identity identityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, Consumer<Identity> action) {
         if (senderType.equals(CommandTarget.INGAME)) {
             if (commandSender instanceof Identity identity) {
                 action.accept(identity);
@@ -100,7 +100,7 @@ public abstract class IngwerCommand {
 
     @ApiStatus.Experimental
     @NotNull
-    public <T extends IngwerCommand> Pair<@Nullable Identity, @Nullable Player> identityPlayerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, String[] cmd, BiConsumer<Identity, Player> action) {
+    public final <T extends IngwerCommand> Pair<@Nullable Identity, @Nullable Player> identityPlayerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, String[] cmd, BiConsumer<Identity, Player> action) {
         StraightLineStringMessage specify_online_player = new StraightLineStringMessage("Please specify an online Player!");
         if (senderType.equals(CommandTarget.INGAME)) {
             if (commandSender instanceof Identity identity) {
@@ -126,7 +126,7 @@ public abstract class IngwerCommand {
 
     @ApiStatus.Experimental
     @NotNull
-    public <T extends IngwerCommand> Pair<@Nullable Identity, @Nullable Identity> identityIdentityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, String[] cmd, BiConsumer<Identity, Identity> action) {
+    public final <T extends IngwerCommand> Pair<@Nullable Identity, @Nullable Identity> identityIdentityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, String[] cmd, BiConsumer<Identity, Identity> action) {
         StraightLineStringMessage specify_user_name = new StraightLineStringMessage("Please specify a valid user_name!");
         if (senderType.equals(CommandTarget.INGAME)) {
             if (commandSender instanceof Identity identity) {
@@ -158,7 +158,7 @@ public abstract class IngwerCommand {
      * @return player and identity of commandSender
      */
     @ApiStatus.Experimental
-    public Pair<Player, Identity> playerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, BiConsumer<Player,Identity> action){
+    public final Pair<Player, Identity> playerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, BiConsumer<Player,Identity> action){
         AtomicReference<Player> player = new AtomicReference<>();
         Identity identity = identityCommand(commandSender, senderType, (id) -> {
             player.set(Bukkit.getPlayer(id.getUUID()));

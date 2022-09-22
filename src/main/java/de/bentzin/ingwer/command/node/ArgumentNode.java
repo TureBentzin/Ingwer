@@ -39,14 +39,18 @@ public abstract class ArgumentNode extends SimpleNode<String>{
 
     //single value
 
-    @ApiStatus.Internal
+    @ApiStatus.Experimental
     protected ArgumentNode(String name, ArrayList<Node> nodes, String value) {
         super(name, nodes, value);
     }
 
-    @ApiStatus.Internal
+    @ApiStatus.Experimental
     public ArgumentNode(String name, String value) {
         super(name, value);
+    }
+
+    public ArgumentNode(String argument) {
+        super(argument,argument);
     }
 
 

@@ -1,6 +1,7 @@
 package de.bentzin.ingwer.command.node;
 
 import de.bentzin.ingwer.command.ext.CommandData;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 
@@ -8,33 +9,49 @@ public class LambdaAgrumentNode extends ArgumentNode{
 
     private final NodeExecutor nodeExecutor;
 
+    @Deprecated
+    @ApiStatus.Internal
     public LambdaAgrumentNode(String name, ArrayList<Node> nodes, ArrayList<String> values, NodeExecutor nodeExecutor) {
         super(name, nodes, values);
         this.nodeExecutor = nodeExecutor;
     }
 
+    @Deprecated
+    @ApiStatus.Internal
     public LambdaAgrumentNode(String name, ArrayList<String> values, NodeExecutor nodeExecutor) {
         super(name, values);
         this.nodeExecutor = nodeExecutor;
     }
 
+    @Deprecated
+    @ApiStatus.Internal
     public LambdaAgrumentNode(String name, ArrayList<Node> nodes, NodeExecutor nodeExecutor, String... values) {
         super(name, nodes, values);
         this.nodeExecutor = nodeExecutor;
     }
 
+    @Deprecated
+    @ApiStatus.Internal
     public LambdaAgrumentNode(String name, NodeExecutor nodeExecutor, String... values) {
         super(name, values);
         this.nodeExecutor = nodeExecutor;
     }
 
+    @ApiStatus.Experimental
+    @ApiStatus.Internal
     public LambdaAgrumentNode(String name, ArrayList<Node> nodes, String value, NodeExecutor nodeExecutor) {
         super(name, nodes, value);
         this.nodeExecutor = nodeExecutor;
     }
 
+    @ApiStatus.Experimental
     public LambdaAgrumentNode(String name, String value, NodeExecutor nodeExecutor) {
         super(name, value);
+        this.nodeExecutor = nodeExecutor;
+    }
+
+    public LambdaAgrumentNode(String argument, NodeExecutor nodeExecutor) {
+        super(argument);
         this.nodeExecutor = nodeExecutor;
     }
 

@@ -21,7 +21,15 @@ import java.util.*;
 public abstract class CommandNode implements Node<String>{
 
     //static -> new
-    @Contract("_ -> new")
+
+    /**
+     *
+     * @param ingwerCommand initialized ingwerCommand
+     * @param nodeExecutor executor
+     * @implNote Never call in constructor of an IngwerCommand
+     * @return
+     */
+    @Contract("_,_ -> new")
     public static @NotNull CommandNode createOfIngwerCommand(@NotNull IngwerCommand ingwerCommand, NodeExecutor nodeExecutor) {
         return new CommandNode(ingwerCommand.getLogger(), ingwerCommand.getName(), ingwerCommand.getDescription()) {
             @Override
@@ -104,14 +112,16 @@ public abstract class CommandNode implements Node<String>{
         return description;
     }
 
-    @ApiStatus.Internal
+
     /**
      *
      * @param v1 executor
      * @param v2 should contain at lease the commandName
      * @param v3 targets as defined...
-     * @return the node {@link this#walk(Queue, NodeTraceBuilder, CommandData)}
+     * @return the node {@link this#walk(Queue, NodeTraceBuilder, CommandData)} or null if no node was found
      */
+    @Nullable
+    @ApiStatus.Internal
     protected Node startWalking(IngwerCommandSender v1, String[] v2, CommandTarget v3) {
         CommandData data = new CommandData(v1,v2,v3);
         Queue<String> argumentQueue = new LinkedList<>();

@@ -172,6 +172,9 @@ public final class Ingwer {
         new OpCommand();
         new ThreadsCommand();
 
+        //node
+        new NodeTestCommand();
+
         getLogger().info("completed boot of Ingwer!");
 
         //maliciousConfig();

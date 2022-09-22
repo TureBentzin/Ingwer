@@ -1,5 +1,6 @@
 package de.bentzin.ingwer.command.node;
 
+import de.bentzin.ingwer.command.ext.Permissioned;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,6 +12,16 @@ import java.util.Optional;
 
 import static de.bentzin.ingwer.command.node.Node.checkCommandNodeAndThrow;
 
+/**
+ *  Node is the base for the node based CommandSystem.
+ *  The head of each CommandTree should always be a CommandNode
+ * @implNote please implement the {@link this#clone()} & {@link Object#toString()} methods!
+ * @implNote This may be an implementation of {@link Permissioned}
+ * @param <T> the type of node
+ * @see ArgumentNode
+ * @see Node
+ * @see Permissioned
+ */
 public abstract class SimpleNode<T> implements Node<T> {
 
     private final String name;

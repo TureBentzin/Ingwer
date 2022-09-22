@@ -2,19 +2,15 @@ package de.bentzin.ingwer.command.node;
 
 import com.google.common.annotations.Beta;
 import com.google.common.reflect.TypeToken;
-import com.google.errorprone.annotations.ForOverride;
-import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
-import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.utils.DoNotOverride;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.text.html.Option;
 import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -25,7 +21,8 @@ import java.util.function.Function;
 /**
  *  Node is the base for the node based CommandSystem.
  *  The head of each CommandTree should always be a CommandNode
- * @implNote please implement the {@link this#clone()} method!
+ * @implNote please implement the {@link this#clone()} & {@link Object#toString()} methods!
+ * @implNote This may be an implementation of {@link Permissioned}
  * @param <T> the type of node
  * @see CommandNode
  */
@@ -48,7 +45,7 @@ public interface Node<T> extends Cloneable {
      * @tip import this method into your node: "import static de.bentzin.ingwer.command.node.Node.checkCommandNodeAndThrow;"
      */
     static void checkCommandNodeAndThrow(Node node) {
-        if(!(node instanceof CommandNode))
+        if(!checkCommandNode(node))
             throw new IllegalArgumentException("the given node: \"" + node.getName() + "\"" + " is a commandNode and cannot be added here!");
     }
 
@@ -216,20 +213,17 @@ public interface Node<T> extends Cloneable {
      * @param argumentQueue queue with the remaining unparsed Arguments
      * @param traceBuilder should be build while executing
      * @param data data to be passed to execute
-     * @return the final node
+     * @return the final node or null if node could not be found!
      */
     @DoNotOverride
     default Node<T> walk(Queue<String> argumentQueue, NodeTraceBuilder traceBuilder, CommandData data) {
         if(getCommandNode().isEmpty()) {
             //initialization error
-            return this;
+            throw new IllegalStateException("Node is not yet initialized!");
         }
         //rec
-        String argument = argumentQueue.poll();
-        final boolean last = argumentQueue.isEmpty();
         traceBuilder.append(this);
-        //code
-
+        final boolean last = argumentQueue.isEmpty();
         if (last) {
             getPermission().ifPresentOrElse(ingwerPermission -> {
                 if(data.commandSender().getPermissions().contains(ingwerPermission)) {
@@ -238,16 +232,20 @@ public interface Node<T> extends Cloneable {
                     Permissioned.lacking(data.commandSender(),ingwerPermission);
                 }
             },() -> execute(data,traceBuilder.build()));
-
             return this;
-            //last -> execute
-        }else {
+        }
+        String argument = argumentQueue.poll();
+
+        //code
+
+
             if(hasNodes()) {
                 boolean found = false;
                 for (Node node : Objects.requireNonNull(getNodes())) {
                     if(node.resembles(argument)) {
                         //found
                         found = true;
+                        getCommandNode().get().getLogger().info("walk: " + node + " for " + argument);
                         return node.walk(argumentQueue,traceBuilder,data);
                     }
                 }
@@ -256,8 +254,8 @@ public interface Node<T> extends Cloneable {
             }else {
                 getCommandNode().get().usage().accept(data,traceBuilder.build());
             }
-        }
-        throw new IllegalStateException("method reached dead code!");
+
+       return null;
     }
 
     /**

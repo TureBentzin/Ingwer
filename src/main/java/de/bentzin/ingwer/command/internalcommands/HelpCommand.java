@@ -11,6 +11,8 @@ import de.bentzin.ingwer.message.MiniMessageMessage;
 import de.bentzin.ingwer.message.MultipageMessageKeeper;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
+import de.bentzin.ingwer.thow.IngwerException;
+import de.bentzin.ingwer.thow.ThrowType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,13 +60,25 @@ public class HelpCommand extends IngwerCommand {
 
     protected String trimDescription(@NotNull IngwerCommand ingwerCommand) {
         int length = ingwerCommand.getDescription().length() + ingwerCommand.getName().length();
-        int max = 37;
+        int max = 47;
         int sub = 5;
-        if (length > max) {
-            return ingwerCommand.getDescription().substring(0, max - sub) + "...";
-        } else
-            return ingwerCommand.getDescription();
+        int cut = (max - sub) - ingwerCommand.getName().length();
+        if(cut < 0) {
+            cut = 0;
+        }
+        //failsave
+        if(cut > ingwerCommand.getDescription().length()) {
+            cut = ingwerCommand.getDescription().length();
+        }
+        try {
+            if (length > max) {
+                return ingwerCommand.getDescription().substring(0, cut) + "...";
+            } else
+                return ingwerCommand.getDescription();
 
+        }catch (Exception e) {
+            throw new IngwerException("text: " + ingwerCommand.getDescription() + " --- length: " + ingwerCommand.getDescription().length(), e, ThrowType.GENERAL);
+        }
     }
 
     @Override
