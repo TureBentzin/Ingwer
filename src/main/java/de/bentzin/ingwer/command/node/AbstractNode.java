@@ -59,6 +59,7 @@ public abstract class AbstractNode<T> implements Node<T>{
     }
 
     @Override
+    @DoNotOverride
     public String toString() {
         if(hasNodes())
             return getName() + "<" + getNodes().size() + ">";

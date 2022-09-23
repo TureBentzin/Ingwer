@@ -4,18 +4,25 @@ import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommand;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.CommandData;
-import org.checkerframework.checker.initialization.qual.UnknownInitialization;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-
+/**
+ * used for node based commands
+ */
 public class IngwerNodeCommand extends IngwerCommand {
     private final CommandNode commandNode;
 
     private final CommandTarget[] commandTargets;
 
+    /**
+     * @implNote Only used if there is a custom implemented commandNode
+     * @param commandTargets targets
+     * @param commandNode the custom node
+     * @see IngwerNodeCommand#IngwerNodeCommand(CommandTarget[], String, String, Node.NodeExecutor)
+     */
     public IngwerNodeCommand(@NotNull CommandTarget @NotNull[] commandTargets, @NotNull CommandNode commandNode) {
         super(commandNode.getCommandName(), commandNode.getDescription());
         this.commandNode = commandNode;

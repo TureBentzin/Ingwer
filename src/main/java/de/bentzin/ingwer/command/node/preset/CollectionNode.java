@@ -1,5 +1,6 @@
 package de.bentzin.ingwer.command.node.preset;
 
+import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.node.AbstractNode;
 import de.bentzin.ingwer.command.node.CommandNode;
 import de.bentzin.ingwer.command.node.NodeTrace;
@@ -87,4 +88,5 @@ public abstract class CollectionNode<E> extends AbstractNode<E> {
     public void initialize(@NotNull CommandNode commandNode) {
         this.commandNode = Optional.of(commandNode);
     }
+
 }
