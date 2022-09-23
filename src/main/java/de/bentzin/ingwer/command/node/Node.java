@@ -70,6 +70,7 @@ public interface Node<T> extends Cloneable {
      *
      * @return if this has nodes below
      */
+    @DoNotOverride
     default boolean hasNodes() {
         return getNodes() != null;
     }

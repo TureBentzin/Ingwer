@@ -18,18 +18,18 @@ public class NodeTestCommand extends IngwerNodeCommand {
         getCommandNode(
         ).append(new ArgumentNode("test1") {
                      @Override
-                     public void execute(CommandData commandData, NodeTrace nodeTrace) {
+                     public void execute(CommandData commandData, NodeTrace nodeTrace, String s) {
                          new StraightLineStringMessage("test 1: " + nodeTrace).send(commandData.commandSender());
                      }
                  }
         ).append(new ArgumentNode("text") {
                     @Override
-                    public void execute(CommandData commandData, NodeTrace nodeTrace) {
+                    public void execute(CommandData commandData, NodeTrace nodeTrace,String s) {
                         new StraightLineStringMessage("Michael!").send(commandData.commandSender());
                     }
                 }.append(new ArgumentNode("inner") {
                     @Override
-                    public void execute(CommandData commandData, NodeTrace nodeTrace) {
+                    public void execute(CommandData commandData, NodeTrace nodeTrace, String s) {
                         new StraightLineStringMessage("LOL").send(commandData.commandSender());
                     }
                 })

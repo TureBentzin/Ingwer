@@ -22,86 +22,40 @@ import static de.bentzin.ingwer.command.node.Node.checkCommandNodeAndThrow;
  * @see Node
  * @see Permissioned
  */
-public abstract class SimpleNode<T> implements Node<T> {
+public abstract class SimpleNode<T> extends AbstractNode<T> {
 
-    private final String name;
-    private final ArrayList<Node> nodes;
     private final List<String> values;
 
     private Optional<CommandNode> commandNode;
 
     public SimpleNode(String name, ArrayList<Node> nodes, ArrayList<String> values) {
-        this.name = name;
-        this.nodes = nodes;
+        super(name,nodes);
         this.values = values;
         commandNode = Optional.empty();
     }
 
     public SimpleNode(String name, ArrayList<String> values) {
-        this.name = name;
+        super(name);
         this.values = values;
-        this.nodes = new ArrayList<>();
         commandNode = Optional.empty();
     }
 
     public SimpleNode(String name, ArrayList<Node> nodes, String... values) {
-        this.name = name;
-        this.nodes = nodes;
+        super(name,nodes);
         this.values = List.of(values);
         commandNode = Optional.empty();
     }
 
     public SimpleNode(String name, String... values) {
-        this.name = name;
+        super(name);
         this.values = List.of(values);
-        this.nodes = new ArrayList<>();
         commandNode = Optional.empty();
     }
 
-    /**
-     * Adds the given node to the level below this node
-     *
-     * @param node the given node
-     * @return this
-     * @throws IllegalArgumentException if this does not accept a node
-     * @implNote Make sure that no CommandNode is added here
-     */
-    @Override
-    public Node append(Node node) throws IllegalArgumentException {
-        checkCommandNodeAndThrow(node);
-        nodes.add(node);
-        return this;
-    }
-
-    /**
-     * @return all nodes contained (or below) this node. Should be null if there is no node below this
-     * @implNote changes on the here given collection should never affect future requests
-     */
-    @Override
-    public @Nullable Collection<Node> getNodes() {
-        if (nodes.isEmpty()) {
-            return null;
-        }
-        return nodes;
-    }
 
     @Override
     public Collection<String> values() {
         return values;
-    }
-
-    @Override
-    public String toString() {
-        return name + "<" + nodes.size() + ">";
-    }
-
-    /**
-     * @return for this trace unique name
-     * @implNote the CommandNode at the top of a trace always returns "root"
-     */
-    @Override
-    public @NotNull String getName() {
-        return name;
     }
 
     /**
@@ -121,7 +75,7 @@ public abstract class SimpleNode<T> implements Node<T> {
      * @see this#getCommandNode()
      */
     @Override
-    public void initialize(CommandNode commandNode) {
+    public void initialize(@NotNull CommandNode commandNode) {
         this.commandNode = Optional.of(commandNode);
     }
 }

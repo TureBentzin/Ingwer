@@ -71,6 +71,15 @@ public class NodeTrace {
         nodes.clear();
     }
 
+    public Node last() {
+        return nodes.get(nodes.size() - 1);
+    }
+
+
+    public Node first() {
+        return nodes.get(0);
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
