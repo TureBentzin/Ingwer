@@ -11,6 +11,9 @@ import java.util.Arrays;
 
 /**
  * used for node based commands
+ *
+ * use {@link IngwerNodeCommand#getCommandNode()} to write command.
+ * Don't forget to initialize command with {@link CommandNode#finish()}
  */
 public class IngwerNodeCommand extends IngwerCommand {
     private final CommandNode commandNode;
@@ -43,7 +46,7 @@ public class IngwerNodeCommand extends IngwerCommand {
     }
 
     /**
-     * Access the CommandNod
+     * Access the CommandNode
      * @return commandNode
      */
     protected final CommandNode getCommandNode() {
