@@ -8,6 +8,8 @@ import de.bentzin.ingwer.utils.StopCode;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.UUID;
+
 public final class IngwerPlugin extends JavaPlugin {
 
 

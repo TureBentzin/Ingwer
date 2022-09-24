@@ -4,3 +4,4 @@ main: de.bentzin.ingwer.IngwerPlugin
 api-version: 1.15
 authors: [Ture Bentzin]
 description: Ingwer ${ingwer.status}
+softdepend: ["Vault"]

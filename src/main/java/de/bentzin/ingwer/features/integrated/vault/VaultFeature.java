@@ -64,7 +64,7 @@ public class VaultFeature extends SimpleFeature {
             return false;
         }
         econ = rsp.getProvider();
-        return econ != null;
+        return true;
     }
 
     private boolean setupChat() {
@@ -72,8 +72,11 @@ public class VaultFeature extends SimpleFeature {
             return false;
         }
         RegisteredServiceProvider<Chat> rsp = Ingwer.javaPlugin.getServer().getServicesManager().getRegistration(Chat.class);
+        if (rsp == null) {
+            return false;
+        }
         chat = rsp.getProvider();
-        return chat != null;
+        return true;
     }
 
     private boolean setupPermissions() {
@@ -81,8 +84,9 @@ public class VaultFeature extends SimpleFeature {
             return false;
         }
         RegisteredServiceProvider<Permission> rsp = Ingwer.javaPlugin.getServer().getServicesManager().getRegistration(Permission.class);
+        if (rsp == null) return true;
         perms = rsp.getProvider();
-        return perms != null;
+        return true;
     }
 
     public boolean isVault() {

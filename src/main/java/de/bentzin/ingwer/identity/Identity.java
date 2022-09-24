@@ -11,10 +11,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Identity implements IngwerCommandSender {
 
@@ -36,6 +33,20 @@ public class Identity implements IngwerCommandSender {
     public static void refresh() {
         IDENTITY_SET.clear();
         IDENTITY_SET.addAll(Ingwer.getStorage().getIdentities());
+    }
+
+    public static UUID getUUIDOrNull(IngwerCommandSender sender) {
+        UUID uuid;
+        if (sender instanceof Identity identity) {
+            uuid = identity.getUUID();
+        } else {
+            uuid = null;
+        }
+        return uuid;
+    }
+
+    public static Optional<UUID> getUUIDOptional(IngwerCommandSender sender) {
+        return Optional.ofNullable(getUUIDOrNull(sender));
     }
 
     @Contract(pure = true)
