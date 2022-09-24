@@ -4,12 +4,15 @@ import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.node.AbstractNode;
 import de.bentzin.ingwer.command.node.CommandNode;
 import de.bentzin.ingwer.command.node.NodeTrace;
+import de.bentzin.ingwer.utils.CompletableOptional;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import org.jetbrains.annotations.NotNull;
 
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -19,7 +22,7 @@ public abstract class CollectionNode<E> extends AbstractNode<E> {
     private final Supplier<Collection<E>> collectionSupplier;
     private final Function<E, String> converter;
 
-    private Optional<CommandNode> commandNode;
+    private final CompletableOptional<CommandNode> commandNode = new CompletableOptional<>();
 
     public CollectionNode(String name, Supplier<Collection<E>> supplier, Function<E,String> converter) {
         super(name);
@@ -75,7 +78,7 @@ public abstract class CollectionNode<E> extends AbstractNode<E> {
      * @implNote is present after the nodeTree was initialized by the CommandNode
      */
     @Override
-    public @MaybePresent Optional<CommandNode> getCommandNode() {
+    public CompletableOptional<CommandNode> getCommandNode() {
         return commandNode;
     }
 
@@ -86,7 +89,7 @@ public abstract class CollectionNode<E> extends AbstractNode<E> {
      */
     @Override
     public void initialize(@NotNull CommandNode commandNode) {
-        this.commandNode = Optional.of(commandNode);
+        this.commandNode.complete(commandNode);
     }
 
 }

@@ -1,11 +1,16 @@
 package de.bentzin.ingwer.command.node;
+import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommand;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.node.preset.UsageNodeExecutor;
 import de.bentzin.ingwer.logging.Logger;
+import de.bentzin.ingwer.thow.IngwerThrower;
+import de.bentzin.ingwer.utils.CompletableOptional;
+import de.bentzin.ingwer.utils.FinalCompletableOptional;
 import org.checkerframework.checker.optional.qual.MaybePresent;
+import org.checkerframework.checker.units.qual.C;
 import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -14,6 +19,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 /**
  * Entry point of command building
@@ -133,7 +141,13 @@ public abstract class CommandNode implements Node<String>{
         else {
             throw new IllegalStateException("cant match commandNode and commandName");
         }
-        return walk(argumentQueue,nodeTraceBuilder,data);
+        try {
+            return walk(argumentQueue,nodeTraceBuilder,data);
+        } catch (Exception e){
+            IngwerThrower.acceptS(e);
+        }
+
+        return this;
     }
 
     @Override
@@ -170,8 +184,8 @@ public abstract class CommandNode implements Node<String>{
     }
 
     @Override
-    public @MaybePresent Optional<CommandNode> getCommandNode() {
-        return Optional.of(this);
+    public CompletableOptional<CommandNode> getCommandNode() {
+        return new FinalCompletableOptional<>(this);
     }
 
     public Logger getLogger() {

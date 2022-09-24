@@ -2,10 +2,13 @@ package de.bentzin.ingwer.command.node;
 
 import com.google.common.annotations.Beta;
 import com.google.common.reflect.TypeToken;
+import com.google.errorprone.annotations.ForOverride;
 import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
+import de.bentzin.ingwer.utils.CompletableOptional;
 import de.bentzin.ingwer.utils.DoNotOverride;
+import org.apache.commons.lang.NotImplementedException;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +17,9 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -98,8 +104,6 @@ public interface Node<T> extends Cloneable {
             return true;
         }catch (InvalidParameterException ignored) {
             return false;
-        }finally {
-
         }
     }
 
@@ -109,6 +113,7 @@ public interface Node<T> extends Cloneable {
      * @param nodeTrace trace to this (last)
      */
 
+    @ForOverride
     void execute(CommandData commandData, NodeTrace nodeTrace);
 
     /**
@@ -131,8 +136,9 @@ public interface Node<T> extends Cloneable {
 
     /**
      * @return a collection of all values the Node should react to. This may only contain one value!
-     * @implNote values needs to contain at least one String
+     * @implNote values needs to contain at least one String. Should never be used for checking use {@link Node#resembles(String)} instead
      */
+    @ForOverride
     Collection<String> values();
 
     default boolean singleValued() {
@@ -141,10 +147,20 @@ public interface Node<T> extends Cloneable {
 
     /**
      *
+     * @return if the {@link Node#values()} does not return all possible values. (Only used if the amount of possible values is too big to handle)
+     * @implNote if you return true here, you should override {@link Node#resembles(String)} and {@link Node#singleValued()}
+     */
+    default boolean uncertainValues() {return false;}
+
+    /**
+     *
      * @param value the value to check
      * @return if this nodes values contain the given value
      */
     default boolean resembles(String value) {
+        if(uncertainValues()) {
+            throw new NotImplementedException("an internal error accord while checking \"" + value + "\" for node " + getName() + " : Seems like the resembles(String) method does not support uncertain values! Please report this issue!");
+        }
         return values().contains(value);
     }
 
@@ -155,8 +171,7 @@ public interface Node<T> extends Cloneable {
      * Its also even possible that the CommandNode can generate Nodes for you (checkout the preset package here)
      * @implNote is present after the nodeTree was initialized by the CommandNode
      */
-    @MaybePresent
-    Optional<CommandNode> getCommandNode();
+    CompletableOptional<CommandNode> getCommandNode();
 
     /**
      *
@@ -217,8 +232,8 @@ public interface Node<T> extends Cloneable {
      * @return the final node or null if node could not be found!
      */
     @DoNotOverride
-    default Node<T> walk(Queue<String> argumentQueue, NodeTraceBuilder traceBuilder, CommandData data) {
-        if(getCommandNode().isEmpty()) {
+    default Node<T> walk(Queue<String> argumentQueue, NodeTraceBuilder traceBuilder, CommandData data) throws ExecutionException, InterruptedException {
+        if(!getCommandNode().isEmpty()) {
             //initialization error
             throw new IllegalStateException("Node is not yet initialized!");
         }
@@ -246,14 +261,14 @@ public interface Node<T> extends Cloneable {
                     if(node.resembles(argument)) {
                         //found
                         found = true;
-                        getCommandNode().get().getLogger().info("walk: " + node + " for " + argument);
+                        getCommandNode().getOrThrow().getLogger().info("walk: " + node + " for " + argument);
                         return node.walk(argumentQueue,traceBuilder,data);
                     }
                 }
-                getCommandNode().get().usage().accept(data,traceBuilder.build());
+                getCommandNode().getOrThrow().usage().accept(data,traceBuilder.build());
 
             }else {
-                getCommandNode().get().usage().accept(data,traceBuilder.build());
+                getCommandNode().getOrThrow().usage().accept(data,traceBuilder.build());
             }
 
        return null;

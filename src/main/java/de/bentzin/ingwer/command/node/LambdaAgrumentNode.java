@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class LambdaAgrumentNode extends ArgumentNode{
 
@@ -79,7 +80,13 @@ public class LambdaAgrumentNode extends ArgumentNode{
      */
    @Nullable
     public NodeExecutor getNodeExecutor() {
-        return nodeExecutor;
+       try {
+           return nodeExecutor;
+       }catch (Exception nodeExecutor) {
+           nodeExecutor.printStackTrace();;
+       }
+       return null;
+
     }
 
     /**

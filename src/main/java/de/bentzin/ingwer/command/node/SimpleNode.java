@@ -1,6 +1,7 @@
 package de.bentzin.ingwer.command.node;
 
 import de.bentzin.ingwer.command.ext.Permissioned;
+import de.bentzin.ingwer.utils.CompletableOptional;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import static de.bentzin.ingwer.command.node.Node.checkCommandNodeAndThrow;
 
@@ -26,30 +29,26 @@ public abstract class SimpleNode<T> extends AbstractNode<T> {
 
     private final List<String> values;
 
-    private Optional<CommandNode> commandNode;
+    private final CompletableOptional<CommandNode> commandNode = new CompletableOptional<>();
 
     public SimpleNode(String name, ArrayList<Node> nodes, ArrayList<String> values) {
         super(name,nodes);
         this.values = values;
-        commandNode = Optional.empty();
     }
 
     public SimpleNode(String name, ArrayList<String> values) {
         super(name);
         this.values = values;
-        commandNode = Optional.empty();
     }
 
     public SimpleNode(String name, ArrayList<Node> nodes, String... values) {
         super(name,nodes);
         this.values = List.of(values);
-        commandNode = Optional.empty();
     }
 
     public SimpleNode(String name, String... values) {
         super(name);
         this.values = List.of(values);
-        commandNode = Optional.empty();
     }
 
 
@@ -65,7 +64,7 @@ public abstract class SimpleNode<T> extends AbstractNode<T> {
      * Its also even possible that the CommandNode can generate Nodes for you (checkout the preset package here)
      */
     @Override
-    public @MaybePresent Optional<CommandNode> getCommandNode() {
+    public CompletableOptional<CommandNode> getCommandNode() {
         return commandNode;
     }
 
@@ -76,6 +75,6 @@ public abstract class SimpleNode<T> extends AbstractNode<T> {
      */
     @Override
     public void initialize(@NotNull CommandNode commandNode) {
-        this.commandNode = Optional.of(commandNode);
+        this.commandNode.complete(commandNode);
     }
 }
