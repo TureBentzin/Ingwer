@@ -230,7 +230,7 @@ public interface Node<T> extends Cloneable {
      */
     @DoNotOverride
     default Node<T> walk(Queue<String> argumentQueue, NodeTraceBuilder traceBuilder, CommandData data) throws ExecutionException, InterruptedException {
-        if (!getCommandNode().isEmpty()) {
+        if (getCommandNode().isEmpty()) {
             //initialization error
             throw new IllegalStateException("Node is not yet initialized!");
         }
