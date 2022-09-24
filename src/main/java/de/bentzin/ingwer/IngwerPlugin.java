@@ -7,10 +7,6 @@ import de.bentzin.ingwer.preferences.StartType;
 import de.bentzin.ingwer.utils.StopCode;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.logging.Filter;
-import java.util.logging.LogRecord;
 
 public final class IngwerPlugin extends JavaPlugin {
 

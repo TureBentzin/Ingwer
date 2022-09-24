@@ -45,8 +45,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
     }
 
     @ApiStatus.Internal
-    @Nullable
-    protected IngwerCommand getByName(String name) {
+    @Nullable IngwerCommand getByName(String name) {
         IngwerCommand ingwerCommand = null;
         for (IngwerCommand command : this) {
             if (command.getName().equalsIgnoreCase(name)) {
@@ -82,7 +81,8 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
     }
 
 
-    protected @NotNull String saveRemoveFirst(@NotNull String s, char query) {
+    @NotNull
+    private String saveRemoveFirst(@NotNull String s, char query) {
         StringBuilder builder = new StringBuilder();
         char[] chars = s.toCharArray();
         boolean first = true;
@@ -127,7 +127,7 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
                 } else {
                     logger.info(sender.getName() + " tried to execute command without permissions: " + input);
                     if (p != null) {
-                        sender.sendMessage("Lacking permission: " + p.getPermission().name());
+                        Permissioned.lacking(sender, p.getPermission());
                     }
                 }
 

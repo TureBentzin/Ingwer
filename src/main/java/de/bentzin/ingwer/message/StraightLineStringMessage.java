@@ -20,7 +20,7 @@ public class StraightLineStringMessage implements OneLinedMessage {
     @Override
     public void send(@NotNull CommandSender recipient) {
         recipient.sendMessage(component);
-        log(recipient.getName(), message);
+        log(recipient.getName(), IngwerMessage.deserializePlain(component));
     }
 
     @Override
@@ -28,7 +28,7 @@ public class StraightLineStringMessage implements OneLinedMessage {
         if (recipient instanceof Identity) {
             recipient.sendOneLinedMessage(this);
         }
-        log(recipient.getName(), message);
+        log(recipient.getName(), IngwerMessage.deserializePlain(component));
     }
 
 

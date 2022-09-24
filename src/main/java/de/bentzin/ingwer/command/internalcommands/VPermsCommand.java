@@ -7,6 +7,7 @@ import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
+import org.jetbrains.annotations.NotNull;
 
 public class VPermsCommand extends IngwerCommand implements Permissioned {
 
@@ -26,7 +27,7 @@ public class VPermsCommand extends IngwerCommand implements Permissioned {
     }
 
     @Override
-    public IngwerPermission getPermission() {
+    public @NotNull IngwerPermission getPermission() {
         return IngwerPermission.ADMIN;
     }
 }

@@ -82,7 +82,7 @@ public class FeatureCommand extends IngwerCommand implements Permissioned {
     }
 
     @Override
-    public IngwerPermission getPermission() {
+    public @NotNull IngwerPermission getPermission() {
         return IngwerPermission.SUPERADMIN;
     }
 }

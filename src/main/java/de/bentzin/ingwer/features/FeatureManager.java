@@ -1,6 +1,8 @@
 package de.bentzin.ingwer.features;
 
 import de.bentzin.ingwer.Ingwer;
+import de.bentzin.ingwer.features.integrated.Log4JFeature;
+import de.bentzin.ingwer.features.integrated.vault.VaultFeature;
 import de.bentzin.ingwer.features.test.TestFeature;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.thow.ThrowType;
@@ -67,6 +69,8 @@ public final class FeatureManager extends Registerator<Feature> {
     public void registerInternalFeatures() {
         try {
             register(new TestFeature());
+            register(new Log4JFeature());
+            register(new VaultFeature());
         } catch (DuplicateEntryException e) {
             Ingwer.getIngwerThrower().accept(e, ThrowType.FEATURE);
         }

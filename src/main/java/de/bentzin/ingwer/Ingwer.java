@@ -35,12 +35,8 @@ import java.util.List;
 
 public final class Ingwer {
 
-    public static JavaPlugin javaPlugin;
-
     //TODO dynamic
-    public static final String VERSION_STRING = "0.3-BETA";
-
-
+    public static final String VERSION_STRING = "0.4-BETA";
     public static final String BANNER = "\n" +
             "██╗███╗░░██╗░██████╗░░██╗░░░░░░░██╗███████╗██████╗░\n" +
             "██║████╗░██║██╔════╝░░██║░░██╗░░██║██╔════╝██╔══██╗\n" +
@@ -49,7 +45,7 @@ public final class Ingwer {
             "██║██║░╚███║╚██████╔╝░░╚██╔╝░╚██╔╝░███████╗██║░░██║\n" +
             "╚═╝╚═╝░░╚══╝░╚═════╝░░░░╚═╝░░░╚═╝░░╚══════╝╚═╝░░╚═╝\n" +
             "Ingwer v." + VERSION_STRING + " by Ture Bentzin \n";
-
+    public static JavaPlugin javaPlugin;
     @UnknownNullability
     private static Preferences preferences;
     private static IngwerThrower ingwerThrower;
@@ -98,93 +94,110 @@ public final class Ingwer {
     }
 
     public static void start(@NotNull Preferences preferences) {
-        Ingwer.preferences = preferences;
-
-        setLogger(preferences.ingwerLogger());
-        getLogger().setDebug(getPreferences().debug());
-
-        //Console
-        Console.silent = !preferences.debug();
-
-        getLogger().info("Booting Ingwer v." + VERSION_STRING);
-        javaPlugin = preferences.javaPlugin();
-
-
-        getLogger().cosmetic(BANNER);
-
-        //Boot
-        ingwerThrower = new IngwerThrower();
-
         try {
-            storage = new Sqlite();
-        } catch (URISyntaxException | IOException e) {
-            getIngwerThrower().accept(e);
-        } catch (SQLException e) {
-            getIngwerThrower().accept(e, ThrowType.STORAGE);
+
+            Ingwer.preferences = preferences;
+
+            setLogger(preferences.ingwerLogger());
+            getLogger().setDebug(getPreferences().debug());
+
+            //Console
+            Console.silent = !preferences.debug();
+
+            getLogger().info("Booting Ingwer v." + VERSION_STRING);
+            javaPlugin = preferences.javaPlugin();
+
+
+            getLogger().cosmetic(BANNER);
+
+            //Boot
+            ingwerThrower = new IngwerThrower();
+
+            try {
+                storage = new Sqlite();
+            } catch (URISyntaxException | IOException e) {
+                getIngwerThrower().accept(e);
+            } catch (SQLException e) {
+                getIngwerThrower().accept(e, ThrowType.STORAGE);
+            }
+
+            if (LogManager.getRootLogger().isDebugEnabled())
+                logger.warning("Log4J Debugger is enabled!");
+
+
+            if (preferences.hasCustomSqliteLocation())
+                getStorage().setDb(preferences.custom_sqliteLocation());
+
+            featureManager = new FeatureManager();
+            commandManager = new IngwerCommandManager();
+            messageManager = new IngwerMessageManager();
+            commandReturnSystem = new CommandReturnSystem(getLogger());
+
+
+            final org.apache.logging.log4j.core.Logger rootLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
+
+            rootLogger.addFilter(new IngwerLog4JFilter());
+
+            getFeatureManager().registerInternalFeatures();
+            getFeatureManager().findFeatures();
+
+            //END: Boot
+            printLEGAL(getLogger().adopt("LEGAL"));
+
+            //process
+            Identity.refresh();
+            //noinspection ResultOfMethodCallIgnored
+            createSuperAdmin(preferences);
+
+
+            if (javaPlugin != null) {
+                registerPaperListeners();
+            } else {
+                logger.warning("javaPlugin is null!");
+                stop(StopCode.FATAL);
+                return;
+            }
+
+            //internalCommands
+            new HelpCommand(getCommandManager());
+            new IngwerCommand();
+            new SayCommand();
+            new PromoteCommand();
+            new DemoteCommand();
+            new ChatCommand();
+            new VPermsCommand();
+            new FeatureCommand(getFeatureManager());
+            new OpCommand();
+            new ThreadsCommand();
+
+            //node
+            new NodeTestCommand();
+
+            getLogger().info("completed boot of Ingwer!");
+
+            //maliciousConfig();
+        }catch (Throwable throwable) {
+            IngwerThrower.acceptS(throwable,ThrowType.GENERAL);
         }
-
-        if (LogManager.getRootLogger().isDebugEnabled())
-            logger.warning("Log4J Debugger is enabled!");
-
-
-        if (preferences.hasCustomSqliteLocation())
-            getStorage().setDb(preferences.custom_sqliteLocation());
-
-        featureManager = new FeatureManager();
-        commandManager = new IngwerCommandManager();
-        messageManager = new IngwerMessageManager();
-        commandReturnSystem = new CommandReturnSystem(getLogger());
-
-
-        org.apache.logging.log4j.core.Logger logger1 = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
-
-        logger1.addFilter(new IngwerLog4JFilter());
-
-        getFeatureManager().registerInternalFeatures();
-        getFeatureManager().findFeatures();
-
-        //END: Boot
-        printLEGAL(getLogger().adopt("LEGAL"));
-
-        //process
-        Identity.refresh();
-        //noinspection ResultOfMethodCallIgnored
-        createSuperAdmin(preferences);
-
-
-        if (javaPlugin != null) {
-            registerPaperListeners();
-        } else {
-            logger.warning("javaPlugin is null!");
-        }
-
-        //internalCommands
-        new HelpCommand(getCommandManager());
-        new IngwerCommand();
-        new SayCommand();
-        new PromoteCommand();
-        new DemoteCommand();
-        new ChatCommand();
-        new VPermsCommand();
-        new FeatureCommand(getFeatureManager());
-        new ThreadsCommand();
-
-        getLogger().info("completed boot of Ingwer!");
-
-        //maliciousConfig();
     }
 
     public static void stop(@NotNull StopCode stopCode) {
         logger.info("Stopping Ingwer: " + stopCode.name());
 
+        if (stopCode.equals(StopCode.FATAL)) {
+            logger.error("Fatal error accord that prohibits Ingwer from remaining in service. Watch out for errors or warnings registered before Ingwers shutdown procedure! You may report this error to Ingwer on GitHub!");
+        }
+
         logger.info("cleaning...");
         getCommandManager().clear();
         getFeatureManager().clear();
 
-        logger.info("disconnecting...");
+        logger.info("closing storage connection...");
         getStorage().close();
 
-        javaPlugin.getLogger().warning(javaPlugin.getName() + " does not support reloading!");
+        if (!stopCode.equals(StopCode.FATAL)) {
+            javaPlugin.getLogger().warning(javaPlugin.getName() + " may not support reloading!");
+        }
         // Bukkit.getServer().spigot().restart();
 
     }
@@ -198,7 +211,7 @@ public final class Ingwer {
     }
 
 
-    protected static @NotNull String printLEGAL(@NotNull Logger logger) {
+    private static @NotNull String printLEGAL(@NotNull Logger logger) {
         String legal =
                 "\n ------------------------------------------------------------------------------------------------------------------ \n" +
                         "   Ingwer v." + VERSION_STRING + " by Ture Bentzin \n" +

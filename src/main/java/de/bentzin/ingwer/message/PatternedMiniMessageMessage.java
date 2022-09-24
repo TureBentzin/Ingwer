@@ -21,10 +21,10 @@ import java.util.Set;
  */
 public class PatternedMiniMessageMessage implements CompletableMessage {
 
-    private final int patternCount;
     final Set<String> patternQueries;
+    private final int patternCount;
     private String miniMessage;
-
+    private boolean origin = false;
 
     public PatternedMiniMessageMessage(String miniMessage, int patternCount) {
         this.miniMessage = miniMessage;
@@ -90,6 +90,15 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
         return new MiniMessageMessage(miniMessage);
     }
 
+    /**
+     * @implNote origin() sets the message to a state where it cant be completed. To complete it, you need to call clone();
+     */
+    @Override
+    public PatternedMiniMessageMessage origin() {
+        origin = true;
+        return this;
+    }
+
     public int getPatternCount() {
         return patternCount;
     }
@@ -111,11 +120,15 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
         return remaining;
     }
 
+    @Contract(mutates = "this")
     @Irreversible
-    public void insert(int query, String insertion) {
+    public PatternedMiniMessageMessage insert(int query, String insertion) {
+        checkOriginAndThrow();
         miniMessage = miniMessage.replace(generateQuery(query), insertion);
+        return this;
     }
 
+    @Contract(mutates = "this")
     @Irreversible
     public void deleteRemainingQueries() {
         getRemainingPatterns().forEach(s -> {
@@ -125,6 +138,20 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
                 IngwerThrower.acceptS(e, ThrowType.MESSAGE);
             }
         });
+    }
+
+    @Override
+    public PatternedMiniMessageMessage clone() {
+        try {
+            super.clone();
+        } catch (CloneNotSupportedException ignored) {
+        }
+        return new PatternedMiniMessageMessage(miniMessage, patternCount);
+    }
+
+    @Override
+    public boolean isOrigin() {
+        return origin;
     }
 
     public static class ResolutionException extends Exception {

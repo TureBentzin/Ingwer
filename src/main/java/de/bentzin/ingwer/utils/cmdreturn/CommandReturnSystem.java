@@ -32,7 +32,7 @@ public final class CommandReturnSystem {
 
     }
 
-    protected Logger getLogger() {
+    private Logger getLogger() {
         return logger;
     }
 

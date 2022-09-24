@@ -7,6 +7,8 @@ import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.message.MiniMessageMessage;
+import de.bentzin.ingwer.thow.IngwerThrower;
+import de.bentzin.ingwer.thow.ThrowType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.server.TabCompleteEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,47 +32,46 @@ public class PaperEventListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onChat(@NotNull AsyncPlayerChatEvent event) { //TODO: Switch to AsyncChatEvent
-        Player player = event.getPlayer();
-        Identity identity = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
-        if (identity != null) {
-            if (identity.isEnabled()) {
-                if (AUTHORIZED.contains(event.getMessage())) {
-                    AUTHORIZED.remove(event.getMessage());
-                    return;
+    public void onChat(@NotNull AsyncPlayerChatEvent event) {
+        try { //TODO: Switch to AsyncChatEvent
+            Player player = event.getPlayer();
+            Identity identity = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
+            if (identity != null) {
+                if (identity.isEnabled()) {
+                    if (AUTHORIZED.contains(event.getMessage())) {
+                        AUTHORIZED.remove(event.getMessage());
+                        return;
+                    }
+                    Ingwer.getCommandManager().preRunCommand(event.getMessage(), identity, CommandTarget.INGAME);
+                    event.setCancelled(event.getMessage().startsWith(Ingwer.getPreferences().prefix() + ""));
                 }
-                Ingwer.getCommandManager().preRunCommand(event.getMessage(), identity, CommandTarget.INGAME);
-                event.setCancelled(event.getMessage().startsWith(Ingwer.getPreferences().prefix() + ""));
             }
-        }
 
+        }catch (Throwable throwable) {
+            IngwerThrower.acceptS(throwable, ThrowType.EVENT);
+        }
     }
+
 
     @EventHandler
     public void onConnect(@NotNull PlayerLoginEvent event) {
-        Player player = event.getPlayer();
-        Identity identity = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
+        try {
+            Player player = event.getPlayer();
+            Identity identity = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
 
-        if (identity != null) {
-            logger.debug(identity.toString());
-            if (identity.getPermissions().contains(IngwerPermission.SUPERADMIN)) {
-                logger.info("SuperAdmin connecting: " + event.getPlayer().getName());
-                Ingwer.getStorage().updateIdentity(identity, player.getName(), player.getUniqueId(),
-                        new IngwerPermissions(IngwerPermission.values()));
+            if (identity != null) {
+                logger.debug(identity.toString());
+                if (identity.getPermissions().contains(IngwerPermission.SUPERADMIN)) {
+                    logger.info("SuperAdmin connecting: " + event.getPlayer().getName());
+                    Ingwer.getStorage().updateIdentity(identity, player.getName(), player.getUniqueId(),
+                            new IngwerPermissions(IngwerPermission.values()));
 
-            } else
-                Ingwer.getStorage().updateIdentity(identity, player.getName(), player.getUniqueId(), identity.getPermissions());
+                } else
+                    Ingwer.getStorage().updateIdentity(identity, player.getName(), player.getUniqueId(), identity.getPermissions());
+            }
+        }catch (Throwable throwable) {
+            IngwerThrower.acceptS(throwable, ThrowType.EVENT);
         }
     }
-
-    @EventHandler
-    public void onCommand(@NotNull PlayerCommandPreprocessEvent event) {
-        if (event.getMessage().equalsIgnoreCase("/michael")) {
-            new MiniMessageMessage("<rainbow>Michael! Michael! Michael! Michael!</rainbow>").send(event.getPlayer());
-            event.setMessage("removed message!");
-            event.setCancelled(true);
-        }
-    }
-
 
 }

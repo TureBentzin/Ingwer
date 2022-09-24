@@ -84,7 +84,7 @@ public class DemoteCommand extends IngwerCommand implements Permissioned, Comman
     }
 
     @Override
-    public IngwerPermission getPermission() {
+    public @NotNull IngwerPermission getPermission() {
         return IngwerPermission.SUPERADMIN;
     }
 }

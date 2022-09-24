@@ -1,14 +1,22 @@
 package de.bentzin.ingwer.utils;
 
 import de.bentzin.ingwer.Ingwer;
+import de.bentzin.ingwer.logging.SLF4JLogger;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
 
-public final class IngwerLog4JFilter implements Filter {
+public final class IngwerLog4JFilter extends LoggingClass implements Filter {
+    public IngwerLog4JFilter() {
+        super(new SLF4JLogger("filter4J", Ingwer.getLogger(), LoggerFactory.getLogger("filter4J")));
+        getLogger().info("successfully constructed!");
+    }
+
     @Override
     public Result getOnMismatch() {
         return null;
@@ -85,15 +93,16 @@ public final class IngwerLog4JFilter implements Filter {
     }
 
     @Override
-    public Result filter(LogEvent event) {
+    public Result filter(@NotNull LogEvent event) {
         //System.out.println(event.getMessage());
         String formattedMessage = event.getMessage().getFormattedMessage();
-        String[] split = formattedMessage.split(":", 2);
+
+        String[] split = formattedMessage.split(":");
         if (split.length != 2) {
             return Result.NEUTRAL;
         }
-        if (Ingwer.getCommandReturnSystem().check(split[1])) {
-            //System.out.println("deny: " + event.getMessage().getFormattedMessage());
+        if (Ingwer.getCommandReturnSystem().check(split[1].replace(" ", ""))) {
+            getLogger().warning("denied one message");
             return Result.DENY;
         }
         return Result.NEUTRAL;
@@ -101,7 +110,7 @@ public final class IngwerLog4JFilter implements Filter {
 
     @Override
     public State getState() {
-        return null;
+        return State.STARTED;
     }
 
     @Override

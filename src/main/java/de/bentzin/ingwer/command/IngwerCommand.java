@@ -16,22 +16,24 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public abstract class IngwerCommand {
 
+    protected final boolean valid;
     private final Logger logger;
     @NotNull
     private final String name;
     @Nullable
     private final String description;
-    protected final boolean valid;
 
     public IngwerCommand(@NotNull String name, @Nullable String description) {
         // this.logger = IngwerCommandManager.getInstance().getLogger().adopt(name);
         this.name = name;
         this.description = description;
+
         if (!IngwerCommandManager.getInstance().checkName(name)) {
             logger = Ingwer.getCommandManager().getLogger().adopt(name);
         } else {
@@ -55,17 +57,17 @@ public abstract class IngwerCommand {
         }
     }
 
-    public @NotNull String getName() {
+    public final @NotNull String getName() {
         return name;
     }
 
     @NotNull
-    public String getDescription() {
+    public final String getDescription() {
         if (description == null) return "";
         else return description;
     }
 
-    public @NotNull Logger getLogger() {
+    public final @NotNull Logger getLogger() {
         return logger;
     }
 
@@ -84,7 +86,8 @@ public abstract class IngwerCommand {
 
 
     @ApiStatus.Experimental
-    public <T extends IngwerCommand> Identity identityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, Consumer<Identity> action) {
+    @Nullable
+    public final <T extends IngwerCommand> Identity identityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, Consumer<Identity> action) {
         if (senderType.equals(CommandTarget.INGAME)) {
             if (commandSender instanceof Identity identity) {
                 action.accept(identity);
@@ -97,7 +100,7 @@ public abstract class IngwerCommand {
 
     @ApiStatus.Experimental
     @NotNull
-    public <T extends IngwerCommand> Pair<@Nullable Identity, @Nullable Player> identityPlayerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, String[] cmd, BiConsumer<Identity, Player> action) {
+    public final <T extends IngwerCommand> Pair<@Nullable Identity, @Nullable Player> identityPlayerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, String[] cmd, BiConsumer<Identity, Player> action) {
         StraightLineStringMessage specify_online_player = new StraightLineStringMessage("Please specify an online Player!");
         if (senderType.equals(CommandTarget.INGAME)) {
             if (commandSender instanceof Identity identity) {
@@ -123,7 +126,7 @@ public abstract class IngwerCommand {
 
     @ApiStatus.Experimental
     @NotNull
-    public <T extends IngwerCommand> Pair<@Nullable Identity, @Nullable Identity> identityIdentityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, String[] cmd, BiConsumer<Identity, Identity> action) {
+    public final <T extends IngwerCommand> Pair<@Nullable Identity, @Nullable Identity> identityIdentityCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, String[] cmd, BiConsumer<Identity, Identity> action) {
         StraightLineStringMessage specify_user_name = new StraightLineStringMessage("Please specify a valid user_name!");
         if (senderType.equals(CommandTarget.INGAME)) {
             if (commandSender instanceof Identity identity) {
@@ -145,6 +148,23 @@ public abstract class IngwerCommand {
             }
         }
         return Pair.of(null, null);
+    }
+
+
+    /**
+     * @param action player and identity of commandSender
+     * @return player and identity of commandSender
+     * @implNote not depending on length or existence of arguments!!
+     */
+    @ApiStatus.Experimental
+    public final Pair<Player, Identity> playerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, BiConsumer<Player, Identity> action) {
+        AtomicReference<Player> player = new AtomicReference<>();
+        Identity identity = identityCommand(commandSender, senderType, (id) -> {
+            player.set(Bukkit.getPlayer(id.getUUID()));
+        });
+        if (identity == null || player.get() == null) return null;
+        action.accept(player.get(), identity);
+        return Pair.of(player.get(), identity);
     }
 
 }

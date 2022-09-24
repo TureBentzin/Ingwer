@@ -42,7 +42,7 @@ SudoConsoleCommand extends IngwerCommand implements Permissioned {
     }
 
     @Override
-    public IngwerPermission getPermission() {
+    public @NotNull IngwerPermission getPermission() {
         return feature.generalUsePermission();
     }
 }

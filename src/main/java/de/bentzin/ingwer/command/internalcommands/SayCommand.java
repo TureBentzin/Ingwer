@@ -39,7 +39,7 @@ public class SayCommand extends IngwerCommand implements Permissioned, CommandUt
     }
 
     @Override
-    public IngwerPermission getPermission() {
+    public @NotNull IngwerPermission getPermission() {
         return IngwerPermission.TRUST;
     }
 }

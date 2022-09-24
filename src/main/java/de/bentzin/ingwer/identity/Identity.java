@@ -26,6 +26,7 @@ public class Identity implements IngwerCommandSender {
     private final String name;
     private final UUID uuid;
     private final IngwerPermissions permissions;
+
     public Identity(String name, UUID uuid, IngwerPermissions permissions) {
         this.name = name;
         this.uuid = uuid;
@@ -112,12 +113,11 @@ public class Identity implements IngwerCommandSender {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Identity{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", uuid=").append(uuid);
-        sb.append(", permissions=").append(permissions);
-        sb.append('}');
-        return sb.toString();
+        String sb = "Identity{" + "name='" + name + '\'' +
+                ", uuid=" + uuid +
+                ", permissions=" + permissions +
+                '}';
+        return sb;
     }
 
     @Override

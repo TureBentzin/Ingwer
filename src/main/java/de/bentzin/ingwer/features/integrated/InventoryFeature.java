@@ -112,7 +112,7 @@ public class InventoryFeature extends SimpleFeature {
         }
 
         @Override
-        public IngwerPermission getPermission() {
+        public @NotNull IngwerPermission getPermission() {
             return IngwerPermission.TRUST;
         }
     }

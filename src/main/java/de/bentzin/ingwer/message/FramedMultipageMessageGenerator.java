@@ -56,7 +56,7 @@ public class FramedMultipageMessageGenerator {
     }
 
     /**
-     * @param page the page
+     * @param page    the page
      * @param maxPage the last page of this block
      * @return footer
      */
