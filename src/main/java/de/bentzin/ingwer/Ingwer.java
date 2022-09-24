@@ -35,12 +35,8 @@ import java.util.List;
 
 public final class Ingwer {
 
-    public static JavaPlugin javaPlugin;
-
     //TODO dynamic
     public static final String VERSION_STRING = "0.3-BETA";
-
-
     public static final String BANNER = "\n" +
             "██╗███╗░░██╗░██████╗░░██╗░░░░░░░██╗███████╗██████╗░\n" +
             "██║████╗░██║██╔════╝░░██║░░██╗░░██║██╔════╝██╔══██╗\n" +
@@ -49,7 +45,7 @@ public final class Ingwer {
             "██║██║░╚███║╚██████╔╝░░╚██╔╝░╚██╔╝░███████╗██║░░██║\n" +
             "╚═╝╚═╝░░╚══╝░╚═════╝░░░░╚═╝░░░╚═╝░░╚══════╝╚═╝░░╚═╝\n" +
             "Ingwer v." + VERSION_STRING + " by Ture Bentzin \n";
-
+    public static JavaPlugin javaPlugin;
     @UnknownNullability
     private static Preferences preferences;
     private static IngwerThrower ingwerThrower;
@@ -183,7 +179,7 @@ public final class Ingwer {
     public static void stop(@NotNull StopCode stopCode) {
         logger.info("Stopping Ingwer: " + stopCode.name());
 
-        if(stopCode.equals(StopCode.FATAL)) {
+        if (stopCode.equals(StopCode.FATAL)) {
             logger.error("Fatal error accord that prohibits Ingwer from remaining in service. Watch out for errors or warnings registered before Ingwers shutdown procedure! You may report this error to Ingwer on GitHub!");
         }
 
@@ -194,7 +190,7 @@ public final class Ingwer {
         logger.info("closing storage connection...");
         getStorage().close();
 
-        if(!stopCode.equals(StopCode.FATAL)) {
+        if (!stopCode.equals(StopCode.FATAL)) {
             javaPlugin.getLogger().warning(javaPlugin.getName() + " does not support reloading!");
         }
         // Bukkit.getServer().spigot().restart();
@@ -210,7 +206,7 @@ public final class Ingwer {
     }
 
 
-    protected static @NotNull String printLEGAL(@NotNull Logger logger) {
+    private static @NotNull String printLEGAL(@NotNull Logger logger) {
         String legal =
                 "\n ------------------------------------------------------------------------------------------------------------------ \n" +
                         "   Ingwer v." + VERSION_STRING + " by Ture Bentzin \n" +

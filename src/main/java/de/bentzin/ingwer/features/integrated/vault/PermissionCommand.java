@@ -3,12 +3,6 @@ package de.bentzin.ingwer.features.integrated.vault;
 import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommand;
 import de.bentzin.ingwer.command.IngwerCommandSender;
-import de.bentzin.ingwer.message.IngwerMessage;
-import de.bentzin.ingwer.message.MultipageMessageKeeper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
 
 public class PermissionCommand extends IngwerCommand {
     public PermissionCommand() {

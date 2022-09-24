@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 public class NodeTrace {
 
     private final ArrayList<Node> nodes;
-    private final Map<String,Node> map = new HashMap<>();
+    private final Map<String, Node> map = new HashMap<>();
 
     /**
      * @param nodes make shure that the Names of the given nodes are unique!
      */
     public NodeTrace(ArrayList<Node> nodes) {
         this.nodes = Objects.requireNonNull(nodes);
-        nodes.stream().collect(Collectors.toUnmodifiableMap(Node::getName,node -> node));
+        nodes.stream().collect(Collectors.toUnmodifiableMap(Node::getName, node -> node));
     }
 
     public Collection<Node> cloneNodes() {
@@ -33,7 +33,7 @@ public class NodeTrace {
 
     public Node get(String name) {
         Node node = map.get(name);
-        if(node == null) throw new NoSuchElementException("Node : \"" + name + "\" could not be found!");
+        if (node == null) throw new NoSuchElementException("Node : \"" + name + "\" could not be found!");
         return node;
     }
 
@@ -43,7 +43,7 @@ public class NodeTrace {
         List<Node<E>> list = new ArrayList<>();
         String name = clazz.getName();
         for (Node node : nodes)
-            if(node.getType().getTypeName().equals(name))
+            if (node.getType().getTypeName().equals(name))
                 list.add(node);
         return list;
     }
@@ -86,7 +86,7 @@ public class NodeTrace {
         builder.append("NodeTrace: [");
         boolean first = true;
         for (Node node : nodes) {
-            if(first)
+            if (first)
                 builder.append(node);
             else builder.append(" -> ").append(node);
             first = false;

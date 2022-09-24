@@ -2,25 +2,19 @@ package de.bentzin.ingwer.command.node;
 
 import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.utils.CompletableOptional;
-import org.checkerframework.checker.optional.qual.MaybePresent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
-
-import static de.bentzin.ingwer.command.node.Node.checkCommandNodeAndThrow;
 
 /**
- *  Node is the base for the node based CommandSystem.
- *  The head of each CommandTree should always be a CommandNode
+ * Node is the base for the node based CommandSystem.
+ * The head of each CommandTree should always be a CommandNode
+ *
+ * @param <T> the type of node
  * @implNote please implement the {@link this#clone()} & {@link Object#toString()} methods!
  * @implNote This may be an implementation of {@link Permissioned}
- * @param <T> the type of node
  * @see ArgumentNode
  * @see Node
  * @see Permissioned
@@ -32,7 +26,7 @@ public abstract class SimpleNode<T> extends AbstractNode<T> {
     private final CompletableOptional<CommandNode> commandNode = new CompletableOptional<>();
 
     public SimpleNode(String name, ArrayList<Node> nodes, ArrayList<String> values) {
-        super(name,nodes);
+        super(name, nodes);
         this.values = values;
     }
 
@@ -42,7 +36,7 @@ public abstract class SimpleNode<T> extends AbstractNode<T> {
     }
 
     public SimpleNode(String name, ArrayList<Node> nodes, String... values) {
-        super(name,nodes);
+        super(name, nodes);
         this.values = List.of(values);
     }
 

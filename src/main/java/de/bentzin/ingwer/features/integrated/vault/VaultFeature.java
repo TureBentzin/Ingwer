@@ -6,12 +6,9 @@ import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jetbrains.annotations.NotNull;
-
-import java.nio.Buffer;
 
 public class VaultFeature extends SimpleFeature {
 
@@ -20,7 +17,7 @@ public class VaultFeature extends SimpleFeature {
     private Chat chat = null;
 
     public VaultFeature() {
-        super("Vault","Permissions and more");
+        super("Vault", "Permissions and more");
     }
 
     @Override
@@ -32,9 +29,9 @@ public class VaultFeature extends SimpleFeature {
     public void onEnable() {
 
         getLogger().info("setting up services for vault...");
-        if(setupChat()) getLogger().warning("failed to setup chat!");
-        if(setupEconomy()) getLogger().warning("failed to setup economy!");
-        if(setupPermissions()) getLogger().warning("failed to setup permissions!");
+        if (setupChat()) getLogger().warning("failed to setup chat!");
+        if (setupEconomy()) getLogger().warning("failed to setup economy!");
+        if (setupPermissions()) getLogger().warning("failed to setup permissions!");
         getLogger().info("setting up commands for Ingwer");
 
     }
@@ -47,12 +44,12 @@ public class VaultFeature extends SimpleFeature {
     @Override
     public boolean onLoad() {
         getLogger().info("checking for Vault...");
-        if(isVault()) {
+        if (isVault()) {
             Plugin vault = getVault();
             getLogger().info("found: " + vault.getName() + " v. " + vault.getDescription().getVersion());
             getVault().getLogger().info("Ingwer was injected successfully! (; ");
             return true;
-        }else{
+        } else {
             getLogger().warning("vault could no be found!");
             return false;
         }
@@ -97,24 +94,24 @@ public class VaultFeature extends SimpleFeature {
     }
 
     @NotNull
-    public Chat getChat() throws UnsupportedOperationException{
-        if(chat == null) {
+    public Chat getChat() throws UnsupportedOperationException {
+        if (chat == null) {
             throw new UnsupportedOperationException("chat is not available!");
         }
         return chat;
     }
 
     @NotNull
-    public Economy getEcon() throws UnsupportedOperationException{
-        if(econ == null) {
+    public Economy getEcon() throws UnsupportedOperationException {
+        if (econ == null) {
             throw new UnsupportedOperationException("economy is not available!");
         }
         return econ;
     }
 
     @NotNull
-    public Permission getPerms() throws UnsupportedOperationException{
-        if(perms == null) {
+    public Permission getPerms() throws UnsupportedOperationException {
+        if (perms == null) {
             throw new UnsupportedOperationException("permissions is not available!");
         }
         return perms;

@@ -53,9 +53,9 @@ public abstract class NumberNode extends AbstractNode<Integer> {
     @Override
     public @NotNull Integer parse(@NotNull String input, @NotNull NodeTrace nodeTrace) throws InvalidParameterException {
         Integer integer = Integer.parseInt(input);
-        if(condition.test(integer)) {
+        if (condition.test(integer)) {
             return integer;
-        }else {
+        } else {
             throw new InvalidParameterException("the given input: \"" + input + "\" is not allowed here!");
         }
     }

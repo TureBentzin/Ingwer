@@ -63,11 +63,11 @@ public class HelpCommand extends IngwerCommand {
         int max = 47;
         int sub = 5;
         int cut = (max - sub) - ingwerCommand.getName().length();
-        if(cut < 0) {
+        if (cut < 0) {
             cut = 0;
         }
         //failsave
-        if(cut > ingwerCommand.getDescription().length()) {
+        if (cut > ingwerCommand.getDescription().length()) {
             cut = ingwerCommand.getDescription().length();
         }
         try {
@@ -76,7 +76,7 @@ public class HelpCommand extends IngwerCommand {
             } else
                 return ingwerCommand.getDescription();
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new IngwerException("text: " + ingwerCommand.getDescription() + " --- length: " + ingwerCommand.getDescription().length(), e, ThrowType.GENERAL);
         }
     }

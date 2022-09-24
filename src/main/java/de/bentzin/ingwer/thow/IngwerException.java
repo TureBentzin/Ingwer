@@ -1,7 +1,5 @@
 package de.bentzin.ingwer.thow;
 
-import de.bentzin.ingwer.Ingwer;
-
 public class IngwerException extends RuntimeException {
 
     private final ThrowType type;
@@ -40,7 +38,7 @@ public class IngwerException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        if(customMessage != null) {
+        if (customMessage != null) {
             return type.getMessage() + " :: " + customMessage;
         }
         return type.getMessage();

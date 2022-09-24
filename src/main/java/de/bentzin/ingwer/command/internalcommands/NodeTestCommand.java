@@ -24,7 +24,7 @@ public class NodeTestCommand extends IngwerNodeCommand {
                  }
         ).append(new ArgumentNode("text") {
                     @Override
-                    public void execute(CommandData commandData, NodeTrace nodeTrace,String s) {
+                    public void execute(CommandData commandData, NodeTrace nodeTrace, String s) {
                         new StraightLineStringMessage("Michael!").send(commandData.commandSender());
                     }
                 }.append(new ArgumentNode("inner") {

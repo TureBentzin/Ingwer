@@ -1,6 +1,5 @@
 package de.bentzin.ingwer.message;
 
-import de.bentzin.ingwer.command.IngwerCommand;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.utils.Irreversible;
 import org.bukkit.command.CommandSender;
@@ -11,13 +10,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.security.PrivilegedActionException;
-import java.util.Objects;
 
 /**
- * @implNote This Message should be completed before it's been sent
  * @param <T> insert the implementation of this Interface here!
+ * @implNote This Message should be completed before it's been sent
  */
-public interface CompletableMessage extends IngwerMessage,Cloneable {
+public interface CompletableMessage extends IngwerMessage, Cloneable {
     boolean isCompleted();
 
     /**
@@ -36,15 +34,15 @@ public interface CompletableMessage extends IngwerMessage,Cloneable {
     }
 
     default void checkOriginAndThrow() throws UnsupportedOperationException {
-        if(isOrigin()) throw originException();
+        if (isOrigin()) throw originException();
     }
 
     /**
+     * @return this
      * @implNote origin() sets the message to a state where it can't be completed. To complete it, you need to call clone();
      * If tried to change anyway, then throw this.originException!
      * @see CompletableMessage#checkOriginAndThrow()
      * @see CompletableMessage#originException()
-     * @return this
      */
     @Irreversible
     <T extends CompletableMessage> T origin();
@@ -59,6 +57,18 @@ public interface CompletableMessage extends IngwerMessage,Cloneable {
     @Override
     default void send(@NotNull CommandSender recipient) {
         get().send(recipient);
+    }
+
+    default UnsupportedOperationException originException() {
+        return new UnsupportedOperationException("This CompletableMessage cant be mutated because its defined as an origin! To complete this use clone() instead!");
+    }
+
+    /**
+     * @implNote every CompleteableMessage that is by default an {@link this#origin()} should be annotated with this, to warn the developer that he need to clone the annotated Message to complete it. Try to avoid annotating an already completed Message with this
+     */
+    @Retention(RetentionPolicy.CLASS)
+    @Target({ElementType.METHOD, ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.PARAMETER})
+    @interface Origin {
     }
 
     class UncompletedMessageException extends IllegalStateException {
@@ -118,16 +128,5 @@ public interface CompletableMessage extends IngwerMessage,Cloneable {
         public UncompletedMessageException(Throwable cause) {
             super(cause);
         }
-    }
-
-    /**
-     * @implNote every CompleteableMessage that is by default an {@link this#origin()} should be annotated with this, to warn the developer that he need to clone the annotated Message to complete it. Try to avoid annotating an already completed Message with this
-     */
-    @Retention(RetentionPolicy.CLASS)
-    @Target({ElementType.METHOD,ElementType.FIELD,ElementType.LOCAL_VARIABLE,ElementType.PARAMETER})
-    @interface Origin{}
-
-    default UnsupportedOperationException originException() {
-        return new UnsupportedOperationException("This CompletableMessage cant be mutated because its defined as an origin! To complete this use clone() instead!");
     }
 }

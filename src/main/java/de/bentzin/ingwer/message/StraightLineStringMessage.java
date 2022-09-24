@@ -2,7 +2,6 @@ package de.bentzin.ingwer.message;
 
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.identity.Identity;
-import de.bentzin.ingwer.thow.IngwerException;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;

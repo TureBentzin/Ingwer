@@ -31,7 +31,7 @@ public enum C {
     }
 
     @Contract(pure = true)
-    protected @NotNull String insert(String message) {
+    @NotNull String insert(String message) {
         return open + message + close;
     }
 }

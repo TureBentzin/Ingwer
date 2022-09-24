@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Node that contains one value and only requires an implementation of {@link ArgumentNode#execute(CommandData, NodeTrace)}
  */
-public abstract class ArgumentNode extends SimpleNode<String>{
+public abstract class ArgumentNode extends SimpleNode<String> {
 
 
     @ApiStatus.Internal
@@ -50,7 +50,7 @@ public abstract class ArgumentNode extends SimpleNode<String>{
     }
 
     public ArgumentNode(String argument) {
-        super(argument,argument);
+        super(argument, argument);
     }
 
 
@@ -61,7 +61,7 @@ public abstract class ArgumentNode extends SimpleNode<String>{
      * @throws InvalidParameterException if input could not be parsed
      */
     @Override
-    public @NotNull String parse(@NotNull String input, @NotNull NodeTrace nodeTrace){
+    public @NotNull String parse(@NotNull String input, @NotNull NodeTrace nodeTrace) {
         return input;
     }
 }

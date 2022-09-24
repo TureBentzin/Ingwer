@@ -1,18 +1,13 @@
 package de.bentzin.ingwer.command.node.preset;
 
-import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.node.AbstractNode;
 import de.bentzin.ingwer.command.node.CommandNode;
 import de.bentzin.ingwer.command.node.NodeTrace;
 import de.bentzin.ingwer.utils.CompletableOptional;
-import org.checkerframework.checker.optional.qual.MaybePresent;
 import org.jetbrains.annotations.NotNull;
 
 import java.security.InvalidParameterException;
 import java.util.Collection;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -24,13 +19,13 @@ public abstract class CollectionNode<E> extends AbstractNode<E> {
 
     private final CompletableOptional<CommandNode> commandNode = new CompletableOptional<>();
 
-    public CollectionNode(String name, Supplier<Collection<E>> supplier, Function<E,String> converter) {
+    public CollectionNode(String name, Supplier<Collection<E>> supplier, Function<E, String> converter) {
         super(name);
         this.collectionSupplier = supplier;
         this.converter = converter;
     }
 
-    public CollectionNode(String name, Collection<E> collection, Function<E,String> converter) {
+    public CollectionNode(String name, Collection<E> collection, Function<E, String> converter) {
         super(name);
         this.collectionSupplier = () -> collection;
         this.converter = converter;
@@ -47,16 +42,16 @@ public abstract class CollectionNode<E> extends AbstractNode<E> {
         AtomicReference<E> value = new AtomicReference<>(null);
         Collection<E> collection = collectionSupplier.get();
         collection.forEach(element -> {
-            if(input.equals(converter.apply(element))) {
-                if(value.get() != null) {
+            if (input.equals(converter.apply(element))) {
+                if (value.get() != null) {
                     throw new InvalidParameterException("input: \"" + input + "\" matches to more then one collection member!");
                 }
                 value.set(element);
             }
         });
-        if(value.get() != null) {
+        if (value.get() != null) {
             return value.get();
-        }else {
+        } else {
             throw new InvalidParameterException("input: \"" + input + "\" cant be matched to a collection member!");
         }
     }

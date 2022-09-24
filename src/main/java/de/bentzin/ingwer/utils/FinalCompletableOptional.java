@@ -3,7 +3,7 @@ package de.bentzin.ingwer.utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FinalCompletableOptional<E> extends CompletableOptional<E>{
+public class FinalCompletableOptional<E> extends CompletableOptional<E> {
 
 
     public FinalCompletableOptional() {
@@ -15,9 +15,9 @@ public class FinalCompletableOptional<E> extends CompletableOptional<E>{
 
     @Override
     public @NotNull FinalCompletableOptional<E> complete(@Nullable E value) {
-        if(isSet()) {
+        if (isSet()) {
             throw new IllegalStateException("FinalCompletableOptional was already completed!");
-        }else
-             return (FinalCompletableOptional<E>) super.complete(value);
+        } else
+            return (FinalCompletableOptional<E>) super.complete(value);
     }
 }

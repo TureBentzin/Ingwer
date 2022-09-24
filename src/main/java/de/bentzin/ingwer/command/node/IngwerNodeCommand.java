@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 /**
  * used for node based commands
- *
+ * <p>
  * use {@link IngwerNodeCommand#getCommandNode()} to write command.
  * Don't forget to initialize command with {@link CommandNode#finish()}
  */
@@ -21,25 +21,25 @@ public class IngwerNodeCommand extends IngwerCommand {
     private final CommandTarget[] commandTargets;
 
     /**
-     * @implNote Only used if there is a custom implemented commandNode
      * @param commandTargets targets
-     * @param commandNode the custom node
+     * @param commandNode    the custom node
+     * @implNote Only used if there is a custom implemented commandNode
      * @see IngwerNodeCommand#IngwerNodeCommand(CommandTarget[], String, String, Node.NodeExecutor)
      */
-    public IngwerNodeCommand(@NotNull CommandTarget @NotNull[] commandTargets, @NotNull CommandNode commandNode) {
+    public IngwerNodeCommand(@NotNull CommandTarget @NotNull [] commandTargets, @NotNull CommandNode commandNode) {
         super(commandNode.getCommandName(), commandNode.getDescription());
         this.commandNode = commandNode;
         this.commandTargets = commandTargets;
     }
 
     @ApiStatus.Experimental
-    public IngwerNodeCommand(@NotNull CommandTarget @NotNull[] commandTargets, String commandName,
+    public IngwerNodeCommand(@NotNull CommandTarget @NotNull [] commandTargets, String commandName,
                              String description, Node.NodeExecutor node_action) {
         super(commandName, description);
-        this.commandNode = new CommandNode(getLogger(),getName(),getDescription()) {
+        this.commandNode = new CommandNode(getLogger(), getName(), getDescription()) {
             @Override
             public void execute(CommandData commandData, NodeTrace nodeTrace) {
-                node_action.accept(commandData,nodeTrace);
+                node_action.accept(commandData, nodeTrace);
             }
         };
         this.commandTargets = commandTargets;
@@ -47,6 +47,7 @@ public class IngwerNodeCommand extends IngwerCommand {
 
     /**
      * Access the CommandNode
+     *
      * @return commandNode
      */
     protected final CommandNode getCommandNode() {
@@ -55,6 +56,7 @@ public class IngwerNodeCommand extends IngwerCommand {
 
     /**
      * Copy the CommandNode
+     *
      * @return commandNode
      */
     public final CommandNode getCommandNodeClone() {
@@ -64,9 +66,9 @@ public class IngwerNodeCommand extends IngwerCommand {
     @Override
     public final void execute(IngwerCommandSender v1, String[] v2, CommandTarget v3) {
         Node node = getCommandNode().startWalking(v1, v2, v3);
-        if(node == null) {
+        if (node == null) {
             getLogger().warning("failed to execute: \"" + Arrays.toString(v2) + "\"");
-        }else
+        } else
             getLogger().info("finished at: " + node.getName());
     }
 

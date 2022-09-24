@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * when executed this prints a generated usage to the player
- *
  */
 public class UsageNodeExecutor implements Node.NodeExecutor {
 
@@ -20,8 +19,15 @@ public class UsageNodeExecutor implements Node.NodeExecutor {
        Usage: <prefix>command [arg1,arg2,arg3]
      */
 
+    private final IngwerMessage usage;
+
+
+    public UsageNodeExecutor(IngwerMessage usage) {
+        this.usage = usage;
+    }
+
     @Contract("_ -> new")
-    public static @NotNull UsageNodeExecutor generate(@NotNull CommandNode root){
+    public static @NotNull UsageNodeExecutor generate(@NotNull CommandNode root) {
         /* AtomicReference<StringBuilder> atomicReference = new AtomicReference<>(new StringBuilder());
         root.forest(node -> {
             StringBuilder stringBuilder = atomicReference.get();
@@ -35,15 +41,8 @@ public class UsageNodeExecutor implements Node.NodeExecutor {
         });
          */
         //TODO Usage
-        return new UsageNodeExecutor(MessageBuilder.prefixed().add(C.E,"Please care about the usage!").build());
+        return new UsageNodeExecutor(MessageBuilder.prefixed().add(C.E, "Please care about the usage!").build());
     }
-
-
-    public UsageNodeExecutor(IngwerMessage usage) {
-        this.usage = usage;
-    }
-
-    private final IngwerMessage usage;
 
     /**
      * Performs this operation on the given arguments.

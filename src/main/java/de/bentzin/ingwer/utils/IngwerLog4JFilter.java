@@ -1,24 +1,19 @@
 package de.bentzin.ingwer.utils;
 
 import de.bentzin.ingwer.Ingwer;
-import de.bentzin.ingwer.logging.ApacheLogger;
 import de.bentzin.ingwer.logging.SLF4JLogger;
-import org.apache.commons.lang.mutable.Mutable;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-
 public final class IngwerLog4JFilter extends LoggingClass implements Filter {
     public IngwerLog4JFilter() {
-        super(new SLF4JLogger("filter4J",Ingwer.getLogger(), LoggerFactory.getLogger("filter4J")));
+        super(new SLF4JLogger("filter4J", Ingwer.getLogger(), LoggerFactory.getLogger("filter4J")));
         getLogger().info("successfully constructed!");
     }
 
@@ -103,7 +98,7 @@ public final class IngwerLog4JFilter extends LoggingClass implements Filter {
         String formattedMessage = event.getMessage().getFormattedMessage();
 
         String[] split = formattedMessage.split(":");
-        if (split.length != 2)  {
+        if (split.length != 2) {
             return Result.NEUTRAL;
         }
         if (Ingwer.getCommandReturnSystem().check(split[1].replace(" ", ""))) {

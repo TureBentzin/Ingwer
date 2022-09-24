@@ -3,7 +3,6 @@ package de.bentzin.ingwer.features.integrated;
 import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommand;
 import de.bentzin.ingwer.command.IngwerCommandSender;
-import de.bentzin.ingwer.features.NewFeature;
 import de.bentzin.ingwer.features.SimpleFeature;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.message.IngwerMessage;
@@ -60,12 +59,12 @@ public class Log4JFeature extends SimpleFeature {
 
     public class Mute4JCommand extends IngwerCommand {
 
+        private final Map<String, Level> levelMap = new HashMap<>();
         /**
          * false = logging is on
          * true = logging is disabled
          */
         private boolean status = true;
-        private final Map<String, Level> levelMap = new HashMap<>();
 
         public Mute4JCommand() {
             super("mute4j", "Toggles Papers logging on or off");

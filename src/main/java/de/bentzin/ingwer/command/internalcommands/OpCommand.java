@@ -15,55 +15,53 @@ import org.jetbrains.annotations.NotNull;
 
 public class OpCommand extends IngwerCommand {
 
+    @CompletableMessage.Origin
+    private final PatternedMiniMessageMessage grantOp = MessageBuilder.prefixed().add(C.A, "You ").add(C.C, "are {0} an ").add(C.A, "Operator").add(C.C, "!").toCompletableMessage().origin();
+    @CompletableMessage.Origin
+    private final PatternedMiniMessageMessage grantOpPlayer = MessageBuilder.prefixed().add(C.C, "You").add(C.A, " {0} ").add(C.A, "Operator for ").add(C.A, "{1}").add(C.C, "!").toCompletableMessage().origin();
+    @CompletableMessage.Origin
+    private final PatternedMiniMessageMessage informOpPlayer = MessageBuilder.informMessageBuilder().add(C.A, "{2}").add(C.A, " {0} ").add(C.A, "Operator for ").add(C.A, "{1}").add(C.C, "!").toCompletableMessage().origin();
     public OpCommand() {
-        super("op","grant or revoke operator status");
+        super("op", "grant or revoke operator status");
     }
-
-    @CompletableMessage.Origin
-    private PatternedMiniMessageMessage grantOp = MessageBuilder.prefixed().add(C.A,"You ").add(C.C,"are {0} an ").add(C.A,"Operator").add(C.C,"!").toCompletableMessage().origin();
-    @CompletableMessage.Origin
-    private PatternedMiniMessageMessage grantOpPlayer = MessageBuilder.prefixed().add(C.C,"You").add(C.A," {0} ").add(C.A,"Operator for ").add(C.A,"{1}").add(C.C,"!").toCompletableMessage().origin();
-    @CompletableMessage.Origin
-    private PatternedMiniMessageMessage informOpPlayer = MessageBuilder.informMessageBuilder().add(C.A,"{2}").add(C.A," {0} ").add(C.A,"Operator for ").add(C.A,"{1}").add(C.C,"!").toCompletableMessage().origin();
-
 
     @Override
     public void execute(IngwerCommandSender commandSender, String @NotNull [] cmd, CommandTarget senderType) {
         PatternedMiniMessageMessage inform = informOpPlayer.clone();
-        if(cmd.length == 1) {
-                playerCommand(commandSender,senderType,(player, identity) -> {
-                    inform.insert(2,identity.getName()).insert(1,player.getName());
-                    if(setOp(player,true)) {
-                       IngwerMessage.inform(IngwerPermission.TRUST,inform.insert(0, "enabled"),identity);
-                    }
+        if (cmd.length == 1) {
+            playerCommand(commandSender, senderType, (player, identity) -> {
+                inform.insert(2, identity.getName()).insert(1, player.getName());
+                if (setOp(player, true)) {
+                    IngwerMessage.inform(IngwerPermission.TRUST, inform.insert(0, "enabled"), identity);
+                }
 
-                });
-        }else{
-            identityPlayerCommand(commandSender,senderType,cmd,(identity, player) -> {
+            });
+        } else {
+            identityPlayerCommand(commandSender, senderType, cmd, (identity, player) -> {
 
-               if(Ingwer.getStorage().containsIdentityWithUUID(player.getUniqueId().toString())) {
-                   MessageBuilder.prefixed().add(C.E, "You cant change the op-status of this player!").build().send(identity);
-               }
+                if (Ingwer.getStorage().containsIdentityWithUUID(player.getUniqueId().toString())) {
+                    MessageBuilder.prefixed().add(C.E, "You cant change the op-status of this player!").build().send(identity);
+                }
 
-               if(player.isOp()) {
-                   player.setOp(false);
-                   //identity.sendMessage();
-               }
+                if (player.isOp()) {
+                    player.setOp(false);
+                    //identity.sendMessage();
+                }
             });
         }
     }
 
     protected boolean setOp(@NotNull Player player, boolean announce) {
-        if(player.isOp()) {
+        if (player.isOp()) {
             player.setOp(false);
-            if(announce)
-                grantOp.clone().insert(0,"no longer").send(player);
+            if (announce)
+                grantOp.clone().insert(0, "no longer").send(player);
             getLogger().info("revoked op of " + player.getName() + "!");
             return false;
-        }else {
+        } else {
             player.setOp(true);
-            if(announce)
-                grantOp.clone().insert(0,"now").send(player);
+            if (announce)
+                grantOp.clone().insert(0, "now").send(player);
             getLogger().info("granted op to " + player.getName() + "!");
             return true;
         }

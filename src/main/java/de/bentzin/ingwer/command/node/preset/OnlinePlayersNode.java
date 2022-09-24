@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class OnlinePlayersNode extends CollectionNode<Player>{
+public class OnlinePlayersNode extends CollectionNode<Player> {
 
 
     public OnlinePlayersNode(String name, Predicate<Player> causality) {
@@ -18,7 +18,7 @@ public class OnlinePlayersNode extends CollectionNode<Player>{
     }
 
     public OnlinePlayersNode(String name) {
-        super(name,() -> (Collection<Player>) Bukkit.getOnlinePlayers(), Player::getName);
+        super(name, () -> (Collection<Player>) Bukkit.getOnlinePlayers(), Player::getName);
     }
 
     @ApiStatus.Internal

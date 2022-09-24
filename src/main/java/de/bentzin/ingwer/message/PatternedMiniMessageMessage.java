@@ -21,10 +21,10 @@ import java.util.Set;
  */
 public class PatternedMiniMessageMessage implements CompletableMessage {
 
-    private final int patternCount;
     final Set<String> patternQueries;
+    private final int patternCount;
     private String miniMessage;
-
+    private boolean origin = false;
 
     public PatternedMiniMessageMessage(String miniMessage, int patternCount) {
         this.miniMessage = miniMessage;
@@ -90,8 +90,6 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
         return new MiniMessageMessage(miniMessage);
     }
 
-    private boolean origin = false;
-
     /**
      * @implNote origin() sets the message to a state where it cant be completed. To complete it, you need to call clone();
      */
@@ -146,8 +144,9 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
     public PatternedMiniMessageMessage clone() {
         try {
             super.clone();
-        } catch (CloneNotSupportedException ignored) {}
-        return new PatternedMiniMessageMessage(miniMessage,patternCount);
+        } catch (CloneNotSupportedException ignored) {
+        }
+        return new PatternedMiniMessageMessage(miniMessage, patternCount);
     }
 
     @Override

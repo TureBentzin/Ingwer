@@ -5,12 +5,26 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class CompletableOptional<E> {
 
+
+    private final Collection<Consumer<E>> consumerCollection = new ArrayList<>();
+    private final Collection<Thread> interrupted = new ArrayList<>();
+    private E value = null;
+    private boolean set = false;
+    public CompletableOptional() {
+
+    }
+    public CompletableOptional(@Nullable E initialValue) {
+        complete(initialValue);
+    }
 
     @Contract(" -> new")
     public static @NotNull CompletableOptional empty() {
@@ -18,10 +32,9 @@ public class CompletableOptional<E> {
     }
 
     /**
-     *
      * @param type only for Type Reference will be ignored
+     * @param <T>  type reference
      * @return new {@link CompletableOptional<T>}
-     * @param <T> type reference
      */
     @ApiStatus.Experimental
     public static @NotNull <T> CompletableOptional<T> empty(T type) {
@@ -29,20 +42,13 @@ public class CompletableOptional<E> {
     }
 
     /**
-     *
      * @param initialValue initialValue
+     * @param <T>          type reference
      * @return new {@link CompletableOptional<T>}
-     * @param <T> type reference
      */
     public static @NotNull <T> CompletableOptional<T> create(T initialValue) {
         return new CompletableOptional<T>(initialValue);
     }
-
-
-    private E value = null;
-    private boolean set = false;
-    private final Collection<Consumer<E>> consumerCollection = new ArrayList<>();
-    private final Collection<Thread> interrupted = new ArrayList<>();
 
     public final boolean isSet() {
         return set;
@@ -56,14 +62,6 @@ public class CompletableOptional<E> {
     @ApiStatus.Internal
     protected final E getValue() {
         return value;
-    }
-
-    public CompletableOptional() {
-
-    }
-
-    public CompletableOptional(@Nullable E initialValue) {
-        complete(initialValue);
     }
 
     @NotNull
@@ -83,14 +81,14 @@ public class CompletableOptional<E> {
 
     @Nullable
     public final E getOrNull() {
-        if(set)
+        if (set)
             return value;
         return null;
     }
 
     @NotNull
     public final E getOrThrow() {
-        if(set)
+        if (set)
             return value;
         throw new NoSuchElementException("Value is not present!");
     }
@@ -103,7 +101,7 @@ public class CompletableOptional<E> {
 
     @NotNull
     public final E await() {
-        CompletableFuture<String > stringCompletableFuture = new CompletableFuture<>();
+        CompletableFuture<String> stringCompletableFuture = new CompletableFuture<>();
         interrupted.add(Thread.currentThread());
         Thread.currentThread().interrupt();
         interrupted.remove(Thread.currentThread());

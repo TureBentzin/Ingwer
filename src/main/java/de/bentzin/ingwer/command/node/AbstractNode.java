@@ -2,15 +2,13 @@ package de.bentzin.ingwer.command.node;
 
 import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.utils.DoNotOverride;
-import org.checkerframework.checker.optional.qual.MaybePresent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
-public abstract class AbstractNode<T> implements Node<T>{
+public abstract class AbstractNode<T> implements Node<T> {
 
 
     private final String name;
@@ -28,12 +26,12 @@ public abstract class AbstractNode<T> implements Node<T>{
 
     /**
      * @param commandData commandData
-     * @param nodeTrace trace to this (last)
+     * @param nodeTrace   trace to this (last)
      */
     @Override
     public final void execute(@NotNull CommandData commandData, NodeTrace nodeTrace) {
         String last = commandData.cmd()[commandData.cmd().length - 1];
-        execute(commandData,nodeTrace, parse(last,nodeTrace));
+        execute(commandData, nodeTrace, parse(last, nodeTrace));
     }
 
     public abstract void execute(CommandData commandData, NodeTrace nodeTrace, T t);
@@ -64,7 +62,7 @@ public abstract class AbstractNode<T> implements Node<T>{
     @Override
     @DoNotOverride
     public String toString() {
-        if(hasNodes())
+        if (hasNodes())
             return getName() + "<" + getNodes().size() + ">";
         return getName() + "<0>";
     }

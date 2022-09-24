@@ -1,5 +1,5 @@
 package de.bentzin.ingwer.command.node;
-import de.bentzin.ingwer.Ingwer;
+
 import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommand;
 import de.bentzin.ingwer.command.IngwerCommandSender;
@@ -9,9 +9,6 @@ import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.thow.IngwerThrower;
 import de.bentzin.ingwer.utils.CompletableOptional;
 import de.bentzin.ingwer.utils.FinalCompletableOptional;
-import org.checkerframework.checker.optional.qual.MaybePresent;
-import org.checkerframework.checker.units.qual.C;
-import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -19,52 +16,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.security.InvalidParameterException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
 
 /**
  * Entry point of command building
  */
-public abstract class CommandNode implements Node<String>{
+public abstract class CommandNode implements Node<String> {
 
     //static -> new
 
-    /**
-     *
-     * @param ingwerCommand initialized ingwerCommand
-     * @param nodeExecutor executor
-     * @implNote Never call in constructor of an IngwerCommand
-     * @return
-     */
-    @Contract("_,_ -> new")
-    public static @NotNull CommandNode createOfIngwerCommand(@NotNull IngwerCommand ingwerCommand, NodeExecutor nodeExecutor) {
-        return new CommandNode(ingwerCommand.getLogger(), ingwerCommand.getName(), ingwerCommand.getDescription()) {
-            @Override
-            public void execute(CommandData commandData, NodeTrace nodeTrace) {
-                nodeExecutor.accept(commandData,nodeTrace);
-            }
-
-        };
-    }
-
-    @Contract("_ -> new")
-    public static @NotNull CommandNode createOfIngwerCommand(@NotNull IngwerCommand ingwerCommand) {
-        return createOfIngwerCommand(ingwerCommand,NodeExecutor.ignore);
-    }
-
-    /**
-     * generates a new UsageNodeExecutor based on this CommandNode
-     * @return new UsageNodeExecutor
-     */
-    public UsageNodeExecutor usage() {
-        return UsageNodeExecutor.generate(this);
-    }
-
-
     @NotNull
     private final Logger logger;
-
     @NotNull
     private final String command_name;
     @Nullable
@@ -72,13 +33,42 @@ public abstract class CommandNode implements Node<String>{
     @NotNull
     private final ArrayList<Node> nodes = new ArrayList<>();
 
-
     public CommandNode(Logger logger, @NotNull String command_name, @Nullable String description) {
         this.logger = logger;
         this.command_name = command_name;
         this.description = description;
     }
 
+    /**
+     * @param ingwerCommand initialized ingwerCommand
+     * @param nodeExecutor  executor
+     * @return
+     * @implNote Never call in constructor of an IngwerCommand
+     */
+    @Contract("_,_ -> new")
+    public static @NotNull CommandNode createOfIngwerCommand(@NotNull IngwerCommand ingwerCommand, NodeExecutor nodeExecutor) {
+        return new CommandNode(ingwerCommand.getLogger(), ingwerCommand.getName(), ingwerCommand.getDescription()) {
+            @Override
+            public void execute(CommandData commandData, NodeTrace nodeTrace) {
+                nodeExecutor.accept(commandData, nodeTrace);
+            }
+
+        };
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull CommandNode createOfIngwerCommand(@NotNull IngwerCommand ingwerCommand) {
+        return createOfIngwerCommand(ingwerCommand, NodeExecutor.ignore);
+    }
+
+    /**
+     * generates a new UsageNodeExecutor based on this CommandNode
+     *
+     * @return new UsageNodeExecutor
+     */
+    public UsageNodeExecutor usage() {
+        return UsageNodeExecutor.generate(this);
+    }
 
     @Override
     public CommandNode append(Node node) {
@@ -92,6 +82,7 @@ public abstract class CommandNode implements Node<String>{
      * after calling this you should not add more nodes to the tree or modify it. After modification there
      * is a high chance that nodes may not work properly or execution fails due to a lack of initialization
      * of the individual nodes
+     *
      * @return this
      */
     public CommandNode finish() {
@@ -99,7 +90,7 @@ public abstract class CommandNode implements Node<String>{
         Collection<Node> collect = collect();
         getLogger().debug("collected " + collect.size() + " nodes!");
         collect.forEach(node -> node.initialize(this));
-        getLogger().info("successfully initialized node tree of: "+ command_name);
+        getLogger().info("successfully initialized node tree of: " + command_name);
         return this;
     }
 
@@ -110,19 +101,18 @@ public abstract class CommandNode implements Node<String>{
     }
 
     @NotNull
-    public String getCommandName(){
+    public String getCommandName() {
         return command_name;
     }
 
     @NotNull
     public String getDescription() {
-        if(description == null) return "";
+        if (description == null) return "";
         return description;
     }
 
 
     /**
-     *
      * @param v1 executor
      * @param v2 should contain at lease the commandName
      * @param v3 targets as defined...
@@ -131,19 +121,19 @@ public abstract class CommandNode implements Node<String>{
     @Nullable
     @ApiStatus.Internal
     protected Node startWalking(IngwerCommandSender v1, String[] v2, CommandTarget v3) {
-        CommandData data = new CommandData(v1,v2,v3);
+        CommandData data = new CommandData(v1, v2, v3);
         Queue<String> argumentQueue = new LinkedList<>();
         Collections.addAll(argumentQueue, v2);
         NodeTraceBuilder nodeTraceBuilder = new NodeTraceBuilder();
         String poll = argumentQueue.poll();
-        if(poll.equals(command_name))
+        if (poll.equals(command_name))
             getLogger().debug("dequeue because start... " + poll);
         else {
             throw new IllegalStateException("cant match commandNode and commandName");
         }
         try {
-            return walk(argumentQueue,nodeTraceBuilder,data);
-        } catch (Exception e){
+            return walk(argumentQueue, nodeTraceBuilder, data);
+        } catch (Exception e) {
             IngwerThrower.acceptS(e);
         }
 
@@ -156,8 +146,7 @@ public abstract class CommandNode implements Node<String>{
     }
 
     /**
-     *
-     * @param input the current argument
+     * @param input     the current argument
      * @param nodeTrace all nodes before this
      * @return the input
      * @throws InvalidParameterException if the nodeTrace is not empty or if the input does not match the commandName
@@ -165,9 +154,9 @@ public abstract class CommandNode implements Node<String>{
     @NotNull
     @Override
     public final String parse(@NotNull String input, @NotNull NodeTrace nodeTrace) throws InvalidParameterException {
-        if(!nodeTrace.isEmpty())
+        if (!nodeTrace.isEmpty())
             throw new InvalidParameterException("this node is a CommandNode and can only be placed at the beginning of a nodeTrace");
-        if(!input.equals(command_name))
+        if (!input.equals(command_name))
             throw new InvalidParameterException("the given input does not match the associated commandName");
         return command_name;
     }
@@ -203,14 +192,13 @@ public abstract class CommandNode implements Node<String>{
     }
 
     /**
-     *
-     * @implNote Waring: calling {@link CommandNode#execute(CommandData, NodeTrace)} on the copy will cause the {@link this#execute(CommandData, NodeTrace)} method of this to get called by default!
      * @return a copy of this CommandNode
      * @throws CloneNotSupportedException
+     * @implNote Waring: calling {@link CommandNode#execute(CommandData, NodeTrace)} on the copy will cause the {@link this#execute(CommandData, NodeTrace)} method of this to get called by default!
      */
     @Override
-    protected CommandNode clone(){
-        return new CommandNode(logger,command_name,description) {
+    protected CommandNode clone() {
+        return new CommandNode(logger, command_name, description) {
             /**
              * @param commandData commandData
              * @param nodeTrace   trace to this (last)
@@ -218,7 +206,7 @@ public abstract class CommandNode implements Node<String>{
              */
             @Override
             public void execute(CommandData commandData, NodeTrace nodeTrace) {
-                CommandNode.this.execute(commandData,nodeTrace);
+                CommandNode.this.execute(commandData, nodeTrace);
             }
         };
     }

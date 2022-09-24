@@ -10,7 +10,7 @@ public class NodeTraceBuilder implements Cloneable {
 
     ArrayList<Node> nodeArrayDeque = new ArrayList<>();
 
-    public NodeTraceBuilder()  {
+    public NodeTraceBuilder() {
 
     }
 

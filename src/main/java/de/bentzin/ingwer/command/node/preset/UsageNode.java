@@ -36,7 +36,7 @@ public class UsageNode extends LambdaAgrumentNode {
     }
 
     @Override
-    public @NotNull NodeExecutor getNodeExecutor(){
+    public @NotNull NodeExecutor getNodeExecutor() {
         return getCommandNode().getOrThrow().usage();
     }
 }

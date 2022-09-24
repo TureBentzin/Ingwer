@@ -22,12 +22,12 @@ import java.util.function.Consumer;
 
 public abstract class IngwerCommand {
 
+    protected final boolean valid;
     private final Logger logger;
     @NotNull
     private final String name;
     @Nullable
     private final String description;
-    protected final boolean valid;
 
     public IngwerCommand(@NotNull String name, @Nullable String description) {
         // this.logger = IngwerCommandManager.getInstance().getLogger().adopt(name);
@@ -152,20 +152,19 @@ public abstract class IngwerCommand {
 
 
     /**
-     *
-     * @implNote not depending on length or existence of arguments!!
      * @param action player and identity of commandSender
      * @return player and identity of commandSender
+     * @implNote not depending on length or existence of arguments!!
      */
     @ApiStatus.Experimental
-    public final Pair<Player, Identity> playerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, BiConsumer<Player,Identity> action){
+    public final Pair<Player, Identity> playerCommand(IngwerCommandSender commandSender, @NotNull CommandTarget senderType, BiConsumer<Player, Identity> action) {
         AtomicReference<Player> player = new AtomicReference<>();
         Identity identity = identityCommand(commandSender, senderType, (id) -> {
             player.set(Bukkit.getPlayer(id.getUUID()));
         });
-        if(identity == null || player.get() == null) return null;
-        action.accept(player.get(),identity);
-        return Pair.of(player.get(),identity);
+        if (identity == null || player.get() == null) return null;
+        action.accept(player.get(), identity);
+        return Pair.of(player.get(), identity);
     }
 
 }

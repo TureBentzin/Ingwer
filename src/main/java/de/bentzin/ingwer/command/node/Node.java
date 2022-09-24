@@ -17,51 +17,49 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- *  Node is the base for the node based CommandSystem.
- *  The head of each CommandTree should always be a CommandNode
+ * Node is the base for the node based CommandSystem.
+ * The head of each CommandTree should always be a CommandNode
+ *
+ * @param <T> the type of node
  * @implNote please implement the {@link this#clone()} & {@link Object#toString()} methods!
  * @implNote This may be an implementation of {@link Permissioned}
- * @param <T> the type of node
  * @see CommandNode
  */
 public interface Node<T> extends Cloneable {
 
     /**
-     *
-     * @implNote This should be called in every {@link Node#append(Node)} method!
      * @param node the suspected CommandNod
      * @return if the node is not a CommandNode
+     * @implNote This should be called in every {@link Node#append(Node)} method!
      */
     static boolean checkCommandNode(Node node) {
-        return ! (node instanceof CommandNode);
+        return !(node instanceof CommandNode);
     }
 
     /**
-     *
-     * @implNote This should be called in every {@link Node#append(Node)} method!
      * @param node the suspected CommandNod
+     * @implNote This should be called in every {@link Node#append(Node)} method!
      * @tip import this method into your node: "import static de.bentzin.ingwer.command.node.Node.checkCommandNodeAndThrow;"
      */
     static void checkCommandNodeAndThrow(Node node) {
-        if(!checkCommandNode(node))
+        if (!checkCommandNode(node))
             throw new IllegalArgumentException("the given node: \"" + node.getName() + "\"" + " is a commandNode and cannot be added here!");
     }
 
 
     /**
      * Adds the given node to the level below this node
-     * @implNote Make sure that no CommandNode is added here
+     *
      * @param node the given node
      * @return this
      * @throws IllegalArgumentException if this does not accept a node
+     * @implNote Make sure that no CommandNode is added here
      */
     Node<T> append(Node node) throws IllegalArgumentException;
 
@@ -73,7 +71,6 @@ public interface Node<T> extends Cloneable {
     Collection<Node> getNodes();
 
     /**
-     *
      * @return if this has nodes below
      */
     @DoNotOverride
@@ -82,56 +79,55 @@ public interface Node<T> extends Cloneable {
     }
 
     /**
-     *
-     * @param input the current argument
+     * @param input     the current argument
      * @param nodeTrace all nodes before this
      * @return type object parsed out of the current argument
      * @throws InvalidParameterException if input could not be parsed
      */
     @NotNull
-    T parse(@NotNull String input,@NotNull NodeTrace nodeTrace) throws InvalidParameterException;
+    T parse(@NotNull String input, @NotNull NodeTrace nodeTrace) throws InvalidParameterException;
 
     /**
      * Checks if the given input can be parsed by {@link this#parse(String, NodeTrace)}
-     * @param input given input
+     *
+     * @param input     given input
      * @param nodeTrace node trace
      * @return true if the argument could be parsed, false if parsing fails
      */
     @Deprecated
     default boolean accepts(String input, NodeTrace nodeTrace) {
-        try{
+        try {
             T parse = parse(input, nodeTrace);
             return true;
-        }catch (InvalidParameterException ignored) {
+        } catch (InvalidParameterException ignored) {
             return false;
         }
     }
 
     /**
-     * @implNote execute is getting called if this is the last node in the trace
      * @param commandData commandData
-     * @param nodeTrace trace to this (last)
+     * @param nodeTrace   trace to this (last)
+     * @implNote execute is getting called if this is the last node in the trace
      */
 
     @ForOverride
     void execute(CommandData commandData, NodeTrace nodeTrace);
 
     /**
-     *
-     * @implNote the CommandNode at the top of a trace always returns "root"
      * @return for this trace unique name
+     * @implNote the CommandNode at the top of a trace always returns "root"
      */
     @NotNull
     String getName();
 
     /**
-     *
      * @return Type of this node
      */
     @ApiStatus.Experimental
     @Beta
     default Type getType() {
-        return new TypeToken<T>(getClass()){}.getType();
+        return new TypeToken<T>(getClass()) {
+        }.getType();
     }
 
     /**
@@ -146,19 +142,19 @@ public interface Node<T> extends Cloneable {
     }
 
     /**
-     *
      * @return if the {@link Node#values()} does not return all possible values. (Only used if the amount of possible values is too big to handle)
      * @implNote if you return true here, you should override {@link Node#resembles(String)} and {@link Node#singleValued()}
      */
-    default boolean uncertainValues() {return false;}
+    default boolean uncertainValues() {
+        return false;
+    }
 
     /**
-     *
      * @param value the value to check
      * @return if this nodes values contain the given value
      */
     default boolean resembles(String value) {
-        if(uncertainValues()) {
+        if (uncertainValues()) {
             throw new NotImplementedException("an internal error accord while checking \"" + value + "\" for node " + getName() + " : Seems like the resembles(String) method does not support uncertain values! Please report this issue!");
         }
         return values().contains(value);
@@ -174,7 +170,6 @@ public interface Node<T> extends Cloneable {
     CompletableOptional<CommandNode> getCommandNode();
 
     /**
-     *
      * @param commandNode the commandNode the current initialization is associated to
      * @see CommandNode
      * @see this#getCommandNode()
@@ -183,6 +178,7 @@ public interface Node<T> extends Cloneable {
 
     /**
      * collects all nodes in the tree (in which this Node is the Head)
+     *
      * @return collection with all nodes below this in the Tree
      * @implNote this may contain duplicates
      */
@@ -192,17 +188,18 @@ public interface Node<T> extends Cloneable {
 
     /**
      * collects all nodes in the tree (in which this Node is the Head)
+     *
      * @return collection with all nodes below this in the Tree
      * @implNote this may contain duplicates
      */
     default Collection<Node> collect(boolean checkForDuplicates) {
         Collection<Node> collection = new ArrayList<>();
         collection.add(this);
-        if(hasNodes()) {
+        if (hasNodes()) {
             Objects.requireNonNull(getNodes())
-                    .forEach(!checkForDuplicates? node -> collection.addAll(node.collect()) : node -> {
-                        node.collect(true).forEach( node2 -> {
-                            if(!collection.contains(node2)) collection.add((Node) node2);
+                    .forEach(!checkForDuplicates ? node -> collection.addAll(node.collect()) : node -> {
+                        node.collect(true).forEach(node2 -> {
+                            if (!collection.contains(node2)) collection.add((Node) node2);
                         });
                     });
         }
@@ -211,29 +208,29 @@ public interface Node<T> extends Cloneable {
 
     /**
      * like foreach()
+     *
      * @param function action to perform. Boolean says if forest() should return the current node.
      */
     default Node forest(@NotNull Function<Node, Boolean> function) {
         Boolean exit = function.apply(this);
-        if(exit) {
+        if (exit) {
             return this;
         }
-        if(hasNodes()) {
+        if (hasNodes()) {
             Objects.requireNonNull(getNodes()).forEach(function::apply);
         }
         return this;
     }
 
     /**
-     *
      * @param argumentQueue queue with the remaining unparsed Arguments
-     * @param traceBuilder should be build while executing
-     * @param data data to be passed to execute
+     * @param traceBuilder  should be build while executing
+     * @param data          data to be passed to execute
      * @return the final node or null if node could not be found!
      */
     @DoNotOverride
     default Node<T> walk(Queue<String> argumentQueue, NodeTraceBuilder traceBuilder, CommandData data) throws ExecutionException, InterruptedException {
-        if(!getCommandNode().isEmpty()) {
+        if (!getCommandNode().isEmpty()) {
             //initialization error
             throw new IllegalStateException("Node is not yet initialized!");
         }
@@ -242,12 +239,12 @@ public interface Node<T> extends Cloneable {
         final boolean last = argumentQueue.isEmpty();
         if (last) {
             getPermission().ifPresentOrElse(ingwerPermission -> {
-                if(data.commandSender().getPermissions().contains(ingwerPermission)) {
-                    execute(data,traceBuilder.build());
-                }else {
-                    Permissioned.lacking(data.commandSender(),ingwerPermission);
+                if (data.commandSender().getPermissions().contains(ingwerPermission)) {
+                    execute(data, traceBuilder.build());
+                } else {
+                    Permissioned.lacking(data.commandSender(), ingwerPermission);
                 }
-            },() -> execute(data,traceBuilder.build()));
+            }, () -> execute(data, traceBuilder.build()));
             return this;
         }
         String argument = argumentQueue.poll();
@@ -255,47 +252,47 @@ public interface Node<T> extends Cloneable {
         //code
 
 
-            if(hasNodes()) {
-                boolean found = false;
-                for (Node node : Objects.requireNonNull(getNodes())) {
-                    if(node.resembles(argument)) {
-                        //found
-                        found = true;
-                        getCommandNode().getOrThrow().getLogger().info("walk: " + node + " for " + argument);
-                        return node.walk(argumentQueue,traceBuilder,data);
-                    }
+        if (hasNodes()) {
+            boolean found = false;
+            for (Node node : Objects.requireNonNull(getNodes())) {
+                if (node.resembles(argument)) {
+                    //found
+                    found = true;
+                    getCommandNode().getOrThrow().getLogger().info("walk: " + node + " for " + argument);
+                    return node.walk(argumentQueue, traceBuilder, data);
                 }
-                getCommandNode().getOrThrow().usage().accept(data,traceBuilder.build());
-
-            }else {
-                getCommandNode().getOrThrow().usage().accept(data,traceBuilder.build());
             }
+            getCommandNode().getOrThrow().usage().accept(data, traceBuilder.build());
 
-       return null;
+        } else {
+            getCommandNode().getOrThrow().usage().accept(data, traceBuilder.build());
+        }
+
+        return null;
     }
 
     /**
      * Get the permission that is required to execute THIS node
      * (that should not affect children of this)
-     * @implNote The Permission might be present.
+     *
      * @return
+     * @implNote The Permission might be present.
      * @see Optional<IngwerPermission>
      * @see Node#execute(CommandData, NodeTrace)
      */
     @MaybePresent
     default Optional<IngwerPermission> getPermission() {
-        if(this instanceof Permissioned p)
+        if (this instanceof Permissioned p)
             return Optional.of(p.getPermission());
         return Optional.empty();
     }
 
     /**
-     *
      * @return true if the Optional from {@link this#getPermission()} is present!
      * @implNote should only be used if further investigation of a permission is not required
      * if you need to read out a permission use: {@link Node#getPermission()} & {@link Optional#isPresent()} or {@link Optional#ifPresent(Consumer)}
      */
-    default boolean hasPermission()  {
+    default boolean hasPermission() {
         return getPermission().isPresent();
     }
 
@@ -308,7 +305,8 @@ public interface Node<T> extends Cloneable {
         /**
          * This NodeExecutor does nothing when executed
          */
-        NodeExecutor ignore = (ignored, ignored1) -> {};
+        NodeExecutor ignore = (ignored, ignored1) -> {
+        };
 
         /**
          * Performs this operation on the given arguments.
