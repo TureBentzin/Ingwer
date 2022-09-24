@@ -13,6 +13,7 @@ public enum ThrowType {
     LOGGING("An error has occurred within Ingwers logging! Feel free to report this issue!"),
     FEATURE("An error has occurred within Ingwers feature system! This my not be an official Ingwer issue!"),
     COMMAND("Error while executing IngwerCommand procedures!"),
+    EVENT("Error initiated due event execution!"),
     MESSAGE("Error occurred handling IngwerMessage!");
     private final String message;
 
