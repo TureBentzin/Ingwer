@@ -8,6 +8,10 @@ import de.bentzin.ingwer.message.builder.MessageBuilder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * @see de.bentzin.ingwer.command.node.Node
+ * @see de.bentzin.ingwer.command.IngwerCommand
+ */
 public interface Permissioned {
 
     @ApiStatus.Experimental

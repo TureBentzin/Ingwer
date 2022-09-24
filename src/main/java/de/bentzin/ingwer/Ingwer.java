@@ -94,86 +94,91 @@ public final class Ingwer {
     }
 
     public static void start(@NotNull Preferences preferences) {
-        Ingwer.preferences = preferences;
-
-        setLogger(preferences.ingwerLogger());
-        getLogger().setDebug(getPreferences().debug());
-
-        //Console
-        Console.silent = !preferences.debug();
-
-        getLogger().info("Booting Ingwer v." + VERSION_STRING);
-        javaPlugin = preferences.javaPlugin();
-
-
-        getLogger().cosmetic(BANNER);
-
-        //Boot
-        ingwerThrower = new IngwerThrower();
-
         try {
-            storage = new Sqlite();
-        } catch (URISyntaxException | IOException e) {
-            getIngwerThrower().accept(e);
-        } catch (SQLException e) {
-            getIngwerThrower().accept(e, ThrowType.STORAGE);
+
+            Ingwer.preferences = preferences;
+
+            setLogger(preferences.ingwerLogger());
+            getLogger().setDebug(getPreferences().debug());
+
+            //Console
+            Console.silent = !preferences.debug();
+
+            getLogger().info("Booting Ingwer v." + VERSION_STRING);
+            javaPlugin = preferences.javaPlugin();
+
+
+            getLogger().cosmetic(BANNER);
+
+            //Boot
+            ingwerThrower = new IngwerThrower();
+
+            try {
+                storage = new Sqlite();
+            } catch (URISyntaxException | IOException e) {
+                getIngwerThrower().accept(e);
+            } catch (SQLException e) {
+                getIngwerThrower().accept(e, ThrowType.STORAGE);
+            }
+
+            if (LogManager.getRootLogger().isDebugEnabled())
+                logger.warning("Log4J Debugger is enabled!");
+
+
+            if (preferences.hasCustomSqliteLocation())
+                getStorage().setDb(preferences.custom_sqliteLocation());
+
+            featureManager = new FeatureManager();
+            commandManager = new IngwerCommandManager();
+            messageManager = new IngwerMessageManager();
+            commandReturnSystem = new CommandReturnSystem(getLogger());
+
+
+            final org.apache.logging.log4j.core.Logger rootLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
+
+            rootLogger.addFilter(new IngwerLog4JFilter());
+
+            getFeatureManager().registerInternalFeatures();
+            getFeatureManager().findFeatures();
+
+            //END: Boot
+            printLEGAL(getLogger().adopt("LEGAL"));
+
+            //process
+            Identity.refresh();
+            //noinspection ResultOfMethodCallIgnored
+            createSuperAdmin(preferences);
+
+
+            if (javaPlugin != null) {
+                registerPaperListeners();
+            } else {
+                logger.warning("javaPlugin is null!");
+                stop(StopCode.FATAL);
+                return;
+            }
+
+            //internalCommands
+            new HelpCommand(getCommandManager());
+            new IngwerCommand();
+            new SayCommand();
+            new PromoteCommand();
+            new DemoteCommand();
+            new ChatCommand();
+            new VPermsCommand();
+            new FeatureCommand(getFeatureManager());
+            new OpCommand();
+            new ThreadsCommand();
+
+            //node
+            new NodeTestCommand();
+
+            getLogger().info("completed boot of Ingwer!");
+
+            //maliciousConfig();
+        }catch (Throwable throwable) {
+            IngwerThrower.acceptS(throwable,ThrowType.GENERAL);
         }
-
-        if (LogManager.getRootLogger().isDebugEnabled())
-            logger.warning("Log4J Debugger is enabled!");
-
-
-        if (preferences.hasCustomSqliteLocation())
-            getStorage().setDb(preferences.custom_sqliteLocation());
-
-        featureManager = new FeatureManager();
-        commandManager = new IngwerCommandManager();
-        messageManager = new IngwerMessageManager();
-        commandReturnSystem = new CommandReturnSystem(getLogger());
-
-
-        final org.apache.logging.log4j.core.Logger rootLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
-
-        rootLogger.addFilter(new IngwerLog4JFilter());
-
-        getFeatureManager().registerInternalFeatures();
-        getFeatureManager().findFeatures();
-
-        //END: Boot
-        printLEGAL(getLogger().adopt("LEGAL"));
-
-        //process
-        Identity.refresh();
-        //noinspection ResultOfMethodCallIgnored
-        createSuperAdmin(preferences);
-
-
-        if (javaPlugin != null) {
-            registerPaperListeners();
-        } else {
-            logger.warning("javaPlugin is null!");
-            stop(StopCode.FATAL);
-            return;
-        }
-
-        //internalCommands
-        new HelpCommand(getCommandManager());
-        new IngwerCommand();
-        new SayCommand();
-        new PromoteCommand();
-        new DemoteCommand();
-        new ChatCommand();
-        new VPermsCommand();
-        new FeatureCommand(getFeatureManager());
-        new OpCommand();
-        new ThreadsCommand();
-
-        //node
-        new NodeTestCommand();
-
-        getLogger().info("completed boot of Ingwer!");
-
-        //maliciousConfig();
     }
 
     public static void stop(@NotNull StopCode stopCode) {
@@ -191,7 +196,7 @@ public final class Ingwer {
         getStorage().close();
 
         if (!stopCode.equals(StopCode.FATAL)) {
-            javaPlugin.getLogger().warning(javaPlugin.getName() + " does not support reloading!");
+            javaPlugin.getLogger().warning(javaPlugin.getName() + " may not support reloading!");
         }
         // Bukkit.getServer().spigot().restart();
 
