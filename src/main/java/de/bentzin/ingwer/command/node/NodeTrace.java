@@ -14,18 +14,19 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("rawtypes")
 @Immutable
 public class NodeTrace {
 
     private final ArrayList<Node> nodes;
-    private final Map<String, Node> map = new HashMap<>();
+    private final Map<String, Node> map;
 
     /**
      * @param nodes make shure that the Names of the given nodes are unique!
      */
     public NodeTrace(ArrayList<Node> nodes) {
         this.nodes = Objects.requireNonNull(nodes);
-        nodes.stream().collect(Collectors.toUnmodifiableMap(Node::getName, node -> node));
+        map = nodes.stream().collect(Collectors.toUnmodifiableMap(Node::getName, node -> node));
     }
 
     public Collection<Node> cloneNodes() {
