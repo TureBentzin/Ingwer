@@ -94,7 +94,6 @@ public interface Node<T> extends Cloneable {
      * @param nodeTrace node trace
      * @return true if the argument could be parsed, false if parsing fails
      */
-    @Deprecated
     default boolean accepts(String input, NodeTrace nodeTrace) {
         try {
             T parse = parse(input, nodeTrace);
