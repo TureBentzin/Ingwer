@@ -4,9 +4,9 @@ import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
-import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.thrower.ThrowType;
+import de.bentzin.ingwer.utils.LoggingClass;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,22 +19,34 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
-public final class Sqlite {
+public final class Sqlite extends LoggingClass implements Storage {
 
-    public final Logger logger;
+
+    @Contract(value = " -> new", pure = true)
+    public static @NotNull StorageProvider<Sqlite> getProvider() {
+        return new StorageProvider<>(false, false) {
+            @Override
+            @Nullable
+            public Sqlite get() {
+                try {
+                    return new Sqlite();
+                } catch (URISyntaxException | IOException | SQLException e) {
+                    IngwerThrower.acceptS(e, ThrowType.STORAGE);
+                }
+                return null;
+            }
+        };
+    }
+
     private File db;
     private Connection connection;
 
 
     public Sqlite() throws URISyntaxException, IOException, SQLException {
-        logger = Ingwer.getLogger().adopt("Storage");
+        super(Ingwer.getLogger().adopt("Storage"));
         db = getDefaultFile();
 
         //INIT
-
-        init();
-        connect();
-        setupDB();
 
     }
 
@@ -48,10 +60,21 @@ public final class Sqlite {
         return db;
     }
 
-    public void init() throws IOException {
+    @Override
+    public void init() {
+        getLogger().debug("database File: " + db);
+        try {
+            db.createNewFile();
+        } catch (IOException e) {
+           IngwerThrower.acceptS(e,ThrowType.STORAGE);
+        }
 
-        logger.debug("database File: " + db);
-        db.createNewFile();
+        try {
+            connect();
+            setupDB();
+        } catch (SQLException e) {
+            IngwerThrower.acceptS(e,ThrowType.STORAGE);
+        }
 
     }
 
@@ -98,18 +121,19 @@ public final class Sqlite {
     }
 
     public void connect() throws SQLException {
-        logger.debug("establishing connection to: " + db.getName());
+        getLogger().debug("establishing connection to: " + db.getName());
         connection = DriverManager.getConnection("jdbc:sqlite:" + db.getPath());
 
     }
 
+    @Override
     public void close() {
         if (connection != null)
             try {
                 connection.close();
-                logger.warning("closed connection to database!");
+                getLogger().warning("closed connection to database!");
             } catch (SQLException e) {
-                logger.warning("suspicious behavior of database detected! Check your storage and the conditions Ingwer is getting executed under immediately!");
+                getLogger().warning("suspicious behavior of database detected! Check your storage and the conditions Ingwer is getting executed under immediately!");
                 IngwerThrower.acceptS(e);
             }
     }
@@ -123,6 +147,7 @@ public final class Sqlite {
     }
 
 
+    @Override
     public Identity saveIdentity(@NotNull Identity identity) {
         Identity.IDENTITY_SET.add(identity);
         try {
@@ -132,8 +157,7 @@ public final class Sqlite {
                     "INSERT INTO identity (user_name, player_uuid, user_permissions)" +
                             "VALUES (" + a(identity.getName()) + "," + a(identity.getUUID())
                             + "," + a(identity.getCodedPermissions()) + ")");
-
-            logger.info("saved: " + identity.getName());
+            getLogger().info("saved: " + identity.getName());
         } catch (SQLException e) {
             IngwerThrower.acceptS(e, ThrowType.STORAGE);
         }
@@ -141,6 +165,7 @@ public final class Sqlite {
         return identity;
     }
 
+    @Override
     public @Nullable Identity getIdentityByName(String name) {
         try {
             Statement statement = connection.createStatement();
@@ -157,6 +182,7 @@ public final class Sqlite {
         return null;
     }
 
+    @Override
     public @Nullable Identity getIdentityByUUID(String uuid) {
         try {
             Statement statement = connection.createStatement();
@@ -176,6 +202,7 @@ public final class Sqlite {
         return null;
     }
 
+    @Override
     public @Nullable Collection<Identity> getAllIdentities() {
         try {
             Statement statement = connection.createStatement();
@@ -199,11 +226,12 @@ public final class Sqlite {
         return null;
     }
 
+    @Override
     public @Nullable Identity getIdentityByID(int id) {
         try {
             Statement statement = connection.createStatement();
             statement.execute(
-                    "SELECT * FROM identity WHERE id = " + a(id));
+                    "SELECT * FROM identity WHERE user_id = " + a(id));
             ResultSet resultSet = statement.getResultSet();
             Identity identity = new Identity(resultSet.getString("user_name"),
                     UUID.fromString(resultSet.getString("player_uuid")),
@@ -215,6 +243,7 @@ public final class Sqlite {
         return null;
     }
 
+    @Override
     public void removeIdentity(@NotNull Identity identity) {
         try {
             Statement statement = connection.createStatement();
@@ -225,6 +254,7 @@ public final class Sqlite {
         }
     }
 
+    @Override
     public boolean containsIdentityWithUUID(String uuid) {
         try {
             Statement statement = connection.createStatement();
@@ -238,6 +268,7 @@ public final class Sqlite {
         return false;
     }
 
+    @Override
     public @NotNull Collection<Identity> getIdentities() {
         Collection<Identity> collection = new ArrayList<>();
         try {
@@ -257,6 +288,7 @@ public final class Sqlite {
         return collection;
     }
 
+    @Override
     @Contract("_, _, _, _ -> param1")
     public Identity updateIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
 
@@ -264,6 +296,7 @@ public final class Sqlite {
         try {
             Statement statement = connection.createStatement();
 
+            //noinspection SqlResolve
             statement.execute(
                     "UPDATE identity\n" +
                             "SET user_name = " + a(name) + ", player_uuid = " + a(suuid) +
@@ -281,6 +314,7 @@ public final class Sqlite {
     /**
      * @implNote If Identity is not present this will create a new one based on the given SINGLE parameters. In this case the given Identity would not be used or changed!!!
      */
+    @Override
     @Contract("_, _, _, _ -> param1")
     public Identity updateOrSaveIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
         if (containsIdentityWithUUID(uuid.toString())) {

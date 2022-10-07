@@ -7,6 +7,7 @@ import de.bentzin.ingwer.command.node.IngwerNodeCommand;
 import de.bentzin.ingwer.command.node.NodeTrace;
 import de.bentzin.ingwer.command.node.NodeTrace.NodeParser.NodeParserException;
 import de.bentzin.ingwer.message.StraightLineStringMessage;
+import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
 
 public class NodeTestCommand extends IngwerNodeCommand {
@@ -39,7 +40,7 @@ public class NodeTestCommand extends IngwerNodeCommand {
                      public void execute(CommandData commandData, NodeTrace nodeTrace, String s) throws NodeParserException {
                          //new:
                          String string = nodeTrace.parser(commandData).parse("text");
-                         MessageBuilder.prefixed().add("Last node was: " + string);
+                         MessageBuilder.prefixed().add("Last node was: ").add(C.A, string).build().send(commandData.commandSender());
                      }
                  }
 
