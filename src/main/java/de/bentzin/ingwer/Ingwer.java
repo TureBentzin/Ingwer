@@ -36,7 +36,7 @@ import java.util.List;
 public final class Ingwer {
 
     //TODO dynamic
-    public static final String VERSION_STRING = "0.4-BETA";
+    public static final String VERSION_STRING = "0.5-BETA";
     public static final String BANNER = "\n" +
             "██╗███╗░░██╗░██████╗░░██╗░░░░░░░██╗███████╗██████╗░\n" +
             "██║████╗░██║██╔════╝░░██║░░██╗░░██║██╔════╝██╔══██╗\n" +
