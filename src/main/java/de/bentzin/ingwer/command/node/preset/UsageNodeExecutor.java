@@ -53,7 +53,7 @@ public class UsageNodeExecutor implements Node.NodeExecutor {
                     builder.add(C.C, "  ");
                     i--;
                 }
-                builder.add(C.C, "|").add(C.C, "-");
+                builder.add(C.C, "|-");
                 addContent(entry.getValue(), builder);
                 messages.add(builder.build());
             }
