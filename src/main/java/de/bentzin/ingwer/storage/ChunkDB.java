@@ -3,9 +3,13 @@ package de.bentzin.ingwer.storage;
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
+import de.bentzin.ingwer.logging.Logger;
+import de.bentzin.ingwer.utils.LoggingClass;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
@@ -14,6 +18,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.Buffer;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
@@ -25,14 +30,19 @@ import java.util.function.Supplier;
  * @author Ture Bentzin
  * 07.10.2022
  */
-public class ChunkDB implements Storage {
+public class ChunkDB extends LoggingClass implements Storage {
 
-    private ChunkDBManager dbManager = new ChunkDBManager();
+    private final ChunkDBManager dbManager = new ChunkDBManager(Bukkit::getWorlds);
+    private final String VERSION_STRING = "1.0-RELEASE";
+
+    public ChunkDB() {
+        super(Ingwer.getLogger().adopt("ChunkDB"));
+    }
 
 
     @Override
     public void init() {
-
+        getLogger().info("running ChunkDB v." + VERSION_STRING);
     }
 
     @Override
