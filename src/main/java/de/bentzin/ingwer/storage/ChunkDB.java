@@ -2,14 +2,13 @@ package de.bentzin.ingwer.storage;
 
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.identity.Identity;
+import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
-import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.utils.LoggingClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
@@ -18,13 +17,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.Buffer;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
+import java.security.InvalidParameterException;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static de.bentzin.ingwer.storage.ChunkDB.ChunkDBManager.NAMESPACE;
+import static de.bentzin.ingwer.storage.ChunkDB.ChunkDBManager.genKey;
 
 /**
  * @author Ture Bentzin
@@ -32,6 +32,7 @@ import java.util.function.Supplier;
  */
 public class ChunkDB extends LoggingClass implements Storage {
 
+    public final String IDENTITY_PREFIX = "identities.";
     private final ChunkDBManager dbManager = new ChunkDBManager(Bukkit::getWorlds);
     private final String VERSION_STRING = "1.0-RELEASE";
 
@@ -52,7 +53,12 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public Identity saveIdentity(@NotNull Identity identity) {
-        return null;
+        NamespacedKey origin = genNextIdentityKey();
+        dbManager.save(cloneAppend(origin,"name"),PersistentDataType.STRING,identity.getName());
+        dbManager.save(cloneAppend(origin,"uuid"),PersistentDataType.STRING,identity.getUUID().toString());
+        dbManager.save(cloneAppend(origin,"perms"),PersistentDataType.LONG,identity.getCodedPermissions());
+        dbManager.save(cloneAppend(origin,"flag"),PersistentDataType.SHORT,Short.valueOf("0"));
+        return identity;
     }
 
     @Override
@@ -72,7 +78,14 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public @Nullable Identity getIdentityByID(int id) {
-        return null;
+        NamespacedKey key = genKey(IDENTITY_PREFIX + id + ".");
+        PersistentDataContainer bestMatch = dbManager.findBestMatch(cloneAppend(key,""));
+        String name = bestMatch.get(cloneAppend(key,"name"),PersistentDataType.STRING);
+        UUID uuid = UUID.fromString(bestMatch.get(cloneAppend(key,"uuid"),PersistentDataType.STRING));
+        long coded = bestMatch.get(cloneAppend(key,"perms"),PersistentDataType.LONG);
+        IngwerPermissions ingwerPermissions = IngwerPermission.decodePermissions(coded);
+
+        return new Identity(name,uuid,ingwerPermissions);
     }
 
     @Override
@@ -96,6 +109,39 @@ public class ChunkDB extends LoggingClass implements Storage {
     }
 
     /**
+     *
+     * @return IDENTITY_PREFIX + n+1 + "." -> "identities.3."
+     */
+    protected String nextIdentityKey() {
+        int max = 0;
+        for (NamespacedKey namespacedKey : dbManager.namespacedKeys()) {
+            if (namespacedKey.getNamespace().equals(NAMESPACE)) {
+                if(namespacedKey.getKey().startsWith(IDENTITY_PREFIX)) {
+                    String rem = namespacedKey.getKey().replace(IDENTITY_PREFIX,"");
+                    String[] parts = rem.split("\\.");
+                    if(parts.length > 1) {
+                        int n = Integer.parseInt(parts[0]);
+                        if(n > max) max = n;
+                    }else {
+                        throw new InvalidParameterException(namespacedKey.getNamespace() + "::" + namespacedKey.getKey() + " -> ERROR!");
+                    }
+                }
+            }
+        }
+        return IDENTITY_PREFIX + max+1 + ".";
+    }
+
+    public NamespacedKey genNextIdentityKey() {
+        return new NamespacedKey("ingwer",nextIdentityKey());
+    }
+
+    public NamespacedKey cloneAppend(NamespacedKey origin, String @NotNull ... sub) {
+        StringJoiner joiner = new StringJoiner(".");
+        for (String s : sub) joiner.add(s);
+        new NamespacedKey(origin.namespace(), joiner.toString());
+    }
+
+    /**
      * @param identity
      * @param name
      * @param uuid
@@ -112,6 +158,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     protected static class ChunkDBManager {
 
         public static final Function<World, Chunk> getChunk = world -> world.getChunkAt(0, 0);
+        public static final String NAMESPACE = "ingwer";
         private final Supplier<Collection<World>> worlds;
 
 
@@ -121,15 +168,17 @@ public class ChunkDB extends LoggingClass implements Storage {
 
         @Contract("_ -> new")
         public static @NotNull NamespacedKey genKey(String key) {
-            return new NamespacedKey(Ingwer.javaPlugin, key);
+            return new NamespacedKey(NAMESPACE, key);
         }
 
         public <T, Z> void save(NamespacedKey key, PersistentDataType<T, Z> dataType, Z data) {
-            action(container -> {container.set(key,dataType,data);});
+            action(container -> {
+                container.set(key, dataType, data);
+            });
         }
 
         public <T, Z> Z get(NamespacedKey key, PersistentDataType<T, Z> dataType) {
-            return Objects.requireNonNull(findBestMatch(key, dataType)).get(key,dataType);
+            return Objects.requireNonNull(findBestMatch(key, dataType)).get(key, dataType);
         }
 
         public <T, Z> boolean has(NamespacedKey key, PersistentDataType<T, Z> dataType) {
@@ -142,7 +191,6 @@ public class ChunkDB extends LoggingClass implements Storage {
         }
 
 
-
         public Collection<World> getWorlds() {
             return worlds.get();
         }
@@ -152,7 +200,6 @@ public class ChunkDB extends LoggingClass implements Storage {
         }
 
         /**
-         *
          * @return collection of containers based on their ingwer timestamp
          */
         protected Collection<PersistentDataContainer> sortedChunkContainers() {
@@ -167,10 +214,10 @@ public class ChunkDB extends LoggingClass implements Storage {
 
         public long getElseSetTimeStamp(@NotNull PersistentDataContainer container) {
             NamespacedKey key = genKey("ingwer.internal.timestamp");
-            if(!container.has(key)) {
-                container.set(key,PersistentDataType.LONG,System.currentTimeMillis());
+            if (!container.has(key)) {
+                container.set(key, PersistentDataType.LONG, System.currentTimeMillis());
             }
-            return container.get(key,PersistentDataType.LONG);
+            return container.get(key, PersistentDataType.LONG);
         }
 
         /**
@@ -180,7 +227,7 @@ public class ChunkDB extends LoggingClass implements Storage {
         @Nullable
         protected PersistentDataContainer findBestMatch(NamespacedKey key) {
             for (PersistentDataContainer dataContainer : sortedChunkContainers()) {
-                if(dataContainer.has(key)) {
+                if (dataContainer.has(key)) {
                     return dataContainer;
                 }
             }
@@ -192,9 +239,9 @@ public class ChunkDB extends LoggingClass implements Storage {
          * @return first found container or null of no container was found
          */
         @Nullable
-        protected <T,Z> PersistentDataContainer findBestMatch(NamespacedKey key, PersistentDataType<T,Z> dataType) {
+        protected <T, Z> PersistentDataContainer findBestMatch(NamespacedKey key, PersistentDataType<T, Z> dataType) {
             for (PersistentDataContainer dataContainer : sortedChunkContainers()) {
-                if(dataContainer.has(key, dataType)) {
+                if (dataContainer.has(key, dataType)) {
                     return dataContainer;
                 }
             }
@@ -205,8 +252,17 @@ public class ChunkDB extends LoggingClass implements Storage {
             sortedChunkContainers().forEach(action);
         }
 
-        private <R> Collection<R> collect(Function<PersistentDataContainer,R> action) {
+        private <R> Collection<R> collect(Function<PersistentDataContainer, R> action) {
             return sortedChunkContainers().stream().map(action).toList();
+        }
+
+        public Collection<NamespacedKey> namespacedKeys() {
+            Collection<Collection<NamespacedKey>> data = collect(PersistentDataContainer::getKeys);
+            Set<NamespacedKey> set = new HashSet<>();
+            for (Collection<NamespacedKey> namespacedKeys : data) {
+                set.addAll(namespacedKeys);
+            }
+            return set;
         }
 
         //alternatives
