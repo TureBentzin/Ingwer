@@ -1,12 +1,15 @@
 package de.bentzin.ingwer.command.internalcommands;
 
+import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.node.ArgumentNode;
 import de.bentzin.ingwer.command.node.IngwerNodeCommand;
+import de.bentzin.ingwer.command.node.Node;
 import de.bentzin.ingwer.command.node.NodeTrace;
 import de.bentzin.ingwer.message.StraightLineStringMessage;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
+import de.bentzin.ingwer.thow.IngwerThrower;
 
 public class NodeTestCommand extends IngwerNodeCommand {
 
@@ -33,6 +36,21 @@ public class NodeTestCommand extends IngwerNodeCommand {
                         new StraightLineStringMessage("LOL").send(commandData.commandSender());
                     }
                 })
+
+        ).append(new ArgumentNode("rec") {
+                     @Override
+                     public void execute(CommandData commandData, NodeTrace nodeTrace, String s) {
+                         //old:
+                         Node<String> text = nodeTrace.get("text");
+                         String textS = text.parse(commandData.cmd()[nodeTrace.indexOf(text)],nodeTrace);
+
+                         //new:
+                         try {
+                             String string = nodeTrace.parser(commandData).parse("text");
+                         } catch (NodeTrace.NodeParser.NodeParserException e) { IngwerThrower.acceptS(e);}
+
+                     }
+                 }
 
         ).finish();
     }
