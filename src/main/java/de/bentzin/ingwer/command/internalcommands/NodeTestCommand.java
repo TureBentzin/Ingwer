@@ -24,26 +24,25 @@ public class NodeTestCommand extends IngwerNodeCommand {
                      }
                  }
         ).append(new ArgumentNode("text") {
-                    @Override
-                    public void execute(CommandData commandData, NodeTrace nodeTrace, String s) {
-                        new StraightLineStringMessage("Michael!").send(commandData.commandSender());
-                    }
-                }.append(new ArgumentNode("inner") {
-                    @Override
-                    public void execute(CommandData commandData, NodeTrace nodeTrace, String s) {
-                        new StraightLineStringMessage("LOL").send(commandData.commandSender());
-                    }
-                })
-
+            @Override
+            public void execute(CommandData commandData, NodeTrace nodeTrace, String s) {
+                new StraightLineStringMessage("Michael!").send(commandData.commandSender());
+            }
+        }.append(new ArgumentNode("inner") {
+                     @Override
+                     public void execute(CommandData commandData, NodeTrace nodeTrace, String s) {
+                         new StraightLineStringMessage("LOL").send(commandData.commandSender());
+                     }
+                 }
         ).append(new ArgumentNode("rec") {
                      @Override
                      public void execute(CommandData commandData, NodeTrace nodeTrace, String s) throws NodeParserException {
                          //new:
-                             String string = nodeTrace.parser(commandData).parse("text");
-                             MessageBuilder.prefixed().add("Last node was: " + string);
+                         String string = nodeTrace.parser(commandData).parse("text");
+                         MessageBuilder.prefixed().add("Last node was: " + string);
                      }
                  }
 
-        ).finish();
+        )).finish();
     }
 }
