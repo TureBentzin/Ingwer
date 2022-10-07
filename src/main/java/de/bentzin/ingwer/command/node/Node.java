@@ -21,6 +21,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Node is the base for the node based CommandSystem.
@@ -31,6 +33,7 @@ import java.util.function.Function;
  * @implNote This may be an implementation of {@link Permissioned}
  * @see CommandNode
  */
+@SuppressWarnings("rawtypes")
 public interface Node<T> extends Cloneable {
 
     /**
@@ -203,6 +206,10 @@ public interface Node<T> extends Cloneable {
                     });
         }
         return collection;
+    }
+
+    default Collection<Node> find(Predicate<Node> nodePredicate) {
+        return collect(false).stream().takeWhile((Predicate<? super Node>) nodePredicate).toList();
     }
 
     /**
