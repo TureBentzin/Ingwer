@@ -1,7 +1,7 @@
 package de.bentzin.ingwer.logging;
 
-import de.bentzin.ingwer.thow.IngwerThrower;
-import de.bentzin.ingwer.thow.ThrowType;
+import de.bentzin.ingwer.thrower.IngwerThrower;
+import de.bentzin.ingwer.thrower.ThrowType;
 import org.jetbrains.annotations.NotNull;
 
 public class SystemLogger extends Logger {

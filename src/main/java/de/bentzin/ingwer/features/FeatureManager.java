@@ -5,7 +5,7 @@ import de.bentzin.ingwer.features.integrated.Log4JFeature;
 import de.bentzin.ingwer.features.integrated.vault.VaultFeature;
 import de.bentzin.ingwer.features.test.TestFeature;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.thow.ThrowType;
+import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.tools.register.Registerator;
 import org.jetbrains.annotations.NotNull;
 

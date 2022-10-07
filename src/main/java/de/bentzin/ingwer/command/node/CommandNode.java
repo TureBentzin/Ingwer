@@ -6,7 +6,7 @@ import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.node.preset.UsageNodeExecutor;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.thow.IngwerThrower;
+import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.utils.CompletableOptional;
 import de.bentzin.ingwer.utils.FinalCompletableOptional;
 import org.jetbrains.annotations.ApiStatus;

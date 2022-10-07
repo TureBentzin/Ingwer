@@ -11,8 +11,8 @@ import de.bentzin.ingwer.message.MiniMessageMessage;
 import de.bentzin.ingwer.message.MultipageMessageKeeper;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
-import de.bentzin.ingwer.thow.IngwerException;
-import de.bentzin.ingwer.thow.ThrowType;
+import de.bentzin.ingwer.thrower.IngwerException;
+import de.bentzin.ingwer.thrower.ThrowType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 

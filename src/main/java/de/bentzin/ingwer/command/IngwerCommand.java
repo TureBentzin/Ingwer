@@ -4,7 +4,7 @@ import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.message.StraightLineStringMessage;
-import de.bentzin.ingwer.thow.ThrowType;
+import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.tools.register.Registerator;
 import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.Bukkit;
