@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unused"})
 @Immutable
 public class NodeTrace {
 
@@ -80,6 +80,7 @@ public class NodeTrace {
         return nodes.isEmpty();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @ApiStatus.Experimental
     @ApiStatus.Internal
     private void clean() {
@@ -137,7 +138,6 @@ public class NodeTrace {
 
 
 
-    @SuppressWarnings("ClassCanBeRecord")
     @ApiStatus.Internal
     public static final class NodeParser{
 
