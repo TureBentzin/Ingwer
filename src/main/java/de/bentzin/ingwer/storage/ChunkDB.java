@@ -200,8 +200,8 @@ public class ChunkDB implements Storage {
         }
 
         //alternatives
-        public <T, Z> boolean save(String key, PersistentDataType<T, Z> dataType, Z data) {
-            return save(genKey(key), dataType, data);
+        public <T, Z> void save(String key, PersistentDataType<T, Z> dataType, Z data) {
+            save(genKey(key), dataType, data);
         }
 
         public <T, Z> Z get(String key, PersistentDataType<T, Z> dataType) {
