@@ -138,7 +138,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     public NamespacedKey cloneAppend(NamespacedKey origin, String @NotNull ... sub) {
         StringJoiner joiner = new StringJoiner(".");
         for (String s : sub) joiner.add(s);
-        new NamespacedKey(origin.namespace(), joiner.toString());
+        return new NamespacedKey(origin.namespace(), joiner.toString());
     }
 
     /**
