@@ -7,6 +7,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+import java.security.Permission;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +47,11 @@ public final class AsyncChunkDBManager extends ChunkDBManager {
 
     @Override
     public void remove(NamespacedKey key) {
+
+    }
+
+    @Override
+    public void clean() {
 
     }
 
