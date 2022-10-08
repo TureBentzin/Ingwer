@@ -11,7 +11,6 @@ import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.message.IngwerMessageManager;
 import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
-import de.bentzin.ingwer.storage.Sqlite;
 import de.bentzin.ingwer.storage.Storage;
 import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.thrower.ThrowType;
@@ -29,9 +28,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.List;
 
 public final class Ingwer {
@@ -54,7 +50,7 @@ public final class Ingwer {
     private static FeatureManager featureManager;
     private static IngwerCommandManager commandManager;
     private static CommandReturnSystem commandReturnSystem;
-    private static Sqlite storage;
+    private static Storage storage;
     private static Logger logger;
     private static boolean debug = false;
 
@@ -126,11 +122,11 @@ public final class Ingwer {
             ingwerThrower = new IngwerThrower();
 
             try {
-                storage = new Sqlite();
-            } catch (URISyntaxException | IOException e) {
-                getIngwerThrower().accept(e);
-            } catch (SQLException e) {
+                storage = preferences.storageProvider().getAndInit();
+            } catch (Exception e) {
                 getIngwerThrower().accept(e, ThrowType.STORAGE);
+            } finally {
+                getLogger().info("finished crafting of Ingwer Storage!");
             }
 
             if (LogManager.getRootLogger().isDebugEnabled())
@@ -184,8 +180,8 @@ public final class Ingwer {
             getLogger().info("completed boot of Ingwer!");
 
             //maliciousConfig();
-        }catch (Throwable throwable) {
-            IngwerThrower.acceptS(throwable,ThrowType.GENERAL);
+        } catch (Throwable throwable) {
+            IngwerThrower.acceptS(throwable, ThrowType.GENERAL);
         }
     }
 

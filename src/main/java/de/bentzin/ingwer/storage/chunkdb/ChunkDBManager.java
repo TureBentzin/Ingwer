@@ -23,7 +23,8 @@ import java.util.function.Supplier;
  * @author Ture Bentzin
  * 08.10.2022
  */
-public abstract class ChunkDBManager extends LoggingClass {
+public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncChunkDBManager, SyncedChunkDBManager {
+
     public static final Function<World, Chunk> getChunk = world -> world.getChunkAt(0, 0);
     public static final String NAMESPACE = "ingwer";
     protected final Supplier<Collection<World>> worlds;

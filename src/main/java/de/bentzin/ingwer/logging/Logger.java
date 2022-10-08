@@ -1,5 +1,6 @@
 package de.bentzin.ingwer.logging;
 
+import de.bentzin.ingwer.Ingwer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +28,12 @@ public abstract class Logger {
         this.debug = debug;
     }
 
-    public boolean isDebugEnabled() {
+    /**
+     *
+     * @return true when globalDebug is active or the local debug of this is active!
+     */
+    public final boolean isDebugEnabled() {
+        if(Ingwer.isGlobalDebug()) return true;
         return debug;
     }
 

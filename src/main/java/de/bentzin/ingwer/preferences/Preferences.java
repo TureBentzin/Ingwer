@@ -3,6 +3,7 @@ package de.bentzin.ingwer.preferences;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.logging.SystemLogger;
 import de.bentzin.ingwer.storage.Storage;
+import de.bentzin.ingwer.storage.StorageProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +12,7 @@ import java.io.File;
 import java.util.UUID;
 
 public record Preferences(UUID superadmin, char prefix, StartType startType,
-                          Storage storageProvider,
+                          StorageProvider<? extends Storage> storageProvider,
                           @NotNull Logger ingwerLogger, JavaPlugin javaPlugin,
                           boolean debug
 

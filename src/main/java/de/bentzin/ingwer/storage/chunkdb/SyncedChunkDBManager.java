@@ -9,9 +9,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.nio.Buffer;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -21,10 +18,10 @@ import java.util.function.Supplier;
  * 08.10.2022
  */
 @ApiStatus.Internal
-class SyncedChunkDBManager extends ChunkDBManager {
+public final class SyncedChunkDBManager extends ChunkDBManager {
 
 
-    protected SyncedChunkDBManager(Supplier<Collection<World>> worlds) {
+    public SyncedChunkDBManager(Supplier<Collection<World>> worlds) {
         super(worlds);
     }
 

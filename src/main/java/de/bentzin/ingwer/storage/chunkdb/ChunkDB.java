@@ -6,12 +6,14 @@ import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.storage.Storage;
+import de.bentzin.ingwer.storage.StorageProvider;
 import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.LoggingClass;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,12 +35,27 @@ import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.genKey;
 @ApiStatus.Experimental
 public class ChunkDB extends LoggingClass implements Storage {
 
+    @Contract(value = "_ -> new", pure = true)
+    public static @NotNull StorageProvider<ChunkDB> getProvider(ChunkDBManager dbManager) {
+        return new StorageProvider<>(true, false) {
+            /**
+             * @return Storage or null if something goes really wrong
+             */
+            @Override
+            public @NotNull ChunkDB get() {
+                return new ChunkDB(dbManager);
+            }
+        };
+    }
+
+
     public final String IDENTITY_PREFIX = "identities.";
-    private final ChunkDBManager dbManager = new SyncedChunkDBManager(Bukkit::getWorlds);
+    private final ChunkDBManager dbManager;
     private final String VERSION_STRING = "1.0-RELEASE";
 
-    public ChunkDB() {
+    public ChunkDB(ChunkDBManager chunkDBManager) {
         super(Ingwer.getLogger().adopt("ChunkDB"));
+        dbManager = chunkDBManager;
     }
 
 
