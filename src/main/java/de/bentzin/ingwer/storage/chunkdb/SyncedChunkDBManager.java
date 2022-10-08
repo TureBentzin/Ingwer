@@ -1,15 +1,19 @@
 package de.bentzin.ingwer.storage.chunkdb;
 
+import com.google.common.annotations.Beta;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.io.Closeable;
+import java.io.IOException;
+import java.nio.Buffer;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -26,9 +30,9 @@ class SyncedChunkDBManager extends ChunkDBManager {
 
     @Override
     public void save(NamespacedKey key, String data) {
-        action(container -> {
+        onRecentContainer(container -> {
             container.set(key, PERSISTENT_DATA_TYPE, data);
-            timestamp(container);
+            push(container);
         });
     }
 
@@ -45,7 +49,11 @@ class SyncedChunkDBManager extends ChunkDBManager {
 
     @Override
     public void remove(NamespacedKey key) {
-        action(container -> container.remove(key));
+        onRecentContainer(container -> {
+            container.remove(key);
+            push(container);
+        });
+
     }
 
 
@@ -56,6 +64,25 @@ class SyncedChunkDBManager extends ChunkDBManager {
             timestamp(container);
             return getTimestamp(container);
         }).orElseThrow();
+    }
+
+    public Optional<PersistentDataContainer> getMostRecentContainer() {
+        try {
+            PersistentDataContainer pdc = sortedChunkContainers().iterator().next();
+            return Optional.of(pdc);
+        } catch (NoSuchElementException ignored) {
+            return Optional.empty();
+        }
+    }
+
+    @ApiStatus.Experimental
+    private void onRecentContainer(@NotNull Consumer<PersistentDataContainer> containerConsumer){
+        containerConsumer.accept(getMostRecentContainer().orElse(getFallbackContainer()));
+    }
+
+    @Beta
+    public PersistentDataContainer getFallbackContainer() {
+        return getChunk.apply(Bukkit.getWorlds().get(0)).getPersistentDataContainer();
     }
 
     /**

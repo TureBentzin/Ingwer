@@ -72,11 +72,13 @@ public abstract class ChunkDBManager extends LoggingClass {
     protected void push(@NotNull PersistentDataContainer container) {
         Set<NamespacedKey> keys = container.getKeys();
         List<NamespacedKey> ingwerKeys = keys.stream().takeWhile(key -> key.getNamespace().equals(NAMESPACE)).toList();
+        getLogger().debug("pushing: " + ingwerKeys.stream().map(key -> key.getKey() + ":<" + container.get(key,PersistentDataType.STRING) + ">"));
         chunkContainers().forEach(container1 -> {
             ingwerKeys.forEach(key ->  {
                 if(!key.getKey().startsWith("ingwer.internal")) //NEVER TRANSFER INTERNALS!!!
                     container1.set(key, PERSISTENT_DATA_TYPE,
                         Objects.requireNonNull(container.get(key, PERSISTENT_DATA_TYPE)));
+                timestamp(container1);
             });
         });
     }

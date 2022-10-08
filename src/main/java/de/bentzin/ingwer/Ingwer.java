@@ -56,6 +56,7 @@ public final class Ingwer {
     private static CommandReturnSystem commandReturnSystem;
     private static Sqlite storage;
     private static Logger logger;
+    private static boolean debug = false;
 
     public static Preferences getPreferences() {
         return preferences;
@@ -94,6 +95,14 @@ public final class Ingwer {
         Ingwer.logger = logger;
     }
 
+    public static boolean isGlobalDebug() {
+        return debug;
+    }
+
+    public static void setGlobalDebug(boolean debug) {
+        Ingwer.debug = debug;
+    }
+
     public static void start(@NotNull Preferences preferences) {
         try {
 
@@ -101,6 +110,8 @@ public final class Ingwer {
 
             setLogger(preferences.ingwerLogger());
             getLogger().setDebug(getPreferences().debug());
+
+            setGlobalDebug(getPreferences().debug());
 
             //Console
             Console.silent = !preferences.debug();
