@@ -153,7 +153,7 @@ public class ChunkDB extends LoggingClass implements Storage {
                 }
             }
         }
-        return IDENTITY_PREFIX + max + 1 + ".";
+        return IDENTITY_PREFIX + (max + 1) + ".";
     }
 
     public NamespacedKey genNextIdentityKey() {
@@ -162,6 +162,7 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     public NamespacedKey cloneAppend(NamespacedKey origin, String @NotNull ... sub) {
         StringJoiner joiner = new StringJoiner(".");
+        joiner.add(origin.getKey());
         for (String s : sub) joiner.add(s);
         return new NamespacedKey(origin.namespace(), joiner.toString());
     }

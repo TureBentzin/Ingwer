@@ -20,7 +20,7 @@ public final class IngwerPlugin extends JavaPlugin {
 
         Ingwer.start(new Preferences(Identity.DEVELOPER_UUID, '+', StartType.JAVA_PLUGIN_STANDALONE,
                 ChunkDB.getProvider(SyncedChunkDBManager.getDefault()),
-                new ApacheLogger("Ingwer", LogManager.getRootLogger()), this, false));
+                new ApacheLogger("Ingwer", LogManager.getRootLogger()), this, true));
     }
 
     @Override

@@ -41,7 +41,7 @@ public final class SyncedChunkDBManager extends ChunkDBManager {
 
     @Override
     public String get(NamespacedKey key) {
-        return Objects.requireNonNull(findBestMatch(key)).get(key,PERSISTENT_DATA_TYPE);
+        return Objects.requireNonNull(getMostRecentContainer()).orElseThrow().get(key,PERSISTENT_DATA_TYPE);
     }
 
     @Override
@@ -59,6 +59,15 @@ public final class SyncedChunkDBManager extends ChunkDBManager {
 
     }
 
+    @Override
+    public void clean() {
+        //TODO ConcurrentModificationException
+        for (NamespacedKey key : getMostRecentContainer().orElseThrow().getKeys()) {
+            if(key.getNamespace().equals(NAMESPACE)) {
+                remove(key);
+            }
+        }
+    }
 
 
     @Deprecated

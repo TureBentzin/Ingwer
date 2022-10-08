@@ -6,6 +6,7 @@ import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.utils.LoggingClass;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Warning;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
@@ -63,6 +64,10 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
 
     public abstract void remove(NamespacedKey key);
 
+    @ApiStatus.Experimental
+    @Warning(value = true)
+    public abstract void clean();
+
     /**
      * @implNote Override this is you want that the manager handles things on Stop
      */
@@ -88,7 +93,24 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
     protected void push(@NotNull PersistentDataContainer container) {
         Set<NamespacedKey> keys = container.getKeys();
         List<NamespacedKey> ingwerKeys = keys.stream().takeWhile(key -> key.getNamespace().equals(NAMESPACE)).toList();
-        getLogger().debug("pushing: " + ingwerKeys.stream().map(key -> key.getKey() + ":<" + container.get(key,PersistentDataType.STRING) + ">"));
+
+
+        getLogger().debug("pushing: " + ingwerKeys.stream().map(key -> {
+            StringBuilder builder = new StringBuilder();
+            builder.append(key.getKey()).append(":<");
+            try {
+                builder.append(container.get(key, PERSISTENT_DATA_TYPE));
+            }catch (IllegalArgumentException ignored) {
+                builder.append("--ERROR--");
+                getLogger().warning("illegal key found: \"" + key.getKey() + "\" -> removing!");
+                container.remove(key);
+            }finally {
+                builder.append(">");
+            }
+            return builder;
+        }).toList());
+
+
         chunkContainers().forEach(container1 -> {
             ingwerKeys.forEach(key ->  {
                 if(!key.getKey().startsWith("ingwer.internal")) //NEVER TRANSFER INTERNALS!!!
@@ -119,7 +141,7 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
      */
     public final void timestamp(@NotNull PersistentDataContainer container) {
         NamespacedKey key = genKey("ingwer.internal.timestamp");
-        container.set(key, PersistentDataType.LONG, System.currentTimeMillis());
+        container.set(key, PersistentDataType.STRING,Long.toString(System.currentTimeMillis()));
     }
 
     /**
@@ -130,9 +152,16 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
     public final Optional<Long> getTimestamp(@NotNull PersistentDataContainer container) {
         NamespacedKey key = genKey("ingwer.internal.timestamp");
         if (container.has(key)) {
-            return Optional.ofNullable(container.get(key,PersistentDataType.LONG));
+            try {
+                return Optional.of(Long.valueOf(Objects.requireNonNull(container.get(key, PERSISTENT_DATA_TYPE))));
+            }catch (IllegalArgumentException ignored) {
+                getLogger().warning("illegal key found: \"" + key.getKey() + "\" -> removing!");
+                container.remove(key);
+            }
+
         }
         return Optional.empty();
+
     }
 
     @ApiStatus.Internal
