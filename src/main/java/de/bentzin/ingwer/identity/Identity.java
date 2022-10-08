@@ -21,7 +21,6 @@ public class Identity implements IngwerCommandSender {
 
     public static final UUID DEVELOPER_UUID = UUID.fromString("be6e2c93-694b-4cdf-827f-83d6f2d42fb9");
 
-    public static final Set<Identity> IDENTITY_SET = new HashSet<>();
     //Identity
     private final String name;
     private final UUID uuid;
@@ -33,20 +32,6 @@ public class Identity implements IngwerCommandSender {
         this.permissions = permissions;
     }
 
-    public static void refresh() {
-        IDENTITY_SET.clear();
-        IDENTITY_SET.addAll(Ingwer.getStorage().getIdentities());
-    }
-
-    @Contract(pure = true)
-    public static @Nullable Identity searchSetByUUID(@NotNull UUID uuid) {
-        for (Identity identity : IDENTITY_SET) {
-            if (identity.getUUID().equals(uuid)) {
-                return identity;
-            }
-        }
-        return null;
-    }
 
     public boolean isSuperAdmin() {
         return permissions.contains(IngwerPermission.SUPERADMIN);
