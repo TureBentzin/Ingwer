@@ -91,9 +91,9 @@ public final class Ingwer {
     @NotNull
     public static Logger getNullLogger() {
         if(nullLogger == null)
-            throw new IllegalStateException("Okay that should never happen, but the \"null-logger\" is null. yes really....");
+            throw new IllegalStateException("Okay that should never happen, but the \"null-logger\" is null. yes actually....");
         else
-            return getLogger();
+            return nullLogger;
     }
 
     public static void setLogger(@NotNull Logger logger) {
@@ -159,7 +159,7 @@ public final class Ingwer {
 
             //END: Boot
             printLEGAL(getLogger().adopt("LEGAL"));
-            
+
             //noinspection ResultOfMethodCallIgnored
             createSuperAdmin(preferences);
 
