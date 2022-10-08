@@ -155,10 +155,10 @@ public class ChunkDB extends LoggingClass implements Storage {
     }
 
     /**
-     * @param identity
-     * @param name
-     * @param uuid
-     * @param ingwerPermissions
+     * @param identity the identity to update
+     * @param name new name
+     * @param uuid new uuid
+     * @param ingwerPermissions new permissions
      * @implNote If Identity is not present this will create a new one based on the given SINGLE parameters. In this case the given Identity would not be used or changed!!!
      */
     @Override
