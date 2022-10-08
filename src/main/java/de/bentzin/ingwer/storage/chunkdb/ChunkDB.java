@@ -11,14 +11,15 @@ import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.LoggingClass;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.Collection;
+import java.util.StringJoiner;
+import java.util.UUID;
 
 import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.NAMESPACE;
 import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.genKey;
@@ -28,11 +29,12 @@ import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.genKey;
  * @author Ture Bentzin
  * 07.10.2022
  */
+@SuppressWarnings("FieldCanBeLocal")
 @ApiStatus.Experimental
 public class ChunkDB extends LoggingClass implements Storage {
 
     public final String IDENTITY_PREFIX = "identities.";
-    private final ChunkDBManager dbManager = new ChunkDBManager(Bukkit::getWorlds);
+    private final ChunkDBManager dbManager = new SyncedChunkDBManager(Bukkit::getWorlds);
     private final String VERSION_STRING = "1.0-RELEASE";
 
     public ChunkDB() {
@@ -53,10 +55,10 @@ public class ChunkDB extends LoggingClass implements Storage {
     @Override
     public Identity saveIdentity(@NotNull Identity identity) {
         NamespacedKey origin = genNextIdentityKey();
-        dbManager.save(cloneAppend(origin,"name"),PersistentDataType.STRING,identity.getName());
-        dbManager.save(cloneAppend(origin,"uuid"),PersistentDataType.STRING,identity.getUUID().toString());
-        dbManager.save(cloneAppend(origin,"perms"),PersistentDataType.LONG,identity.getCodedPermissions());
-        dbManager.save(cloneAppend(origin,"flag"),PersistentDataType.SHORT,Short.valueOf("0"));
+        dbManager.save(cloneAppend(origin, "name"), identity.getName());
+        dbManager.save(cloneAppend(origin, "uuid"), identity.getUUID().toString());
+        dbManager.save(cloneAppend(origin, "perms"), Long.toString(identity.getCodedPermissions()));
+        dbManager.save(cloneAppend(origin, "flag"), Short.valueOf("0").toString());
         return identity;
     }
 
@@ -79,14 +81,15 @@ public class ChunkDB extends LoggingClass implements Storage {
     public @Nullable Identity getIdentityByID(int id) {
         try {
             NamespacedKey key = genKey(IDENTITY_PREFIX + id + ".");
-            PersistentDataContainer bestMatch = dbManager.findBestMatch(cloneAppend(key, ""));
-            if (bestMatch == null) return null;
-            String name = bestMatch.get(cloneAppend(key, "name"), PersistentDataType.STRING);
-            UUID uuid = UUID.fromString(bestMatch.get(cloneAppend(key, "uuid"), PersistentDataType.STRING));
-            long coded = bestMatch.get(cloneAppend(key, "perms"), PersistentDataType.LONG);
+
+            String name = dbManager.get(cloneAppend(key, "name"));
+            UUID uuid = UUID.fromString(dbManager.get(cloneAppend(key, "uuid")));
+            long coded = Long.parseLong(dbManager.get(cloneAppend(key, "perms")));
+
             IngwerPermissions ingwerPermissions = IngwerPermission.decodePermissions(coded);
+
             return new Identity(name, uuid, ingwerPermissions);
-        }catch (Exception e) {
+        } catch (Exception e) {
             IngwerThrower.acceptS(e, ThrowType.STORAGE);
             return null;
         }
@@ -104,9 +107,7 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public @NotNull Collection<Identity> getIdentities() {
-
-
-
+        return null;
     }
 
     @Override
@@ -115,30 +116,29 @@ public class ChunkDB extends LoggingClass implements Storage {
     }
 
     /**
-     *
      * @return IDENTITY_PREFIX + n+1 + "." -> "identities.3."
      */
     protected String nextIdentityKey() {
         int max = 0;
         for (NamespacedKey namespacedKey : dbManager.namespacedKeys()) {
             if (namespacedKey.getNamespace().equals(NAMESPACE)) {
-                if(namespacedKey.getKey().startsWith(IDENTITY_PREFIX)) {
-                    String rem = namespacedKey.getKey().replace(IDENTITY_PREFIX,"");
+                if (namespacedKey.getKey().startsWith(IDENTITY_PREFIX)) {
+                    String rem = namespacedKey.getKey().replace(IDENTITY_PREFIX, "");
                     String[] parts = rem.split("\\.");
-                    if(parts.length > 1) {
+                    if (parts.length > 1) {
                         int n = Integer.parseInt(parts[0]);
-                        if(n > max) max = n;
-                    }else {
+                        if (n > max) max = n;
+                    } else {
                         throw new InvalidParameterException(namespacedKey.getNamespace() + "::" + namespacedKey.getKey() + " -> ERROR!");
                     }
                 }
             }
         }
-        return IDENTITY_PREFIX + max+1 + ".";
+        return IDENTITY_PREFIX + max + 1 + ".";
     }
 
     public NamespacedKey genNextIdentityKey() {
-        return new NamespacedKey("ingwer",nextIdentityKey());
+        return new NamespacedKey("ingwer", nextIdentityKey());
     }
 
     public NamespacedKey cloneAppend(NamespacedKey origin, String @NotNull ... sub) {
@@ -148,9 +148,9 @@ public class ChunkDB extends LoggingClass implements Storage {
     }
 
     /**
-     * @param identity the identity to update
-     * @param name new name
-     * @param uuid new uuid
+     * @param identity          the identity to update
+     * @param name              new name
+     * @param uuid              new uuid
      * @param ingwerPermissions new permissions
      * @implNote If Identity is not present this will create a new one based on the given SINGLE parameters. In this case the given Identity would not be used or changed!!!
      */

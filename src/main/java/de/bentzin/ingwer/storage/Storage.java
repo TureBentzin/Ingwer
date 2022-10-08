@@ -2,6 +2,7 @@ package de.bentzin.ingwer.storage;
 
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
+import de.bentzin.ingwer.utils.Logging;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +16,7 @@ import java.util.UUID;
  *
  * @implNote Every implementation of this should have a static method <code>public static StorageProvider<ThisClass> getProvider(arguments);</code>
  */
-public interface Storage {
+public interface Storage extends Logging {
     /* */
 
     void init();

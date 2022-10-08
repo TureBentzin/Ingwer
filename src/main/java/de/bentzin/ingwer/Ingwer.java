@@ -12,6 +12,7 @@ import de.bentzin.ingwer.message.IngwerMessageManager;
 import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
 import de.bentzin.ingwer.storage.Sqlite;
+import de.bentzin.ingwer.storage.Storage;
 import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.IngwerLog4JFilter;
@@ -80,7 +81,7 @@ public final class Ingwer {
         return commandReturnSystem;
     }
 
-    public static Sqlite getStorage() {
+    public static Storage getStorage() {
         return storage;
     }
 
