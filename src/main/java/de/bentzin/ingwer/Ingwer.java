@@ -125,10 +125,6 @@ public final class Ingwer {
             if (LogManager.getRootLogger().isDebugEnabled())
                 logger.warning("Log4J Debugger is enabled!");
 
-
-            if (preferences.hasCustomSqliteLocation())
-                getStorage().setDb(preferences.custom_sqliteLocation());
-
             featureManager = new FeatureManager();
             commandManager = new IngwerCommandManager();
             messageManager = new IngwerMessageManager();
