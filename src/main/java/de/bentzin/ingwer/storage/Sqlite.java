@@ -149,7 +149,6 @@ public final class Sqlite extends LoggingClass implements Storage {
 
     @Override
     public Identity saveIdentity(@NotNull Identity identity) {
-        Identity.IDENTITY_SET.add(identity);
         try {
             Statement statement = connection.createStatement();
 

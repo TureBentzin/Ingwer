@@ -6,6 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +21,11 @@ import java.util.function.Supplier;
 @ApiStatus.Internal
 public final class SyncedChunkDBManager extends ChunkDBManager {
 
+
+    @Contract(" -> new")
+    public static Supplier<ChunkDBManager> getDefault() {
+        return () -> new SyncedChunkDBManager(Bukkit::getWorlds);
+    }
 
     public SyncedChunkDBManager(Supplier<Collection<World>> worlds) {
         super(worlds);

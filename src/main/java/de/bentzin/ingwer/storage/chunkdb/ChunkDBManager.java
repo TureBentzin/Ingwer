@@ -1,6 +1,8 @@
 package de.bentzin.ingwer.storage.chunkdb;
 
+import com.google.errorprone.annotations.ForOverride;
 import de.bentzin.ingwer.Ingwer;
+import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.utils.LoggingClass;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
@@ -31,8 +33,13 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
     public static final PersistentDataType<String,String> PERSISTENT_DATA_TYPE = PersistentDataType.STRING;
 
     public ChunkDBManager(Supplier<Collection<World>> worlds) {
-        super(Ingwer.getStorage().getLogger().adopt("DBManager"));
+        super(null);
         this.worlds = worlds;
+    }
+
+    @Override
+    public void updateLogger(Logger logger) {
+        super.updateLogger(logger);
     }
 
     @Contract("_ -> new")
@@ -55,6 +62,14 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
     public abstract boolean has(NamespacedKey key);
 
     public abstract void remove(NamespacedKey key);
+
+    /**
+     * @implNote Override this is you want that the manager handles things on Stop
+     */
+    @ForOverride
+    public void stop() {
+
+    }
 
     public final Collection<World> getWorlds() {
         return worlds.get();

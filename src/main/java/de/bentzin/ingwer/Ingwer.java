@@ -52,6 +52,7 @@ public final class Ingwer {
     private static CommandReturnSystem commandReturnSystem;
     private static Storage storage;
     private static Logger logger;
+    private static Logger nullLogger;
     private static boolean debug = false;
 
     public static Preferences getPreferences() {
@@ -87,6 +88,14 @@ public final class Ingwer {
         return logger;
     }
 
+    @NotNull
+    public static Logger getNullLogger() {
+        if(nullLogger == null)
+            throw new IllegalStateException("Okay that should never happen, but the \"null-logger\" is null. yes really....");
+        else
+            return getLogger();
+    }
+
     public static void setLogger(@NotNull Logger logger) {
         Ingwer.logger = logger;
     }
@@ -107,6 +116,9 @@ public final class Ingwer {
             setLogger(preferences.ingwerLogger());
             getLogger().setDebug(getPreferences().debug());
 
+            //NullLogger
+            nullLogger = getLogger().adopt("not-available");
+
             setGlobalDebug(getPreferences().debug());
 
             //Console
@@ -114,12 +126,12 @@ public final class Ingwer {
 
             getLogger().info("Booting Ingwer v." + VERSION_STRING);
             javaPlugin = preferences.javaPlugin();
-
-
             getLogger().cosmetic(BANNER);
 
-            //Boot
+            //Bootstrap
             ingwerThrower = new IngwerThrower();
+
+
 
             try {
                 storage = preferences.storageProvider().getAndInit();
@@ -147,9 +159,7 @@ public final class Ingwer {
 
             //END: Boot
             printLEGAL(getLogger().adopt("LEGAL"));
-
-            //process
-            Identity.refresh();
+            
             //noinspection ResultOfMethodCallIgnored
             createSuperAdmin(preferences);
 
@@ -196,7 +206,7 @@ public final class Ingwer {
         getCommandManager().clear();
         getFeatureManager().clear();
 
-        logger.info("closing storage connection...");
+        logger.info("closing storage ...");
         getStorage().close();
 
         if (!stopCode.equals(StopCode.FATAL)) {

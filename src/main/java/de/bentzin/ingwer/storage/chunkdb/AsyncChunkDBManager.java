@@ -1,13 +1,10 @@
 package de.bentzin.ingwer.storage.chunkdb;
 
-import de.bentzin.ingwer.message.builder.C;
-import de.bentzin.ingwer.storage.Storage;
-import de.bentzin.ingwer.storage.StorageProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -21,7 +18,10 @@ import java.util.function.Supplier;
  */
 public final class AsyncChunkDBManager extends ChunkDBManager {
 
-
+    @Contract(" -> new")
+    public static Supplier<ChunkDBManager> getDefault() {
+        return () -> new AsyncChunkDBManager(Bukkit::getWorlds);
+    }
 
     private final Map<NamespacedKey,String> storage = new HashMap<>();
 
@@ -46,6 +46,11 @@ public final class AsyncChunkDBManager extends ChunkDBManager {
 
     @Override
     public void remove(NamespacedKey key) {
+
+    }
+
+    @Override
+    public void stop() {
 
     }
 

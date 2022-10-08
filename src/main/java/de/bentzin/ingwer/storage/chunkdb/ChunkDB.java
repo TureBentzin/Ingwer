@@ -22,6 +22,7 @@ import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.StringJoiner;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.NAMESPACE;
 import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.genKey;
@@ -36,14 +37,14 @@ import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.genKey;
 public class ChunkDB extends LoggingClass implements Storage {
 
     @Contract(value = "_ -> new", pure = true)
-    public static @NotNull StorageProvider<ChunkDB> getProvider(ChunkDBManager dbManager) {
+    public static @NotNull StorageProvider<ChunkDB> getProvider(Supplier<ChunkDBManager> chunkDBManagerSupplier) {
         return new StorageProvider<>(true, false) {
             /**
              * @return Storage or null if something goes really wrong
              */
             @Override
             public @NotNull ChunkDB get() {
-                return new ChunkDB(dbManager);
+                return new ChunkDB(chunkDBManagerSupplier.get());
             }
         };
     }
@@ -62,11 +63,12 @@ public class ChunkDB extends LoggingClass implements Storage {
     @Override
     public void init() {
         getLogger().info("running ChunkDB v." + VERSION_STRING);
+        dbManager.updateLogger(getLogger().adopt("DBManager"));
     }
 
     @Override
     public void close() {
-
+        dbManager.stop();
     }
 
     @Override
