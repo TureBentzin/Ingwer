@@ -1,9 +1,13 @@
-package de.bentzin.ingwer.storage;
+package de.bentzin.ingwer.storage.chunkdb;
 
+import com.google.common.annotations.Beta;
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
+import de.bentzin.ingwer.storage.Storage;
+import de.bentzin.ingwer.thrower.IngwerThrower;
+import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.LoggingClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -23,13 +27,15 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static de.bentzin.ingwer.storage.ChunkDB.ChunkDBManager.NAMESPACE;
-import static de.bentzin.ingwer.storage.ChunkDB.ChunkDBManager.genKey;
+import static de.bentzin.ingwer.storage.chunkdb.ChunkDB.ChunkDBManager.NAMESPACE;
+import static de.bentzin.ingwer.storage.chunkdb.ChunkDB.ChunkDBManager.genKey;
+
 
 /**
  * @author Ture Bentzin
  * 07.10.2022
  */
+@ApiStatus.Experimental
 public class ChunkDB extends LoggingClass implements Storage {
 
     public final String IDENTITY_PREFIX = "identities.";
@@ -78,19 +84,24 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public @Nullable Identity getIdentityByID(int id) {
-        NamespacedKey key = genKey(IDENTITY_PREFIX + id + ".");
-        PersistentDataContainer bestMatch = dbManager.findBestMatch(cloneAppend(key,""));
-        String name = bestMatch.get(cloneAppend(key,"name"),PersistentDataType.STRING);
-        UUID uuid = UUID.fromString(bestMatch.get(cloneAppend(key,"uuid"),PersistentDataType.STRING));
-        long coded = bestMatch.get(cloneAppend(key,"perms"),PersistentDataType.LONG);
-        IngwerPermissions ingwerPermissions = IngwerPermission.decodePermissions(coded);
-
-        return new Identity(name,uuid,ingwerPermissions);
+        try {
+            NamespacedKey key = genKey(IDENTITY_PREFIX + id + ".");
+            PersistentDataContainer bestMatch = dbManager.findBestMatch(cloneAppend(key, ""));
+            if (bestMatch == null) return null;
+            String name = bestMatch.get(cloneAppend(key, "name"), PersistentDataType.STRING);
+            UUID uuid = UUID.fromString(bestMatch.get(cloneAppend(key, "uuid"), PersistentDataType.STRING));
+            long coded = bestMatch.get(cloneAppend(key, "perms"), PersistentDataType.LONG);
+            IngwerPermissions ingwerPermissions = IngwerPermission.decodePermissions(coded);
+            return new Identity(name, uuid, ingwerPermissions);
+        }catch (Exception e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+            return null;
+        }
     }
 
+    @Beta
     @Override
     public void removeIdentity(@NotNull Identity identity) {
-
     }
 
     @Override
@@ -100,7 +111,9 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public @NotNull Collection<Identity> getIdentities() {
-        return null;
+
+
+
     }
 
     @Override
