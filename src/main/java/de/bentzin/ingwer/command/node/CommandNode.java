@@ -126,7 +126,7 @@ public abstract class CommandNode implements Node<String> {
         Collections.addAll(argumentQueue, v2);
         NodeTraceBuilder nodeTraceBuilder = new NodeTraceBuilder();
         String poll = argumentQueue.poll();
-        if (poll.equals(command_name))
+        if (poll.equalsIgnoreCase(command_name)) //Experimental change...
             getLogger().debug("dequeue because start... " + poll);
         else {
             throw new IllegalStateException("cant match commandNode and commandName. Was the last change finished?");
