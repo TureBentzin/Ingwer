@@ -58,7 +58,7 @@ public class FramedMultipageMessageGenerator {
             if(s1.equalsIgnoreCase(s2)){
                 return 0;
             }
-            return s1.compareTo(s2);
+            return s1.toLowerCase().compareTo(s2.toLowerCase());
         });
         return this;
     }
