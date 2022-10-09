@@ -268,26 +268,6 @@ public final class Sqlite extends LoggingClass implements Storage {
     }
 
     @Override
-    public @NotNull Collection<Identity> getIdentities() {
-        Collection<Identity> collection = new ArrayList<>();
-        try {
-            Statement statement = connection.createStatement();
-            statement.execute(
-                    "SELECT * FROM identity");
-            ResultSet resultSet = statement.getResultSet();
-            while (resultSet.next()) {
-                collection.add(new Identity(resultSet.getString("user_name"),
-                        UUID.fromString(resultSet.getString("player_uuid")),
-                        IngwerPermission.decodePermissions(resultSet.getLong("user_permissions"))));
-            }
-
-        } catch (SQLException e) {
-            IngwerThrower.acceptS(e, ThrowType.STORAGE);
-        }
-        return collection;
-    }
-
-    @Override
     @Contract("_, _, _, _ -> param1")
     public Identity updateIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
 
@@ -310,19 +290,6 @@ public final class Sqlite extends LoggingClass implements Storage {
     }
 
 
-    /**
-     * @implNote If Identity is not present this will create a new one based on the given SINGLE parameters. In this case the given Identity would not be used or changed!!!
-     */
-    @Override
-    @Contract("_, _, _, _ -> param1")
-    public Identity updateOrSaveIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
-        if (containsIdentityWithUUID(uuid.toString())) {
-            updateIdentity(identity, name, uuid, ingwerPermissions);
-        } else {
-            saveIdentity(new Identity(name, uuid, ingwerPermissions));
-        }
-        return getIdentityByUUID(uuid.toString());
-    }
 
 
     /**

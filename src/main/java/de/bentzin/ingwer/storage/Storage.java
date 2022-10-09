@@ -37,14 +37,24 @@ public interface Storage extends Logging {
 
     boolean containsIdentityWithUUID(String uuid);
 
-    @NotNull Collection<Identity> getIdentities();
-
+    /**
+     * update identity (name of param is used to find entry)!!!
+     */
     @Contract("_, _, _, _ -> param1")
     Identity updateIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions);
 
+
     /**
+     * THIS USES UUID for check!!!!
      * @implNote If Identity is not present this will create a new one based on the given SINGLE parameters. In this case the given Identity would not be used or changed!!!
      */
     @Contract("_, _, _, _ -> param1")
-    Identity updateOrSaveIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions);
+    public default Identity updateOrSaveIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
+        if (containsIdentityWithUUID(uuid.toString())) {
+            updateIdentity(identity, name, uuid, ingwerPermissions);
+        } else {
+            saveIdentity(new Identity(name, uuid, ingwerPermissions));
+        }
+        return getIdentityByUUID(uuid.toString());
+    }
 }

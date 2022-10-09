@@ -77,10 +77,16 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public Identity saveIdentity(@NotNull Identity identity) {
-        if ()
-            NamespacedKey origin = genNextIdentityKey();
+        String uuid = identity.getUUID().toString();
+        if (containsIdentityWithUUID(uuid)){
+            updateIdentity(Objects.requireNonNull(getIdentityByUUID(uuid)),identity.getName(),identity.getUUID(),identity.getPermissions());
+            getLogger().warning("someone tried to save identity that was already present: updating!");
+            return getIdentityByUUID(uuid);
+        }
+
+        NamespacedKey origin = genNextIdentityKey();
         dbManager.save(cloneAppend(origin, "name"), identity.getName());
-        dbManager.save(cloneAppend(origin, "uuid"), identity.getUUID().toString());
+        dbManager.save(cloneAppend(origin, "uuid"), uuid);
         dbManager.save(cloneAppend(origin, "perms"), Long.toString(identity.getCodedPermissions()));
         dbManager.save(cloneAppend(origin, "flag"), Short.valueOf("0").toString());
         return identity;
@@ -102,16 +108,22 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public @Nullable Identity getIdentityByName(String name) {
-        return null;
+        List<Identity> identities = getAllIdentities().stream().takeWhile(identity -> identity.getName().equals(name))
+                .toList();
+        if(identities.isEmpty()) return null;
+        else return identities.get(0);
     }
 
     @Override
     public @Nullable Identity getIdentityByUUID(String uuid) {
-        return null;
+        List<Identity> identities = getAllIdentities().stream().takeWhile(identity -> identity.getUUID().equals(UUID.fromString(uuid)))
+                .toList();
+        if(identities.isEmpty()) return null;
+        else return identities.get(0);
     }
 
     @Override
-    public @Nullable Collection<Identity> getAllIdentities() {
+    public @NotNull Collection<Identity> getAllIdentities() {
             Collection<Identity> identities = new ArrayList<>();
             Collection<String> keys = allIdentityKeys(false);
             for (String key : keys) {
@@ -157,22 +169,59 @@ public class ChunkDB extends LoggingClass implements Storage {
     @Beta
     @Override
     public void removeIdentity(@NotNull Identity identity) {
-
+        NamespacedKey key = getKeyOfIdentity(identity);
+        if(key == null){
+                throw new InvalidParameterException("the given identity is not in chunkDB!");
+        }
+        dbManager.remove(cloneAppend(key,"name"));
+        dbManager.remove(cloneAppend(key,"uuid"));
+        dbManager.remove(cloneAppend(key,"perms"));
+        dbManager.remove(cloneAppend(key,"flag"));
     }
 
     @Override
     public boolean containsIdentityWithUUID(String uuid) {
+        for (Identity allIdentity : getAllIdentities()) {
+            if(allIdentity.getUUID().equals(UUID.fromString(uuid))){
+                return true;
+            }
+        }
         return false;
     }
 
-    @Override
-    public @NotNull Collection<Identity> getIdentities() {
-        return null;
+    private NamespacedKey getKeyOfIdentity(Identity identity) {
+        if(getIdentityByName(identity.getName()) != null) {
+            Collection<String> keys = allIdentityKeys(false);
+            int i = -1;
+            for (String key : keys) {
+                if (key.endsWith("name")) {
+                    if (dbManager.get(key).equals(identity.getName())) {
+                        //MATCH!
+                        String[] split = key.split("\\.");
+                        i = Integer.parseInt(split[1]);
+                    }
+                }
+            }
+            if (i == -1) {
+                throw new IllegalStateException("Please report this issue! <i is -1>");
+            }
+           return genKey(Integer.toString(i));
+        }else
+            return null;
     }
 
     @Override
     public Identity updateIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
-        return null;
+            NamespacedKey origin = getKeyOfIdentity(identity);
+            if(origin == null)
+                    throw new InvalidParameterException("the given identity is not in chunkDB!");
+
+            dbManager.save(cloneAppend(origin, "name"), identity.getName());
+            dbManager.save(cloneAppend(origin, "uuid"), String.valueOf(uuid));
+            dbManager.save(cloneAppend(origin, "perms"), Long.toString(identity.getCodedPermissions()));
+            dbManager.save(cloneAppend(origin, "flag"), Short.valueOf("0").toString());
+
+            return getIdentityByUUID(String.valueOf(uuid)); //Backcheck
     }
 
     /**
@@ -227,18 +276,6 @@ public class ChunkDB extends LoggingClass implements Storage {
     protected void clean() {
         dbManager.clean();
         ;
-    }
-
-    /**
-     * @param identity          the identity to update
-     * @param name              new name
-     * @param uuid              new uuid
-     * @param ingwerPermissions new permissions
-     * @implNote If Identity is not present this will create a new one based on the given SINGLE parameters. In this case the given Identity would not be used or changed!!!
-     */
-    @Override
-    public Identity updateOrSaveIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
-        return null;
     }
 
     @ApiStatus.Internal
