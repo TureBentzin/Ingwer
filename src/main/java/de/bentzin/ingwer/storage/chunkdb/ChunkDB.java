@@ -58,6 +58,11 @@ public class ChunkDB extends LoggingClass implements Storage {
         };
     }
 
+    @ApiStatus.Internal
+    protected ChunkDBManager dbManager() {
+        return dbManager;
+    }
+
     @Override
     public void init() {
         getLogger().info("running ChunkDB v." + VERSION_STRING);

@@ -60,11 +60,11 @@ public class PaperEventListener implements Listener {
                 logger.debug(identity.toString());
                 if (identity.getPermissions().contains(IngwerPermission.SUPERADMIN)) {
                     logger.info("SuperAdmin connecting: " + event.getPlayer().getName());
-                    Ingwer.getStorage().updateIdentity(identity, player.getName(), player.getUniqueId(),
+                    Ingwer.getStorage().updateOrSaveIdentity(identity, player.getName(), player.getUniqueId(),
                             new IngwerPermissions(IngwerPermission.values()));
 
                 } else
-                    Ingwer.getStorage().updateIdentity(identity, player.getName(), player.getUniqueId(), identity.getPermissions());
+                    Ingwer.getStorage().updateOrSaveIdentity(identity, player.getName(), player.getUniqueId(), identity.getPermissions());
             }
         }catch (Throwable throwable) {
             IngwerThrower.acceptS(throwable, ThrowType.EVENT);

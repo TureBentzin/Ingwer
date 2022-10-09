@@ -5,6 +5,7 @@ import de.bentzin.ingwer.thrower.ThrowType;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -28,6 +29,11 @@ public class MultipageMessageKeeper {
 
     protected boolean isPopulated() {
         return messages != null && messages.size() != 0;
+    }
+
+    @ApiStatus.Experimental
+    public void send(){
+        send(1);
     }
 
     public void send(Integer page) {
