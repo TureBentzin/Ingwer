@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * @author Ture Bentzin
@@ -80,6 +81,10 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
         return worlds.get();
     }
 
+
+    public Collection<NamespacedKey> getCurrentIngwerKeys() {
+        return getCurrentKeys(NAMESPACE);
+    }
 
     protected abstract Collection<NamespacedKey> getCurrentKeys(String namespace);
 

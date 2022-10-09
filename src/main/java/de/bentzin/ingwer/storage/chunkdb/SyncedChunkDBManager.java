@@ -77,6 +77,7 @@ public final class SyncedChunkDBManager extends ChunkDBManager {
 
 
     @Deprecated
+    @ApiStatus.Internal
     public long getElseSetTimeStamp(@NotNull PersistentDataContainer container) {
        return getTimestamp(container).or(() -> {
             timestamp(container);
@@ -93,13 +94,20 @@ public final class SyncedChunkDBManager extends ChunkDBManager {
         }
     }
 
+    /**
+     * @return getMostRecentContainer else getFallbackContainer
+     */
+    public PersistentDataContainer bestContainer() {
+       return getMostRecentContainer().orElse(getFallbackContainer());
+    }
+
     @ApiStatus.Experimental
     private void onRecentContainer(@NotNull Consumer<PersistentDataContainer> containerConsumer){
-        containerConsumer.accept(getMostRecentContainer().orElse(getFallbackContainer()));
+        containerConsumer.accept(bestContainer());
     }
 
     @Beta
-    public PersistentDataContainer getFallbackContainer() {
+    public @NotNull PersistentDataContainer getFallbackContainer() {
         return getChunk.apply(Bukkit.getWorlds().get(0)).getPersistentDataContainer();
     }
 

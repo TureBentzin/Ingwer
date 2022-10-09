@@ -117,6 +117,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     @Beta
     @Override
     public void removeIdentity(@NotNull Identity identity) {
+
     }
 
     @Override
@@ -126,7 +127,7 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public @NotNull Collection<Identity> getIdentities() {
-        return null;
+
     }
 
     @Override
