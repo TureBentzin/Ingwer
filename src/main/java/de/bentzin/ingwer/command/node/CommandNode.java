@@ -129,7 +129,7 @@ public abstract class CommandNode implements Node<String> {
         if (poll.equals(command_name))
             getLogger().debug("dequeue because start... " + poll);
         else {
-            throw new IllegalStateException("cant match commandNode and commandName");
+            throw new IllegalStateException("cant match commandNode and commandName. Was the last change finished?");
         }
         try {
             return walk(argumentQueue, nodeTraceBuilder, data);

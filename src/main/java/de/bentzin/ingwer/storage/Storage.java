@@ -21,6 +21,13 @@ public interface Storage extends Logging {
 
     void init();
 
+    /**
+     * will be executed after Ingwers systems are on
+     */
+    default void lateInit(){
+
+    }
+
     void close();
 
     Identity saveIdentity(@NotNull Identity identity);

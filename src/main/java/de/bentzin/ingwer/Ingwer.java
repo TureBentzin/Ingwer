@@ -187,6 +187,9 @@ public final class Ingwer {
             //node
             new NodeTestCommand();
 
+            //lateInits
+            storage.lateInit();
+
             getLogger().info("completed boot of Ingwer!");
 
             //maliciousConfig();

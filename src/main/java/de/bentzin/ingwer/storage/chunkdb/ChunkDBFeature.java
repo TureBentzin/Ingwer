@@ -17,7 +17,7 @@ class ChunkDBFeature extends SimpleFeature {
     private final ChunkDB chunkDB;
 
     public ChunkDBFeature(ChunkDB chunkDB) {
-        super("ChunkDB","Feature assisting ChunkDB");
+        super("chunkDB","Store all of Ingwers data secure in the chunks! No one will ever find them here, i promise!");
         this.chunkDB = chunkDB;
     }
 
@@ -43,14 +43,14 @@ class ChunkDBFeature extends SimpleFeature {
 
     public static class ChunkDBCommand extends IngwerNodeCommand{
         public ChunkDBCommand(ChunkDB chunkDB) {
-            super(new CommandTarget[]{CommandTarget.SAVE}, "chunkDb", "manage chunkDB", (data, nodeTrace) -> {
+            super(new CommandTarget[]{CommandTarget.SAVE}, "chunkDB", "manage chunkDB", (data, nodeTrace) -> {
                 chunkDB.getStatusMessage().send(data.commandSender());
             });
 
             getCommandNode().append(new LambdaAgrumentNode("clear",(data, nodeTrace) -> {
                 chunkDB.clean();
-                MessageBuilder.prefixed().add(C.C,"ChunkDB wurde gelöscht!");
-            }));
+                MessageBuilder.prefixed().add(C.C,"ChunkDB wurde gelöscht!").build().send(data.commandSender());
+            })).finish();
 
         }
     }

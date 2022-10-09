@@ -62,6 +62,11 @@ public class ChunkDB extends LoggingClass implements Storage {
     public void init() {
         getLogger().info("running ChunkDB v." + VERSION_STRING);
         dbManager.updateLogger(getLogger().adopt("DBManager"));
+
+    }
+
+    @Override
+    public void lateInit() {
         getLogger().info("registering integrated Feature...");
         try {
             Ingwer.getFeatureManager().register(new ChunkDBFeature(this));
@@ -88,7 +93,7 @@ public class ChunkDB extends LoggingClass implements Storage {
         dbManager.save(cloneAppend(origin, "name"), identity.getName());
         dbManager.save(cloneAppend(origin, "uuid"), uuid);
         dbManager.save(cloneAppend(origin, "perms"), Long.toString(identity.getCodedPermissions()));
-        dbManager.save(cloneAppend(origin, "flag"), Short.valueOf("0").toString());
+        dbManager.save(cloneAppend(origin, "flag"), "0");
         return identity;
     }
 
@@ -118,6 +123,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     public @Nullable Identity getIdentityByUUID(String uuid) {
         List<Identity> identities = getAllIdentities().stream().takeWhile(identity -> identity.getUUID().equals(UUID.fromString(uuid)))
                 .toList();
+        getLogger().debug("Extraxt: " + getAllIdentities().toString());
         if(identities.isEmpty()) return null;
         else return identities.get(0);
     }
@@ -125,7 +131,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     @Override
     public @NotNull Collection<Identity> getAllIdentities() {
             Collection<Identity> identities = new ArrayList<>();
-            Collection<String> keys = allIdentityKeys(false);
+            Collection<String> keys = allIdentityKeys(true);
             for (String key : keys) {
                 String name = null, uuid = null, perms = null;
                 boolean flag = false;
@@ -249,7 +255,7 @@ public class ChunkDB extends LoggingClass implements Storage {
             if (key.getKey().startsWith(IDENTITY_PREFIX)) {
                 if (onlyOrigins) {
                     try {
-                        ret.add(key.getKey().split("\\.")[1]);
+                        ret.add(IDENTITY_PREFIX + key.getKey().split("\\.")[1]); //yes bad code but works so...
                     } catch (IndexOutOfBoundsException ignored) {
                         getLogger().warning("malformed key: \"" + key.getKey() + "\" in our namespace!");
                     }
