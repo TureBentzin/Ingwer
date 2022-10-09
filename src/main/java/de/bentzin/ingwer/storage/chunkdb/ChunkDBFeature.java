@@ -70,7 +70,7 @@ class ChunkDBFeature extends SimpleFeature {
 
                         if(data.commandSender() instanceof Identity identity) {
                             MultipageMessageKeeper multipageMessageKeeper
-                                    = new MultipageMessageKeeper(identity.getUUID(), oneLinedMessages, 8);
+                                    = new MultipageMessageKeeper(identity.getUUID(), oneLinedMessages, 8,true);
                             multipageMessageKeeper.send();
                         }
                     }))
