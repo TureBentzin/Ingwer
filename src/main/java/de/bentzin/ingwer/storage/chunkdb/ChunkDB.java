@@ -8,7 +8,6 @@ import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.message.FramedMessage;
 import de.bentzin.ingwer.message.IngwerMessage;
 import de.bentzin.ingwer.message.OneLinedMessage;
-import de.bentzin.ingwer.message.SimpleMultilinedMessage;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
 import de.bentzin.ingwer.storage.Storage;
@@ -16,15 +15,12 @@ import de.bentzin.ingwer.storage.StorageProvider;
 import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.LoggingClass;
-import org.apache.logging.log4j.message.Message;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.function.Supplier;
@@ -40,6 +36,15 @@ import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.*;
 @ApiStatus.Experimental
 public class ChunkDB extends LoggingClass implements Storage {
 
+    public final String IDENTITY_PREFIX = "identities.";
+    private final ChunkDBManager dbManager;
+    private final String VERSION_STRING = "1.0-RELEASE";
+
+    public ChunkDB(ChunkDBManager chunkDBManager) {
+        super(Ingwer.getLogger().adopt("ChunkDB"));
+        dbManager = chunkDBManager;
+    }
+
     @Contract(value = "_ -> new", pure = true)
     public static @NotNull StorageProvider<ChunkDB> getProvider(Supplier<ChunkDBManager> chunkDBManagerSupplier) {
         return new StorageProvider<>(true, false) {
@@ -53,21 +58,16 @@ public class ChunkDB extends LoggingClass implements Storage {
         };
     }
 
-
-    public final String IDENTITY_PREFIX = "identities.";
-    private final ChunkDBManager dbManager;
-    private final String VERSION_STRING = "1.0-RELEASE";
-
-    public ChunkDB(ChunkDBManager chunkDBManager) {
-        super(Ingwer.getLogger().adopt("ChunkDB"));
-        dbManager = chunkDBManager;
-    }
-
-
     @Override
     public void init() {
         getLogger().info("running ChunkDB v." + VERSION_STRING);
         dbManager.updateLogger(getLogger().adopt("DBManager"));
+        getLogger().info("registering integrated Feature...");
+        try {
+            Ingwer.getFeatureManager().register(new ChunkDBFeature(this));
+        } catch (Exception e) {
+            getLogger().error("failed to register integrated Feature! :: \"" + e.getMessage() + "\"");
+        }
     }
 
     @Override
@@ -77,12 +77,27 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public Identity saveIdentity(@NotNull Identity identity) {
-        NamespacedKey origin = genNextIdentityKey();
+        if ()
+            NamespacedKey origin = genNextIdentityKey();
         dbManager.save(cloneAppend(origin, "name"), identity.getName());
         dbManager.save(cloneAppend(origin, "uuid"), identity.getUUID().toString());
         dbManager.save(cloneAppend(origin, "perms"), Long.toString(identity.getCodedPermissions()));
         dbManager.save(cloneAppend(origin, "flag"), Short.valueOf("0").toString());
         return identity;
+    }
+
+    /**
+     * possible duplicate of {@link ChunkDB#allIdentityKeys(boolean)} with v1 = true
+     */
+    private @NotNull Collection<Integer> getAllIdentityIDs() {
+        Collection<Integer> integers = new ArrayList<>();
+        Collection<String> keys = allIdentityKeys(true);
+        for (String key : keys) {
+            String var = key.replace(IDENTITY_PREFIX, "");
+            getLogger().debug("<getAllIdentityIDs()> -> key:" + key);
+            integers.add(Integer.parseInt(var));
+        }
+        return integers;
     }
 
     @Override
@@ -97,8 +112,29 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public @Nullable Collection<Identity> getAllIdentities() {
-        return null;
+            Collection<Identity> identities = new ArrayList<>();
+            Collection<String> keys = allIdentityKeys(false);
+            for (String key : keys) {
+                String name = null, uuid = null, perms = null;
+                boolean flag = false;
+                try {
+                    if (dbManager.get(key + ".flag").equals("0")) {
+                        flag = true;
+                    }
+                    name = dbManager.get(key + ".name");
+                    uuid = dbManager.get(key + ".uuid");
+                    perms = dbManager.get(key + ".perms");
+                }catch (NullPointerException e){
+                    getLogger().error("cant read data from key: \""+ key + "\" -> " + e.getMessage());
+                }
+                if (flag)
+                    identities.add(new Identity(name, UUID.fromString(uuid), IngwerPermission.decodePermissions(Long.parseLong(perms))));
+                else
+                    getLogger().warning("flag not matching for entry: \"" + key + "\". This data will be ignored!");
+            }
+            return identities;
     }
+
 
     @Override
     public @Nullable Identity getIdentityByID(int id) {
@@ -148,27 +184,27 @@ public class ChunkDB extends LoggingClass implements Storage {
         for (String key : keys) {
             String rem = key.replace(IDENTITY_PREFIX, "");
             String[] parts = rem.split("\\.");
-            if (parts.length > 1) {
+            if (parts.length > 0) {
                 int n = Integer.parseInt(parts[0]);
                 if (n > max) max = n;
             } else {
                 throw new InvalidParameterException(NAMESPACE + "::" + key + " -> ERROR!");
             }
         }
-        return IDENTITY_PREFIX + (max + 1) + (withDot?  ".": "");
+        return IDENTITY_PREFIX + (max + 1) + (withDot ? "." : "");
     }
 
     protected Collection<String> allIdentityKeys(boolean onlyOrigins) {
         Set<String> ret = new HashSet<>();
         for (NamespacedKey key : dbManager.getCurrentIngwerKeys()) {
-            if(key.getKey().startsWith(IDENTITY_PREFIX)) {
-                if(onlyOrigins) {
-                    try{
+            if (key.getKey().startsWith(IDENTITY_PREFIX)) {
+                if (onlyOrigins) {
+                    try {
                         ret.add(key.getKey().split("\\.")[1]);
-                    }catch (IndexOutOfBoundsException ignored) {
+                    } catch (IndexOutOfBoundsException ignored) {
                         getLogger().warning("malformed key: \"" + key.getKey() + "\" in our namespace!");
                     }
-                }else{
+                } else {
                     ret.add(key.getKey());
                 }
             }
@@ -189,7 +225,8 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @ApiStatus.Internal
     protected void clean() {
-        dbManager.clean();;
+        dbManager.clean();
+        ;
     }
 
     /**
@@ -207,20 +244,20 @@ public class ChunkDB extends LoggingClass implements Storage {
     @ApiStatus.Internal
     public IngwerMessage getStatusMessage() {
         List<OneLinedMessage> messages = new ArrayList<>();
-        if(Ingwer.getStorage() == this) {
+        if (Ingwer.getStorage() == this) {
             messages.add(MessageBuilder.empty().add(C.A, "Ingwer Storage").add(C.C, " is currently running ")
                     .add(C.A, "ChunkDB").add(C.C, "!").build());
-            messages.add(MessageBuilder.empty().add(C.C,"Manager: ").add(C.A,dbManager.getClass().getSimpleName()).build());
+            messages.add(MessageBuilder.empty().add(C.C, "Manager: ").add(C.A, dbManager.getClass().getSimpleName()).build());
             StringJoiner worlds = new StringJoiner(", ");
             dbManager.getWorlds().forEach(world -> worlds.add(world.getName()));
-            messages.add(MessageBuilder.empty().add(C.C,"Worlds: ").add(C.A,worlds.toString()).build());
+            messages.add(MessageBuilder.empty().add(C.C, "Worlds: ").add(C.A, worlds.toString()).build());
             StringJoiner chunks = new StringJoiner(",");
             dbManager.getWorlds().forEach(world -> chunks.add(Long.toString(getChunk.apply(world).getChunkKey())));
-            messages.add(MessageBuilder.empty().add(C.C,"Chunks: ").add(C.A,chunks.toString()).build());
-            messages.add(MessageBuilder.empty().add(C.C,"Keys: ").add(C.A, String.valueOf(dbManager.getCurrentIngwerKeys().size())).build());
-           return new FramedMessage(messages);
-        }else
-            return MessageBuilder.prefixed().add(C.E,"Ingwer Storage is not running ChunkDB currently!").build();
+            messages.add(MessageBuilder.empty().add(C.C, "Chunks: ").add(C.A, chunks.toString()).build());
+            messages.add(MessageBuilder.empty().add(C.C, "Keys: ").add(C.A, String.valueOf(dbManager.getCurrentIngwerKeys().size())).build());
+            return new FramedMessage(messages);
+        } else
+            return MessageBuilder.prefixed().add(C.E, "Ingwer Storage is not running ChunkDB currently!").build();
     }
 
 }

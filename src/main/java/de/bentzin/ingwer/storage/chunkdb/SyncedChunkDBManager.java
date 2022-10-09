@@ -41,8 +41,9 @@ public final class SyncedChunkDBManager extends ChunkDBManager {
     }
 
     @Override
+    @NotNull
     public String get(NamespacedKey key) {
-        return Objects.requireNonNull(getMostRecentContainer()).orElseThrow().get(key,PERSISTENT_DATA_TYPE);
+        return Objects.requireNonNull(getMostRecentContainer().orElseThrow().get(key, PERSISTENT_DATA_TYPE));
     }
 
     @Override
