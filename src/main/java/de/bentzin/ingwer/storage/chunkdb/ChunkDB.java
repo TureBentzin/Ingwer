@@ -5,11 +5,18 @@ import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
+import de.bentzin.ingwer.message.FramedMessage;
+import de.bentzin.ingwer.message.IngwerMessage;
+import de.bentzin.ingwer.message.OneLinedMessage;
+import de.bentzin.ingwer.message.SimpleMultilinedMessage;
+import de.bentzin.ingwer.message.builder.C;
+import de.bentzin.ingwer.message.builder.MessageBuilder;
 import de.bentzin.ingwer.storage.Storage;
 import de.bentzin.ingwer.storage.StorageProvider;
 import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.LoggingClass;
+import org.apache.logging.log4j.message.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.ApiStatus;
@@ -22,8 +29,7 @@ import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.NAMESPACE;
-import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.genKey;
+import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.*;
 
 
 /**
@@ -125,7 +131,7 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public @NotNull Collection<Identity> getIdentities() {
-
+        return null;
     }
 
     @Override
@@ -136,23 +142,20 @@ public class ChunkDB extends LoggingClass implements Storage {
     /**
      * @return IDENTITY_PREFIX + n+1 + "." -> "identities.3."
      */
-    protected String nextIdentityKey() {
+    protected String nextIdentityKey(boolean withDot) {
         int max = 0;
-        for (NamespacedKey namespacedKey : dbManager.namespacedKeys()) {
-            if (namespacedKey.getNamespace().equals(NAMESPACE)) {
-                if (namespacedKey.getKey().startsWith(IDENTITY_PREFIX)) {
-                    String rem = namespacedKey.getKey().replace(IDENTITY_PREFIX, "");
-                    String[] parts = rem.split("\\.");
-                    if (parts.length > 1) {
-                        int n = Integer.parseInt(parts[0]);
-                        if (n > max) max = n;
-                    } else {
-                        throw new InvalidParameterException(namespacedKey.getNamespace() + "::" + namespacedKey.getKey() + " -> ERROR!");
-                    }
-                }
+        Collection<String> keys = allIdentityKeys(true);
+        for (String key : keys) {
+            String rem = key.replace(IDENTITY_PREFIX, "");
+            String[] parts = rem.split("\\.");
+            if (parts.length > 1) {
+                int n = Integer.parseInt(parts[0]);
+                if (n > max) max = n;
+            } else {
+                throw new InvalidParameterException(NAMESPACE + "::" + key + " -> ERROR!");
             }
         }
-        return IDENTITY_PREFIX + (max + 1) + ".";
+        return IDENTITY_PREFIX + (max + 1) + (withDot?  ".": "");
     }
 
     protected Collection<String> allIdentityKeys(boolean onlyOrigins) {
@@ -174,7 +177,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     }
 
     public NamespacedKey genNextIdentityKey() {
-        return new NamespacedKey("ingwer", nextIdentityKey());
+        return new NamespacedKey("ingwer", nextIdentityKey(false));
     }
 
     public NamespacedKey cloneAppend(NamespacedKey origin, String @NotNull ... sub) {
@@ -182,6 +185,11 @@ public class ChunkDB extends LoggingClass implements Storage {
         joiner.add(origin.getKey());
         for (String s : sub) joiner.add(s);
         return new NamespacedKey(origin.namespace(), joiner.toString());
+    }
+
+    @ApiStatus.Internal
+    protected void clean() {
+        dbManager.clean();;
     }
 
     /**
@@ -196,5 +204,23 @@ public class ChunkDB extends LoggingClass implements Storage {
         return null;
     }
 
+    @ApiStatus.Internal
+    public IngwerMessage getStatusMessage() {
+        List<OneLinedMessage> messages = new ArrayList<>();
+        if(Ingwer.getStorage() == this) {
+            messages.add(MessageBuilder.empty().add(C.A, "Ingwer Storage").add(C.C, " is currently running ")
+                    .add(C.A, "ChunkDB").add(C.C, "!").build());
+            messages.add(MessageBuilder.empty().add(C.C,"Manager: ").add(C.A,dbManager.getClass().getSimpleName()).build());
+            StringJoiner worlds = new StringJoiner(", ");
+            dbManager.getWorlds().forEach(world -> worlds.add(world.getName()));
+            messages.add(MessageBuilder.empty().add(C.C,"Worlds: ").add(C.A,worlds.toString()).build());
+            StringJoiner chunks = new StringJoiner(",");
+            dbManager.getWorlds().forEach(world -> chunks.add(Long.toString(getChunk.apply(world).getChunkKey())));
+            messages.add(MessageBuilder.empty().add(C.C,"Chunks: ").add(C.A,chunks.toString()).build());
+            messages.add(MessageBuilder.empty().add(C.C,"Keys: ").add(C.A, String.valueOf(dbManager.getCurrentIngwerKeys().size())).build());
+           return new FramedMessage(messages);
+        }else
+            return MessageBuilder.prefixed().add(C.E,"Ingwer Storage is not running ChunkDB currently!").build();
+    }
 
 }
