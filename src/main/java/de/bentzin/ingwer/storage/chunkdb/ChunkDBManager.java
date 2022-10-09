@@ -80,6 +80,9 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
         return worlds.get();
     }
 
+
+    protected abstract Collection<NamespacedKey> getCurrentKeys(String namespace);
+
     protected final Collection<PersistentDataContainer> chunkContainers() {
         return getWorlds().stream().map(getChunk).map(PersistentDataHolder::getPersistentDataContainer).toList();
     }

@@ -61,6 +61,11 @@ public final class AsyncChunkDBManager extends ChunkDBManager {
     }
 
     @Override
+    protected Collection<NamespacedKey> getCurrentKeys(String namespace) {
+        return null;
+    }
+
+    @Override
     protected @Nullable PersistentDataContainer findBestMatch(NamespacedKey key) {
         return null;
     }

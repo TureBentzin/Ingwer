@@ -69,6 +69,12 @@ public final class SyncedChunkDBManager extends ChunkDBManager {
         }
     }
 
+    @Override
+    protected Collection<NamespacedKey> getCurrentKeys(String namespace) {
+        PersistentDataContainer container = bestContainer();
+        container.getKeys().
+    }
+
 
     @Deprecated
     public long getElseSetTimeStamp(@NotNull PersistentDataContainer container) {
