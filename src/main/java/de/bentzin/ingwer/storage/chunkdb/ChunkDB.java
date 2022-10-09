@@ -19,9 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.security.InvalidParameterException;
-import java.util.Collection;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static de.bentzin.ingwer.storage.chunkdb.ChunkDBManager.NAMESPACE;
@@ -155,6 +153,24 @@ public class ChunkDB extends LoggingClass implements Storage {
             }
         }
         return IDENTITY_PREFIX + (max + 1) + ".";
+    }
+
+    protected Collection<String> allIdentityKeys(boolean onlyOrigins) {
+        Set<String> ret = new HashSet<>();
+        for (NamespacedKey key : dbManager.getCurrentIngwerKeys()) {
+            if(key.getKey().startsWith(IDENTITY_PREFIX)) {
+                if(onlyOrigins) {
+                    try{
+                        ret.add(key.getKey().split("\\.")[1]);
+                    }catch (IndexOutOfBoundsException ignored) {
+                        getLogger().warning("malformed key: \"" + key.getKey() + "\" in our namespace!");
+                    }
+                }else{
+                    ret.add(key.getKey());
+                }
+            }
+        }
+        return ret;
     }
 
     public NamespacedKey genNextIdentityKey() {

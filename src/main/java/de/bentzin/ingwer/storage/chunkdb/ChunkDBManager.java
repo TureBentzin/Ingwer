@@ -1,8 +1,8 @@
 package de.bentzin.ingwer.storage.chunkdb;
 
 import com.google.errorprone.annotations.ForOverride;
-import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.logging.Logger;
+import de.bentzin.ingwer.utils.Hardcode;
 import de.bentzin.ingwer.utils.LoggingClass;
 import org.bukkit.Chunk;
 import org.bukkit.NamespacedKey;
@@ -11,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
-import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -99,9 +98,7 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
      * @see PersistentDataContainer#getKeys()
      */
     protected void push(@NotNull PersistentDataContainer container) {
-        Set<NamespacedKey> keys = container.getKeys();
-        List<NamespacedKey> ingwerKeys = keys.stream().takeWhile(key -> key.getNamespace().equals(NAMESPACE)).toList();
-
+        Collection<NamespacedKey> ingwerKeys = getCurrentIngwerKeys();
 
         getLogger().debug("pushing: " + ingwerKeys.stream().map(key -> {
             StringBuilder builder = new StringBuilder();
@@ -117,7 +114,6 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
             }
             return builder;
         }).toList());
-
 
         chunkContainers().forEach(container1 -> {
             ingwerKeys.forEach(key ->  {
@@ -139,6 +135,18 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
     @ApiStatus.Internal
     protected final Stream<NamespacedKey> streamOurKeys(@NotNull Set<NamespacedKey> namespacedKeys) {
         return namespacedKeys.stream().takeWhile(key -> key.getNamespace().equals(NAMESPACE));
+    }
+
+    @NotNull
+    @ApiStatus.Internal
+    protected final Stream<NamespacedKey> streamKeysWithNamespace(@NotNull PersistentDataContainer container, String namespace) {
+        return streamKeysWithNamespace(container.getKeys(),namespace);
+    }
+
+    @NotNull
+    @ApiStatus.Internal
+    protected final Stream<NamespacedKey> streamKeysWithNamespace(@NotNull Set<NamespacedKey> namespacedKeys, String namespace) {
+        return namespacedKeys.stream().takeWhile(key -> key.getNamespace().equals(namespace));
     }
 
     /**

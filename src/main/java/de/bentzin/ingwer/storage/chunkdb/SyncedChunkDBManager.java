@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * @author Ture Bentzin
@@ -70,9 +71,8 @@ public final class SyncedChunkDBManager extends ChunkDBManager {
     }
 
     @Override
-    protected Collection<NamespacedKey> getCurrentKeys(String namespace) {
-        PersistentDataContainer container = bestContainer();
-        container.getKeys().
+    protected Collection<NamespacedKey> getCurrentKeys(@NotNull String namespace) {
+        return streamKeysWithNamespace(bestContainer(), namespace).toList();
     }
 
 
