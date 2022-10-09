@@ -6,6 +6,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -62,5 +63,10 @@ public class SimpleMultilinedMessage implements MultilinedMessage {
     @Override
     public int getDepth() {
         return messageList.size();
+    }
+
+    @Override
+    public void sort(Comparator<OneLinedMessage> sorter){
+        messageList.sort(sorter);
     }
 }
