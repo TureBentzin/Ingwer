@@ -2,9 +2,13 @@ package de.bentzin.ingwer.command;
 
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.ext.Permissioned;
+import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.logging.Logger;
+import de.bentzin.ingwer.message.CompletableMessage;
 import de.bentzin.ingwer.message.IngwerMessage;
+import de.bentzin.ingwer.message.OneLinedMessage;
+import de.bentzin.ingwer.message.PatternedMiniMessageMessage;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
 import de.bentzin.ingwer.thrower.IngwerThrower;
@@ -56,6 +60,12 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
         return ingwerCommand;
     }
 
+    private static final PatternedMiniMessageMessage commandNotFound = MessageBuilder.prefixed()
+            .add(C.E,"Failed to execute ").add(C.A,"<click:suggest_command:'" + "{0}" + "'>{0}!</click>")
+            .add(C.E," Type ").add(C.A,"<click:suggest_command:'" +
+                    Ingwer.getPreferences().prefix() + "help" + "'>" + Ingwer.getPreferences().prefix() + "help" + "</click>")
+            .add(C.E," to get a list of available commands!").toCompletableMessage();
+
     public void preRunCommand(String input, IngwerCommandSender sender, @NotNull CommandTarget senderType) {
         if (!senderType.isLast()) try {
             throw new IllegalStateException("Unexpected value: " + senderType.name() + ". senderType cant be multi-reference!");
@@ -68,12 +78,14 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
                 String replaceFirst = saveRemoveFirst(input, Ingwer.getPreferences().prefix());
                 boolean b = runCommand(replaceFirst, sender, senderType);
                 if (!b) {
+                    commandNotFound.insert(0,input).send(sender);
                     logger.warning("failed to execute command: " + input);
                 }
             }
         } else {
             boolean b = runCommand(input, sender, senderType);
             if (!b) {
+                commandNotFound.insert(0,input).send(sender);
                 logger.warning("failed to execute command: " + input);
             }
         }
