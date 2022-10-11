@@ -4,11 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.security.Permission;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,20 +19,20 @@ import java.util.function.Supplier;
  */
 public final class AsyncChunkDBManager extends ChunkDBManager {
 
-    @Contract(" -> new")
-    public static @NotNull Supplier<ChunkDBManager> getDefault() {
-        return () -> new AsyncChunkDBManager(Bukkit::getWorlds);
-    }
-
-    private final Map<NamespacedKey,String> storage = new HashMap<>();
+    private final Map<NamespacedKey, String> storage = new HashMap<>();
 
     public AsyncChunkDBManager(Supplier<Collection<World>> worlds) {
         super(worlds);
     }
 
+    @Contract(" -> new")
+    public static @NotNull Supplier<ChunkDBManager> getDefault() {
+        return () -> new AsyncChunkDBManager(Bukkit::getWorlds);
+    }
+
     @Override
     public void save(NamespacedKey key, String data) {
-        storage.put(key,data);
+        storage.put(key, data);
     }
 
     @Override
@@ -63,7 +62,14 @@ public final class AsyncChunkDBManager extends ChunkDBManager {
 
     @Override
     public void start() {
-        //TODO: load keys back into storage
+        getLogger().info("reading data...");
+        PersistentDataContainer persistentDataContainer = bestContainer();
+        for (NamespacedKey key : persistentDataContainer.getKeys()) {
+            if(key.getNamespace().equals(NAMESPACE)) {
+                storage.put(key, persistentDataContainer.get(key, PersistentDataType.STRING));
+                getLogger().debug("read-in: " + key);
+            }
+        }
     }
 
     @Contract(pure = true)

@@ -125,6 +125,12 @@ public final class Ingwer {
             Console.silent = !preferences.debug();
 
             getLogger().info("Booting Ingwer v." + VERSION_STRING);
+
+            //WARN DEBUG
+            if(isGlobalDebug())
+                getLogger().warning("Warning! Ingwers debugmode is currently active! Only use this with caution because this may result into unwanted logger output!" +
+                    "If you dont know what this message is about and you are using a pre compiled version of Ingwer then consider reporting this to your Ingwer-Provider!");
+
             javaPlugin = preferences.javaPlugin();
             getLogger().cosmetic(BANNER);
 
