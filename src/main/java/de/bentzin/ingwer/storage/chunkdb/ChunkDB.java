@@ -88,6 +88,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     @Override
     public Identity saveIdentity(@NotNull Identity identity) {
         String uuid = identity.getUUID().toString();
+        // getLogger().debug("saving: " + identity);
         if (containsIdentityWithUUID(uuid)){
             updateIdentity(Objects.requireNonNull(getIdentityByUUID(uuid)),identity.getName(),identity.getUUID(),identity.getPermissions());
             getLogger().warning("someone tried to save identity that was already present: updating!");
@@ -200,13 +201,19 @@ public class ChunkDB extends LoggingClass implements Storage {
         return false;
     }
 
-    private NamespacedKey getKeyOfIdentity(Identity identity) {
-        if(getIdentityByName(identity.getName()) != null) {
+    /**
+     * @changes Breaking change: now uses uuid to get key
+     * @param identity
+     * @return
+     */
+    private @Nullable NamespacedKey getKeyOfIdentity(@NotNull Identity identity) {
+        if(getIdentityByUUID(String.valueOf(identity.getUUID())) != null) {
             Collection<String> keys = allIdentityKeys(false);
             int i = -1;
             for (String key : keys) {
-                if (key.endsWith("name")) {
-                    if (dbManager.get(key).equals(identity.getName())) {
+                getLogger().debug(key);
+                if (key.endsWith("uuid")) {
+                    if (UUID.fromString(dbManager.get(key)).equals(identity.getUUID())) {
                         //MATCH!
                         String[] split = key.split("\\.");
                         i = Integer.parseInt(split[1]);
@@ -216,7 +223,7 @@ public class ChunkDB extends LoggingClass implements Storage {
             if (i == -1) {
                 throw new IllegalStateException("Please report this issue! <i is -1>");
             }
-           return genKey(Integer.toString(i));
+           return genKey(IDENTITY_PREFIX + i);
         }else
             return null;
     }
@@ -227,7 +234,7 @@ public class ChunkDB extends LoggingClass implements Storage {
             if(origin == null)
                     throw new InvalidParameterException("the given identity is not in chunkDB!");
 
-            dbManager.save(cloneAppend(origin, "name"), identity.getName());
+            dbManager.save(cloneAppend(origin, "name"), name);
             dbManager.save(cloneAppend(origin, "uuid"), String.valueOf(uuid));
             dbManager.save(cloneAppend(origin, "perms"), Long.toString(identity.getCodedPermissions()));
             dbManager.save(cloneAppend(origin, "flag"), Short.valueOf("0").toString());

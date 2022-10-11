@@ -259,22 +259,20 @@ public interface Node<T> extends Cloneable {
 
 
         if (hasNodes()) {
-            boolean found = false;
             for (Node node : Objects.requireNonNull(getNodes())) {
                 if (node.resembles(argument)) {
                     //found
-                    found = true;
                     getCommandNode().getOrThrow().getLogger().info("walk: " + node + " for " + argument);
                     return node.walk(argumentQueue, traceBuilder, data);
                 }
             }
-            getCommandNode().getOrThrow().usage().accept(data, traceBuilder.build());
+            getCommandNode().getOrThrow().getLogger().debug(getName() + " could not find a matching node for: " + argument + "!");
 
+            getCommandNode().getOrThrow().usage().accept(data, traceBuilder.build());
         } else {
             getCommandNode().getOrThrow().usage().accept(data, traceBuilder.build());
         }
-
-        return null;
+                return null;
     }
 
     /**

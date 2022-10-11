@@ -2,8 +2,10 @@ package de.bentzin.ingwer.storage.chunkdb;
 
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.CommandTarget;
-import de.bentzin.ingwer.command.node.IngwerNodeCommand;
-import de.bentzin.ingwer.command.node.LambdaAgrumentNode;
+import de.bentzin.ingwer.command.IngwerCommandSender;
+import de.bentzin.ingwer.command.ext.CommandData;
+import de.bentzin.ingwer.command.node.*;
+import de.bentzin.ingwer.command.node.preset.UsageNode;
 import de.bentzin.ingwer.features.SimpleFeature;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
@@ -11,8 +13,12 @@ import de.bentzin.ingwer.message.MultipageMessageKeeper;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
+import de.bentzin.ingwer.utils.CompletableOptional;
+import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.NotNull;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +78,24 @@ class ChunkDBFeature extends SimpleFeature {
                             MultipageMessageKeeper multipageMessageKeeper
                                     = new MultipageMessageKeeper(identity.getUUID(), oneLinedMessages, 8,true);
                             multipageMessageKeeper.send();
+                        }
+                    })).append(new UsageNode("get").append(new WildNode<NamespacedKey>("key",(s) -> true) {
+
+                        @Override
+                        public @NotNull NamespacedKey parse(@NotNull String input, @NotNull NodeTrace nodeTrace)
+                                throws InvalidParameterException {
+                                return new NamespacedKey(ChunkDBManager.NAMESPACE, input);
+                        }
+
+                        @Override
+                        public void execute(CommandData commandData, NodeTrace nodeTrace, NamespacedKey key) {
+                            IngwerCommandSender ingwerCommandSender = commandData.commandSender();
+                            String s = "null";
+                            try {
+                                s = chunkDB.dbManager().get(key);
+                            }catch (NullPointerException ignored){}
+
+                            MessageBuilder.prefixed().add(C.C, key.getKey()).add(C.A," -> ").add(C.C, s).build().send(ingwerCommandSender);
                         }
                     }))
                     .finish();
