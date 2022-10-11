@@ -67,7 +67,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     public void init() {
         getLogger().info("running ChunkDB v." + VERSION_STRING);
         dbManager.updateLogger(getLogger().adopt("DBManager"));
-
+        dbManager.start();
     }
 
     @Override

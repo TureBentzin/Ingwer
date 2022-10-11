@@ -5,6 +5,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.security.Permission;
@@ -20,7 +21,7 @@ import java.util.function.Supplier;
 public final class AsyncChunkDBManager extends ChunkDBManager {
 
     @Contract(" -> new")
-    public static Supplier<ChunkDBManager> getDefault() {
+    public static @NotNull Supplier<ChunkDBManager> getDefault() {
         return () -> new AsyncChunkDBManager(Bukkit::getWorlds);
     }
 
@@ -32,42 +33,42 @@ public final class AsyncChunkDBManager extends ChunkDBManager {
 
     @Override
     public void save(NamespacedKey key, String data) {
-
+        storage.put(key,data);
     }
 
     @Override
     public String get(NamespacedKey key) {
-        return null;
+        return storage.get(key);
     }
 
     @Override
     public boolean has(NamespacedKey key) {
-        return false;
+        return storage.containsKey(key);
     }
 
     @Override
     public void remove(NamespacedKey key) {
-
+        storage.remove(key);
     }
 
     @Override
     public void clean() {
-
+        storage.clear();
     }
 
     @Override
     public void stop() {
-
+        push(bestContainer());
     }
 
     @Override
-    protected Collection<NamespacedKey> getCurrentKeys(String namespace) {
-        return null;
+    public void start() {
+        //TODO: load keys back into storage
     }
 
+    @Contract(pure = true)
     @Override
-    protected @Nullable PersistentDataContainer findBestMatch(NamespacedKey key) {
-        return null;
+    protected @NotNull Collection<NamespacedKey> getCurrentKeys(String namespace) {
+        return storage.keySet();
     }
-
 }

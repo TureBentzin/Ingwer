@@ -85,37 +85,9 @@ public final class SyncedChunkDBManager extends ChunkDBManager {
         }).orElseThrow();
     }
 
-    public Optional<PersistentDataContainer> getMostRecentContainer() {
-        try {
-            PersistentDataContainer pdc = sortedChunkContainers().iterator().next();
-            return Optional.of(pdc);
-        } catch (NoSuchElementException ignored) {
-            return Optional.empty();
-        }
-    }
 
-    /**
-     * @return getMostRecentContainer else getFallbackContainer
-     */
-    public PersistentDataContainer bestContainer() {
-       return getMostRecentContainer().orElse(getFallbackContainer());
-    }
 
-    @ApiStatus.Experimental
-    private void onRecentContainer(@NotNull Consumer<PersistentDataContainer> containerConsumer){
-        containerConsumer.accept(bestContainer());
-    }
 
-    @Beta
-    public @NotNull PersistentDataContainer getFallbackContainer() {
-        return getChunk.apply(Bukkit.getWorlds().get(0)).getPersistentDataContainer();
-    }
-
-    /**
-     * @param key key to search for
-     * @return first found container or null of no container was found
-     */
-    @Override
     @Nullable
     protected PersistentDataContainer findBestMatch(NamespacedKey key) {
         for (PersistentDataContainer dataContainer : sortedChunkContainers()) {

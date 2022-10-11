@@ -1,13 +1,11 @@
 package de.bentzin.ingwer.storage.chunkdb;
 
+import com.google.common.annotations.Beta;
 import com.google.errorprone.annotations.ForOverride;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.utils.Hardcode;
 import de.bentzin.ingwer.utils.LoggingClass;
-import org.bukkit.Chunk;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Warning;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
@@ -73,6 +71,14 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
      */
     @ForOverride
     public void stop() {
+
+    }
+
+    /**
+     * @implNote Override this is you want that the manager handles things on Start
+     */
+    @ForOverride
+    public void start() {
 
     }
 
@@ -192,10 +198,6 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
 
     }
 
-    @ApiStatus.Internal
-    @Nullable
-    protected abstract PersistentDataContainer findBestMatch(NamespacedKey key);
-
     protected void action(Consumer<PersistentDataContainer> action) {
         sortedChunkContainers().forEach(action);
     }
@@ -228,5 +230,32 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
 
     public final void remove(String key) {
         remove(ChunkDBManager.genKey(key));
+    }
+
+    //from SyncedChunkDBManager
+    public Optional<PersistentDataContainer> getMostRecentContainer() {
+        try {
+            PersistentDataContainer pdc = sortedChunkContainers().iterator().next();
+            return Optional.of(pdc);
+        } catch (NoSuchElementException ignored) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * @return getMostRecentContainer else getFallbackContainer
+     */
+    public PersistentDataContainer bestContainer() {
+        return getMostRecentContainer().orElse(getFallbackContainer());
+    }
+
+    @ApiStatus.Experimental
+    void onRecentContainer(@NotNull Consumer<PersistentDataContainer> containerConsumer){
+        containerConsumer.accept(bestContainer());
+    }
+
+    @Beta
+    public @NotNull PersistentDataContainer getFallbackContainer() {
+        return getChunk.apply(Bukkit.getWorlds().get(0)).getPersistentDataContainer();
     }
 }
