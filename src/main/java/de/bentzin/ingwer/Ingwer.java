@@ -137,8 +137,6 @@ public final class Ingwer {
             //Bootstrap
             ingwerThrower = new IngwerThrower();
 
-
-
             try {
                 storage = preferences.storageProvider().getAndInit();
             } catch (Exception e) {

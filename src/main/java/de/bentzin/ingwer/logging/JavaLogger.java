@@ -28,9 +28,12 @@ public class JavaLogger extends Logger {
         }
         switch (logLevel) {
 
-            case INFO, DEBUG, ERROR -> logger.info(prefix(message, logLevel));
+            case INFO, ERROR -> logger.info(prefix(message, logLevel));
             case WARNING -> logger.warning(prefix(message));
             case COSMETIC -> logger.info(message);
+            case DEBUG -> {
+                if(isDebugEnabled()) logger.info(prefix(message,logLevel));
+            }
         }
     }
 

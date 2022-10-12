@@ -1,8 +1,11 @@
 package de.bentzin.ingwer.logging;
 
 import de.bentzin.ingwer.Ingwer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 
 public abstract class Logger {
 
@@ -17,6 +20,7 @@ public abstract class Logger {
         this.name = name;
         this.parent = parent;
         debug = this.parent.isDebugEnabled();
+        //debug
         debug("creating new logger: " + genName() + "!");
     }
 
@@ -37,7 +41,23 @@ public abstract class Logger {
         return debug;
     }
 
-    public abstract void log(String message, LogLevel logLevel);
+    /**
+     * @implNote use like this {@code if(checkDebug(logLevel) return;} This can be used like a "isAllowedToPrint" method
+     * @return if it is allowed to further handle this message. true if it is and false if it is not
+     */
+    @ApiStatus.Experimental
+    protected final boolean checkDebug(LogLevel logLevel) {
+        if(logLevel == LogLevel.DEBUG)
+            return isDebugEnabled();
+        return true;
+    }
+
+    /**
+     * @implNote WARNING: Please check is {@link Logger#isDebugEnabled()} before handling debug messages (logLevel == {@link LogLevel#DEBUG})
+     * @param message message to handle
+     * @param logLevel level associated with the message
+     */
+    public abstract void log(String message, @NotNull LogLevel logLevel);
 
     public void info(String message) {
         log(message, LogLevel.INFO);
@@ -53,7 +73,7 @@ public abstract class Logger {
 
     public void debug(String message) {
         if (isDebugEnabled()) log(message, LogLevel.DEBUG);
-    }
+    } //check is only here for fail safety and to avoid redundant calls
 
     public void cosmetic(String message) {
         log(message, LogLevel.COSMETIC);

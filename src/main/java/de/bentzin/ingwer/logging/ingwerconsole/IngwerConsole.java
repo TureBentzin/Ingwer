@@ -15,7 +15,7 @@ public class IngwerConsole extends Logger {
     }
 
     @Override
-    public void log(String message, LogLevel logLevel) {
+    public void log(String message, @NotNull LogLevel logLevel) {
 
     }
 
