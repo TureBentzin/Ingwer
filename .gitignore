@@ -114,4 +114,4 @@ run/
 
 src/main/java/de/bentzin/ingwer/identity/permissions/Test.java
 src/main/java/de/bentzin/ingwer/logging/ingwerconsole/TestRedirect.java
-run-conf/.run/ingwer_server.run.xml
+/run-conf/
