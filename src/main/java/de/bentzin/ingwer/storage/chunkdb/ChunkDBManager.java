@@ -140,7 +140,7 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
     @NotNull
     @ApiStatus.Internal
     protected final Stream<NamespacedKey> streamOurKeys(@NotNull Set<NamespacedKey> namespacedKeys) {
-        return namespacedKeys.stream().takeWhile(key -> key.getNamespace().equals(NAMESPACE));
+        return namespacedKeys.stream().filter(key -> key.getNamespace().equals(NAMESPACE));
     }
 
     @NotNull

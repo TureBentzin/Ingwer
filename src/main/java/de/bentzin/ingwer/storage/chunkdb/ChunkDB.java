@@ -119,7 +119,7 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public @Nullable Identity getIdentityByName(String name) {
-        List<Identity> identities = getAllIdentities().stream().takeWhile(identity -> identity.getName().equals(name))
+        List<Identity> identities = getAllIdentities().stream().filter(identity -> identity.getName().equals(name))
                 .toList();
         if(identities.isEmpty()) return null;
         else return identities.get(0);
@@ -127,7 +127,7 @@ public class ChunkDB extends LoggingClass implements Storage {
 
     @Override
     public @Nullable Identity getIdentityByUUID(String uuid) {
-        List<Identity> identities = getAllIdentities().stream().takeWhile(identity -> identity.getUUID().equals(UUID.fromString(uuid)))
+        List<Identity> identities = getAllIdentities().stream().filter(identity -> identity.getUUID().equals(UUID.fromString(uuid)))
                 .toList();
         getLogger().debug("Extraxt: " + getAllIdentities().toString());
         if(identities.isEmpty()) return null;

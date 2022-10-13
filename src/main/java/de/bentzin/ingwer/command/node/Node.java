@@ -209,7 +209,7 @@ public interface Node<T> extends Cloneable {
     }
 
     default Collection<Node> find(Predicate<Node> nodePredicate) {
-        return collect(false).stream().takeWhile((Predicate<? super Node>) nodePredicate).toList();
+        return collect(false).stream().filter((Predicate<? super Node>) nodePredicate).toList();
     }
 
     /**
