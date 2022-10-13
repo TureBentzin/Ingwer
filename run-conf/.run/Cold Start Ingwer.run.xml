@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Cold Start Ingwer" type="CompoundRunConfigurationType">
-    <toRun name="ingwer_server" type="Remote" />
-    <toRun name="Start Paper Server" type="ShConfigurationType" />
-    <method v="2" />
-  </configuration>
-</component>
