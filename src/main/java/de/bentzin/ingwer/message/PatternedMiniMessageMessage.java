@@ -2,8 +2,8 @@ package de.bentzin.ingwer.message;
 
 
 import de.bentzin.ingwer.message.builder.MessageBuilder;
-import de.bentzin.ingwer.thow.IngwerThrower;
-import de.bentzin.ingwer.thow.ThrowType;
+import de.bentzin.ingwer.thrower.IngwerThrower;
+import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.Irreversible;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Contract;

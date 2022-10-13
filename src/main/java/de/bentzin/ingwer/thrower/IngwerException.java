@@ -1,4 +1,4 @@
-package de.bentzin.ingwer.thow;
+package de.bentzin.ingwer.thrower;
 
 public class IngwerException extends RuntimeException {
 

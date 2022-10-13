@@ -6,17 +6,14 @@ import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.message.MiniMessageMessage;
-import de.bentzin.ingwer.thow.IngwerThrower;
-import de.bentzin.ingwer.thow.ThrowType;
+import de.bentzin.ingwer.thrower.IngwerThrower;
+import de.bentzin.ingwer.thrower.ThrowType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.server.TabCompleteEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -60,14 +57,12 @@ public class PaperEventListener implements Listener {
             Identity identity = Ingwer.getStorage().getIdentityByUUID(player.getUniqueId().toString());
 
             if (identity != null) {
-                logger.debug(identity.toString());
                 if (identity.getPermissions().contains(IngwerPermission.SUPERADMIN)) {
                     logger.info("SuperAdmin connecting: " + event.getPlayer().getName());
-                    Ingwer.getStorage().updateIdentity(identity, player.getName(), player.getUniqueId(),
+                    Ingwer.getStorage().updateOrSaveIdentity(identity, player.getName(), player.getUniqueId(),
                             new IngwerPermissions(IngwerPermission.values()));
-
                 } else
-                    Ingwer.getStorage().updateIdentity(identity, player.getName(), player.getUniqueId(), identity.getPermissions());
+                    Ingwer.getStorage().updateOrSaveIdentity(identity, player.getName(), player.getUniqueId(), identity.getPermissions());
             }
         }catch (Throwable throwable) {
             IngwerThrower.acceptS(throwable, ThrowType.EVENT);

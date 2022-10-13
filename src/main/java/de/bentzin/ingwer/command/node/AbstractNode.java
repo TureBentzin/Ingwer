@@ -1,6 +1,9 @@
 package de.bentzin.ingwer.command.node;
 
+import com.google.errorprone.annotations.ForOverride;
 import de.bentzin.ingwer.command.ext.CommandData;
+import de.bentzin.ingwer.thrower.IngwerThrower;
+import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.DoNotOverride;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,10 +34,15 @@ public abstract class AbstractNode<T> implements Node<T> {
     @Override
     public final void execute(@NotNull CommandData commandData, NodeTrace nodeTrace) {
         String last = commandData.cmd()[commandData.cmd().length - 1];
-        execute(commandData, nodeTrace, parse(last, nodeTrace));
+        try {
+            execute(commandData, nodeTrace, parse(last, nodeTrace));
+        } catch (NodeTrace.NodeParser.NodeParserException e) {
+            IngwerThrower.acceptS(e, ThrowType.COMMAND);
+        }
     }
 
-    public abstract void execute(CommandData commandData, NodeTrace nodeTrace, T t);
+    @ForOverride
+    public abstract void execute(CommandData commandData, NodeTrace nodeTrace, T t) throws NodeTrace.NodeParser.NodeParserException;
 
     /**
      * @return for this trace unique name

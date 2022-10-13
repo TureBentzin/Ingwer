@@ -1,4 +1,4 @@
-package de.bentzin.ingwer.thow;
+package de.bentzin.ingwer.thrower;
 
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.logging.Logger;

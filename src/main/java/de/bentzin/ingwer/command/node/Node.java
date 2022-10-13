@@ -21,6 +21,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Node is the base for the node based CommandSystem.
@@ -31,6 +33,7 @@ import java.util.function.Function;
  * @implNote This may be an implementation of {@link Permissioned}
  * @see CommandNode
  */
+@SuppressWarnings("rawtypes")
 public interface Node<T> extends Cloneable {
 
     /**
@@ -94,7 +97,6 @@ public interface Node<T> extends Cloneable {
      * @param nodeTrace node trace
      * @return true if the argument could be parsed, false if parsing fails
      */
-    @Deprecated
     default boolean accepts(String input, NodeTrace nodeTrace) {
         try {
             T parse = parse(input, nodeTrace);
@@ -206,6 +208,10 @@ public interface Node<T> extends Cloneable {
         return collection;
     }
 
+    default Collection<Node> find(Predicate<Node> nodePredicate) {
+        return collect(false).stream().filter((Predicate<? super Node>) nodePredicate).toList();
+    }
+
     /**
      * like foreach()
      *
@@ -253,22 +259,20 @@ public interface Node<T> extends Cloneable {
 
 
         if (hasNodes()) {
-            boolean found = false;
             for (Node node : Objects.requireNonNull(getNodes())) {
                 if (node.resembles(argument)) {
                     //found
-                    found = true;
                     getCommandNode().getOrThrow().getLogger().info("walk: " + node + " for " + argument);
                     return node.walk(argumentQueue, traceBuilder, data);
                 }
             }
-            getCommandNode().getOrThrow().usage().accept(data, traceBuilder.build());
+            getCommandNode().getOrThrow().getLogger().debug(getName() + " could not find a matching node for: " + argument + "!");
 
+            getCommandNode().getOrThrow().usage().accept(data, traceBuilder.build());
         } else {
             getCommandNode().getOrThrow().usage().accept(data, traceBuilder.build());
         }
-
-        return null;
+                return null;
     }
 
     /**

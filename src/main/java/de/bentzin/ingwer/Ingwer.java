@@ -11,9 +11,9 @@ import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.message.IngwerMessageManager;
 import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
-import de.bentzin.ingwer.storage.Sqlite;
-import de.bentzin.ingwer.thow.IngwerThrower;
-import de.bentzin.ingwer.thow.ThrowType;
+import de.bentzin.ingwer.storage.Storage;
+import de.bentzin.ingwer.thrower.IngwerThrower;
+import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.IngwerLog4JFilter;
 import de.bentzin.ingwer.utils.StopCode;
 import de.bentzin.ingwer.utils.cmdreturn.CommandReturnSystem;
@@ -28,15 +28,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.List;
 
 public final class Ingwer {
 
     //TODO dynamic
-    public static final String VERSION_STRING = "0.4-BETA";
+    public static final String VERSION_STRING = "0.5-BETA";
     public static final String BANNER = "\n" +
             "██╗███╗░░██╗░██████╗░░██╗░░░░░░░██╗███████╗██████╗░\n" +
             "██║████╗░██║██╔════╝░░██║░░██╗░░██║██╔════╝██╔══██╗\n" +
@@ -53,8 +50,10 @@ public final class Ingwer {
     private static FeatureManager featureManager;
     private static IngwerCommandManager commandManager;
     private static CommandReturnSystem commandReturnSystem;
-    private static Sqlite storage;
+    private static Storage storage;
     private static Logger logger;
+    private static Logger nullLogger;
+    private static boolean debug = false;
 
     public static Preferences getPreferences() {
         return preferences;
@@ -80,7 +79,7 @@ public final class Ingwer {
         return commandReturnSystem;
     }
 
-    public static Sqlite getStorage() {
+    public static Storage getStorage() {
         return storage;
     }
 
@@ -89,8 +88,24 @@ public final class Ingwer {
         return logger;
     }
 
+    @NotNull
+    public static Logger getNullLogger() {
+        if(nullLogger == null)
+            throw new IllegalStateException("Okay that should never happen, but the \"null-logger\" is null. yes actually....");
+        else
+            return nullLogger;
+    }
+
     public static void setLogger(@NotNull Logger logger) {
         Ingwer.logger = logger;
+    }
+
+    public static boolean isGlobalDebug() {
+        return debug;
+    }
+
+    public static void setGlobalDebug(boolean debug) {
+        Ingwer.debug = debug;
     }
 
     public static void start(@NotNull Preferences preferences) {
@@ -101,32 +116,37 @@ public final class Ingwer {
             setLogger(preferences.ingwerLogger());
             getLogger().setDebug(getPreferences().debug());
 
+            //NullLogger
+            nullLogger = getLogger().adopt("not-available");
+
+            setGlobalDebug(getPreferences().debug());
+
             //Console
             Console.silent = !preferences.debug();
 
             getLogger().info("Booting Ingwer v." + VERSION_STRING);
+
+            //WARN DEBUG
+            if(isGlobalDebug())
+                getLogger().warning("Warning! Ingwers debugmode is currently active! Only use this with caution because this may result into unwanted logger output!" +
+                    "If you dont know what this message is about and you are using a pre compiled version of Ingwer then consider reporting this to your Ingwer-Provider!");
+
             javaPlugin = preferences.javaPlugin();
-
-
             getLogger().cosmetic(BANNER);
 
-            //Boot
+            //Bootstrap
             ingwerThrower = new IngwerThrower();
 
             try {
-                storage = new Sqlite();
-            } catch (URISyntaxException | IOException e) {
-                getIngwerThrower().accept(e);
-            } catch (SQLException e) {
+                storage = preferences.storageProvider().getAndInit();
+            } catch (Exception e) {
                 getIngwerThrower().accept(e, ThrowType.STORAGE);
+            } finally {
+                getLogger().info("finished crafting of Ingwer Storage!");
             }
 
             if (LogManager.getRootLogger().isDebugEnabled())
                 logger.warning("Log4J Debugger is enabled!");
-
-
-            if (preferences.hasCustomSqliteLocation())
-                getStorage().setDb(preferences.custom_sqliteLocation());
 
             featureManager = new FeatureManager();
             commandManager = new IngwerCommandManager();
@@ -144,8 +164,6 @@ public final class Ingwer {
             //END: Boot
             printLEGAL(getLogger().adopt("LEGAL"));
 
-            //process
-            Identity.refresh();
             //noinspection ResultOfMethodCallIgnored
             createSuperAdmin(preferences);
 
@@ -173,11 +191,14 @@ public final class Ingwer {
             //node
             new NodeTestCommand();
 
+            //lateInits
+            storage.lateInit();
+
             getLogger().info("completed boot of Ingwer!");
 
             //maliciousConfig();
-        }catch (Throwable throwable) {
-            IngwerThrower.acceptS(throwable,ThrowType.GENERAL);
+        } catch (Throwable throwable) {
+            IngwerThrower.acceptS(throwable, ThrowType.GENERAL);
         }
     }
 
@@ -192,7 +213,7 @@ public final class Ingwer {
         getCommandManager().clear();
         getFeatureManager().clear();
 
-        logger.info("closing storage connection...");
+        logger.info("closing storage ...");
         getStorage().close();
 
         if (!stopCode.equals(StopCode.FATAL)) {

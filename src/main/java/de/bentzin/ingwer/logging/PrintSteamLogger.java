@@ -33,10 +33,11 @@ public class PrintSteamLogger extends Logger {
 
     @Override
     public void log(String message, @NotNull LogLevel logLevel) {
-        if (logLevel.equals(LogLevel.COSMETIC)) {
-            printStream.println(message);
-        } else
-            printStream.println(prefix(message, logLevel));
+        if (checkDebug(logLevel))
+            if (logLevel.equals(LogLevel.COSMETIC)) {
+                printStream.println(message);
+            } else
+                printStream.println(prefix(message, logLevel));
 
     }
 

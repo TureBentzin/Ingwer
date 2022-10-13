@@ -6,7 +6,7 @@ import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.node.preset.UsageNodeExecutor;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.thow.IngwerThrower;
+import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.utils.CompletableOptional;
 import de.bentzin.ingwer.utils.FinalCompletableOptional;
 import org.jetbrains.annotations.ApiStatus;
@@ -126,10 +126,10 @@ public abstract class CommandNode implements Node<String> {
         Collections.addAll(argumentQueue, v2);
         NodeTraceBuilder nodeTraceBuilder = new NodeTraceBuilder();
         String poll = argumentQueue.poll();
-        if (poll.equals(command_name))
+        if (poll.equalsIgnoreCase(command_name)) //Experimental change...
             getLogger().debug("dequeue because start... " + poll);
         else {
-            throw new IllegalStateException("cant match commandNode and commandName");
+            throw new IllegalStateException("cant match commandNode and commandName. Was the last change finished?");
         }
         try {
             return walk(argumentQueue, nodeTraceBuilder, data);

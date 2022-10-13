@@ -18,14 +18,15 @@ public class Log4JLogger extends Logger {
 
     @Override
     public void log(String message, @NotNull LogLevel logLevel) {
+        if (checkDebug(logLevel))
 
-        switch (logLevel) {
+            switch (logLevel) {
 
-            case INFO, DEBUG -> logger.info(prefix(message, logLevel));
-            case WARNING -> logger.warn(prefix(message));
-            case COSMETIC -> logger.info(message);
-            case ERROR -> logger.error(prefix(message));
-        }
+                case INFO, DEBUG -> logger.info(prefix(message, logLevel));
+                case WARNING -> logger.warn(prefix(message));
+                case COSMETIC -> logger.info(message);
+                case ERROR -> logger.error(prefix(message));
+            }
     }
 
     @Override

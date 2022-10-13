@@ -14,7 +14,7 @@ public class OnlinePlayersNode extends CollectionNode<Player> {
 
 
     public OnlinePlayersNode(String name, Predicate<Player> causality) {
-        super(name, () -> (Collection<Player>) Bukkit.getOnlinePlayers().stream().takeWhile(causality).toList(), Player::getName);
+        super(name, () -> (Collection<Player>) Bukkit.getOnlinePlayers().stream().filter(causality).toList(), Player::getName);
     }
 
     public OnlinePlayersNode(String name) {

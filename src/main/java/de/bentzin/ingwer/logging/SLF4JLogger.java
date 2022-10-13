@@ -21,15 +21,17 @@ public class SLF4JLogger extends Logger {
 
     @Override
     public void log(String message, @NotNull LogLevel logLevel) {
-        if (logger == null) {
-            Bukkit.getServer().getLogger().info(prefix(message, logLevel));
-            return;
-        }
-        switch (logLevel) {
+        if(checkDebug(logLevel)) {
+            if (logger == null) {
+                Bukkit.getServer().getLogger().info(prefix(message, logLevel));
+                return;
+            }
+            switch (logLevel) {
 
-            case INFO, DEBUG, ERROR -> logger.info(prefix(message, logLevel));
-            case WARNING -> logger.warn(prefix(message));
-            case COSMETIC -> logger.info(message);
+                case INFO, DEBUG, ERROR -> logger.info(prefix(message, logLevel));
+                case WARNING -> logger.warn(prefix(message));
+                case COSMETIC -> logger.info(message);
+            }
         }
     }
 

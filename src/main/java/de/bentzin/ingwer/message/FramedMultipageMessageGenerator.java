@@ -4,6 +4,7 @@ import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.utils.cmdreturn.CommandReturn;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,6 +43,24 @@ public class FramedMultipageMessageGenerator {
 
         }
         return pages;
+    }
+
+    public FramedMultipageMessageGenerator sort(Comparator<OneLinedMessage> sorter) {
+        content.sort(sorter);
+        return this;
+    }
+
+    @ApiStatus.Experimental
+    public FramedMultipageMessageGenerator sortAlphabet() {
+        content.sort((o1, o2) -> {
+            String s2 = o2.getOneLinedString();
+            String s1 = o1.getOneLinedString();
+            if(s1.equalsIgnoreCase(s2)){
+                return 0;
+            }
+            return s1.toLowerCase().compareTo(s2.toLowerCase());
+        });
+        return this;
     }
 
     private void nextPage(@NotNull List<OneLinedMessage> remaining, int pageLength, Queue<Collection<OneLinedMessage>> queue) {

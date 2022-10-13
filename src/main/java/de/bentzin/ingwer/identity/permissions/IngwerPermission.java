@@ -1,6 +1,6 @@
 package de.bentzin.ingwer.identity.permissions;
 
-import de.bentzin.ingwer.thow.IngwerThrower;
+import de.bentzin.ingwer.thrower.IngwerThrower;
 import org.jetbrains.annotations.NotNull;
 
 import java.security.InvalidParameterException;
