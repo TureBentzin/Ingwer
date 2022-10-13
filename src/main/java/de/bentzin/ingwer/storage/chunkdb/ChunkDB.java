@@ -312,7 +312,7 @@ public class ChunkDB extends LoggingClass implements Storage {
             messages.add(MessageBuilder.empty().add(C.C, "Keys: ").add(C.A, String.valueOf(dbManager.getCurrentIngwerKeys().size())).build());
             return new FramedMessage(messages);
         } else
-            return MessageBuilder.prefixed().add(C.E, "Ingwer Storage is not running ChunkDB currently!").build();
+            return MessageBuilder.prefixed().add(C.E, "Ingwer Storage is currently not running ChunkDB!").build();
     }
 
 }
