@@ -4,6 +4,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.reflect.TypeToken;
 import com.google.errorprone.annotations.ForOverride;
 import de.bentzin.ingwer.command.ext.CommandData;
+import de.bentzin.ingwer.command.ext.NonFinalPermissiond;
 import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.utils.CompletableOptional;
@@ -22,7 +23,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Node is the base for the node based CommandSystem.
@@ -54,7 +54,6 @@ public interface Node<T> extends Cloneable {
         if (!checkCommandNode(node))
             throw new IllegalArgumentException("the given node: \"" + node.getName() + "\"" + " is a commandNode and cannot be added here!");
     }
-
 
     /**
      * Adds the given node to the level below this node
@@ -244,7 +243,7 @@ public interface Node<T> extends Cloneable {
         traceBuilder.append(this);
         final boolean last = argumentQueue.isEmpty();
         if (last) {
-            getPermission().ifPresentOrElse(ingwerPermission -> {
+            permission().ifPresentOrElse(ingwerPermission -> {
                 if (data.commandSender().getPermissions().contains(ingwerPermission)) {
                     execute(data, traceBuilder.build());
                 } else {
@@ -285,19 +284,20 @@ public interface Node<T> extends Cloneable {
      * @see Node#execute(CommandData, NodeTrace)
      */
     @MaybePresent
-    default Optional<IngwerPermission> getPermission() {
+    default Optional<IngwerPermission> permission() {
         if (this instanceof Permissioned p)
             return Optional.of(p.getPermission());
         return Optional.empty();
     }
 
     /**
-     * @return true if the Optional from {@link this#getPermission()} is present!
+     * @return true if the Optional from {@link this#permission()} is present!
      * @implNote should only be used if further investigation of a permission is not required
-     * if you need to read out a permission use: {@link Node#getPermission()} & {@link Optional#isPresent()} or {@link Optional#ifPresent(Consumer)}
+     * if you need to read out a permission use: {@link Node#permission()} & {@link Optional#isPresent()} or {@link Optional#ifPresent(Consumer)}
      */
+    @DoNotOverride
     default boolean hasPermission() {
-        return getPermission().isPresent();
+        return permission().isPresent();
     }
 
 

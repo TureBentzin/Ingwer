@@ -1,17 +1,14 @@
 package de.bentzin.ingwer.command.internalcommands;
 
-import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.node.ArgumentNode;
 import de.bentzin.ingwer.command.node.IngwerNodeCommand;
-import de.bentzin.ingwer.command.node.Node;
 import de.bentzin.ingwer.command.node.NodeTrace;
 import de.bentzin.ingwer.command.node.NodeTrace.NodeParser.NodeParserException;
 import de.bentzin.ingwer.message.StraightLineStringMessage;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
-import de.bentzin.ingwer.thow.IngwerThrower;
 
 public class NodeTestCommand extends IngwerNodeCommand {
 
