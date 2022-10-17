@@ -5,6 +5,7 @@ import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.ext.NonFinalPermissiond;
+import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.command.node.*;
 import de.bentzin.ingwer.command.node.preset.UsageNode;
 import de.bentzin.ingwer.features.SimpleFeature;
@@ -57,7 +58,7 @@ class ChunkDBFeature extends SimpleFeature {
     }
 
 
-    public static class ChunkDBCommand extends IngwerNodeCommand {
+    public static class ChunkDBCommand extends IngwerNodeCommand implements Permissioned {
 
 
         public ChunkDBCommand(ChunkDB chunkDB) {
@@ -102,6 +103,11 @@ class ChunkDBFeature extends SimpleFeature {
                     }))
                     .finish();
 
+        }
+
+        @Override
+        public @NotNull IngwerPermission getPermission() {
+            return IngwerPermission.SUPERADMIN;
         }
     }
 }
