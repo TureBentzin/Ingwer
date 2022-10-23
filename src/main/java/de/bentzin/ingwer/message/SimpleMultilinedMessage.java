@@ -21,6 +21,7 @@ public class SimpleMultilinedMessage implements MultilinedMessage {
     @Override
     public void send(@NotNull CommandSender recipient) {
         get().forEachRemaining(oneLinedMessage -> recipient.sendMessage(oneLinedMessage.getOneLinedComponent()));
+        multilineLog(recipient.getName());
     }
 
     @Override

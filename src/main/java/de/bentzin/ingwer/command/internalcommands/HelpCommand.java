@@ -41,7 +41,6 @@ public class HelpCommand extends IngwerCommand {
             if (command instanceof Permissioned permissioned) {
                 if (permissioned.checkPermission(identity)) {
                     oneLinedMessages.add(generateMessage(command));
-
                 }
             } else
                 oneLinedMessages.add(generateMessage(command));

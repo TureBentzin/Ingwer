@@ -28,10 +28,10 @@ import java.util.List;
 import static de.bentzin.ingwer.message.builder.C.*;
 
 /*
- * perm - view own
- * perm detail - view own detail
- * perm user [user] - view user
- * perm user [user] detail - view user detail
+ * perm - view own                           X
+ * perm detail - view own detail             X
+ * perm user [user] - view user              X
+ * perm user [user] detail - view user detail   X
  * perm group [group] - view group
  * perm user/group [user/group] add [permission] - add [permission] to [user/group]
  * perm user/group [user/group] remove [permission] - remove [permission] to [user/group]

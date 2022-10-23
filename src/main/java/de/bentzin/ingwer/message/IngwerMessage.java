@@ -4,6 +4,7 @@ import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
+import de.bentzin.ingwer.logging.Logger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -136,6 +137,22 @@ public interface IngwerMessage {
      */
     default void log(String recipientName, String simplifiedMessage) {
         manager().getLogger().info(recipientName + " << " + simplifiedMessage);
+    }
+
+    /**
+     * @param onlyAtDebug used if logging this all the time would be more spam than useful
+     * @param recipientName     name of the recipient
+     * @param simplifiedMessage simplifiedMessage can contain the message itself (without decoration and prefix) or a description of the message send to the recipient
+     * @implNote can be implemented or custom called to log message sends!
+     */
+    default void log(String recipientName, String simplifiedMessage, boolean onlyAtDebug) {
+        if(!onlyAtDebug) {
+            log(recipientName,simplifiedMessage);
+            return;
+        }
+        Logger logger = manager().getLogger();
+        if(logger.isDebugEnabled())
+            logger.info(recipientName + " << " + simplifiedMessage);
     }
 
     default IngwerMessageManager manager() {

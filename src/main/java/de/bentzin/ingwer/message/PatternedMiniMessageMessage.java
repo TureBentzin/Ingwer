@@ -142,10 +142,6 @@ public class PatternedMiniMessageMessage implements CompletableMessage {
 
     @Override
     public PatternedMiniMessageMessage clone() {
-        try {
-            super.clone();
-        } catch (CloneNotSupportedException ignored) {
-        }
         return new PatternedMiniMessageMessage(miniMessage, patternCount);
     }
 

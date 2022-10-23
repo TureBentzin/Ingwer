@@ -33,14 +33,12 @@ public class FramedMultipageMessageGenerator {
         ArrayList<FramedMessage> pages = new ArrayList<>();
         int length = queue.size();
         while (!queue.isEmpty()) {
-            //TODO: add footer
             ArrayList<OneLinedMessage> a = new ArrayList<>(queue.remove());
             //add footer
             int size = queue.size();
             ComponentMessage componentMessage = new ComponentMessage(generatePageFooter(16, length - size, length, consumer, uuid));
             a.add(componentMessage);
             pages.add(new FramedMessage(a));
-
         }
         return pages;
     }

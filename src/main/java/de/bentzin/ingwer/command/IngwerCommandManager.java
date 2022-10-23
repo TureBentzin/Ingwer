@@ -60,11 +60,13 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
         return ingwerCommand;
     }
 
-    private static final PatternedMiniMessageMessage commandNotFound = MessageBuilder.prefixed()
-            .add(C.E,"Failed to execute ").add(C.A,"<click:suggest_command:'" + "{0}" + "'>{0}!</click>")
-            .add(C.E," Type ").add(C.A,"<click:suggest_command:'" +
-                    Ingwer.getPreferences().prefix() + "help" + "'>" + Ingwer.getPreferences().prefix() + "help" + "</click>")
-            .add(C.E," to get a list of available commands!").toCompletableMessage();
+    private static PatternedMiniMessageMessage commandNotFound() {
+        return MessageBuilder.prefixed()
+                .add(C.E, "Failed to execute ").add(C.A, "<click:suggest_command:'" + "{0}" + "'>{0}!</click>")
+                .add(C.E, " Type ").add(C.A, "<click:suggest_command:'" +
+                        Ingwer.getPreferences().prefix() + "help" + "'>" + Ingwer.getPreferences().prefix() + "help" + "</click>")
+                .add(C.E, " to get a list of available commands!").toCompletableMessage().clone();
+    }
 
     public void preRunCommand(String input, IngwerCommandSender sender, @NotNull CommandTarget senderType) {
         if (!senderType.isLast()) try {
@@ -78,14 +80,14 @@ public final class IngwerCommandManager extends Registerator<IngwerCommand> {
                 String replaceFirst = saveRemoveFirst(input, Ingwer.getPreferences().prefix());
                 boolean b = runCommand(replaceFirst, sender, senderType);
                 if (!b) {
-                    commandNotFound.insert(0,input).send(sender);
+                    commandNotFound().insert(0,input).send(sender);
                     logger.warning("failed to execute command: " + input);
                 }
             }
         } else {
             boolean b = runCommand(input, sender, senderType);
             if (!b) {
-                commandNotFound.insert(0,input).send(sender);
+                commandNotFound().insert(0,input).send(sender);
                 logger.warning("failed to execute command: " + input);
             }
         }

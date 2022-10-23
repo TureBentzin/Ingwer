@@ -27,8 +27,12 @@ public class MultipageMessageKeeper {
     }
 
     public MultipageMessageKeeper(UUID recipient, List<OneLinedMessage> content, int pageLength, boolean sorted) {
+        ArrayList<FramedMessage> messages1;
         this.recipient = recipient;
-        this.messages = new FramedMultipageMessageGenerator(content).sortAlphabet().generate(pageLength, recipient, this::send);
+        if(sorted)
+            messages1 = new FramedMultipageMessageGenerator(content).sortAlphabet().generate(pageLength, recipient, this::send);
+        messages1 = new FramedMultipageMessageGenerator(content).generate(pageLength, recipient, this::send);
+        this.messages = messages1;
     }
 
     protected boolean isPopulated() {
