@@ -8,10 +8,7 @@ import de.bentzin.ingwer.command.node.preset.CollectionNode;
 import de.bentzin.ingwer.command.node.preset.OnlinePlayersNode;
 import de.bentzin.ingwer.command.node.preset.UsageNode;
 import de.bentzin.ingwer.identity.Identity;
-import de.bentzin.ingwer.message.FramedMessage;
-import de.bentzin.ingwer.message.MultilinedMessage;
-import de.bentzin.ingwer.message.MultipageMessageKeeper;
-import de.bentzin.ingwer.message.OneLinedMessage;
+import de.bentzin.ingwer.message.*;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Bukkit;
@@ -61,6 +58,10 @@ public class PermissionCommand extends IngwerNodeCommand {
         this.vaultFeature = vaultFeature;
         //command
 
+        @CompletableMessage.Origin
+        PatternedMiniMessageMessage message = MessageBuilder.prefixed().add(C,"Successfully ").add(A,"{0}")
+                .add(C," permission \"").add(A,"{1}").add(C,"\" from ").add(A,"{2}").add(C,"!").toCompletableMessage().origin();
+
         UsageNode addNode = new UsageNode("add");
         UsageNode removeNode = new UsageNode("remove");
         AnyStringNode permissionNode = new AnyStringNode("permission",null){
@@ -86,10 +87,13 @@ public class PermissionCommand extends IngwerNodeCommand {
                     //case: add
                     assert c != null;
                     c.add.accept(vaultFeature,target,permission);
+                    message.clone().insert(0,"added").insert(1,permission).insert(2,target).send(commandData.commandSender());
+
                 } else if (nodeTrace.contains(removeNode)) {
                     //case: remove
                     assert c != null;
                     c.remove.accept(vaultFeature,target,permission);
+                    message.clone().insert(0,"removed").insert(1,permission).insert(2,target).send(commandData.commandSender());
                 }else {
                     //ok wtf went wrong here
                     throw new IllegalStateException("node is bricked!");
