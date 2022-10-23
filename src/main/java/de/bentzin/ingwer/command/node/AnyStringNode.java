@@ -25,7 +25,7 @@ public class AnyStringNode extends WildNode<String>{
         this.executor = executor;
     }
 
-    public AnyStringNode(String name, ArrayList<Node> nodes,@Nullable NodeExecutor executor) {
+    public AnyStringNode(String name, ArrayList<Node<?>> nodes, @Nullable NodeExecutor executor) {
         super(name,nodes,s -> true);
         this.executor = executor;
     }

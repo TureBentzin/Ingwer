@@ -25,7 +25,7 @@ public abstract class SimpleNode<T> extends AbstractNode<T> {
 
     private final CompletableOptional<CommandNode> commandNode = new CompletableOptional<>();
 
-    public SimpleNode(String name, ArrayList<Node> nodes, ArrayList<String> values) {
+    public SimpleNode(String name, ArrayList<Node<?>> nodes, ArrayList<String> values) {
         super(name, nodes);
         this.values = values;
     }
@@ -35,7 +35,7 @@ public abstract class SimpleNode<T> extends AbstractNode<T> {
         this.values = values;
     }
 
-    public SimpleNode(String name, ArrayList<Node> nodes, String... values) {
+    public SimpleNode(String name, ArrayList<Node<?>> nodes, String... values) {
         super(name, nodes);
         this.values = List.of(values);
     }

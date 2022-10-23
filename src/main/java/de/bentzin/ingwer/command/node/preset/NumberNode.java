@@ -29,7 +29,7 @@ public abstract class NumberNode extends AbstractNode<Integer> {
         condition = integer -> true;
     }
 
-    public NumberNode(String name, ArrayList<Node> nodes) {
+    public NumberNode(String name, ArrayList<Node<?>> nodes) {
         super(name, nodes);
         condition = integer -> true;
     }
@@ -39,7 +39,7 @@ public abstract class NumberNode extends AbstractNode<Integer> {
         this.condition = condition;
     }
 
-    public NumberNode(String name, ArrayList<Node> nodes, Predicate<Integer> condition) {
+    public NumberNode(String name, ArrayList<Node<?>> nodes, Predicate<Integer> condition) {
         super(name, nodes);
         this.condition = condition;
     }

@@ -69,8 +69,7 @@ public interface Node<T> extends Cloneable {
      * @return all nodes contained (or below) this node. Should be null if there is no node below this
      * @implNote changes on the here given collection should never affect future requests
      */
-    @Nullable
-    Collection<Node> getNodes();
+    Collection<Node<?>> getNodes();
 
     /**
      * @return if this has nodes below

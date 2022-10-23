@@ -15,7 +15,7 @@ public abstract class ArgumentNode extends SimpleNode<String> {
 
     @ApiStatus.Internal
     @Deprecated
-    protected ArgumentNode(String name, ArrayList<Node> nodes, ArrayList<String> values) {
+    protected ArgumentNode(String name, ArrayList<Node<?>> nodes, ArrayList<String> values) {
         super(name, nodes, values);
     }
 
@@ -27,7 +27,7 @@ public abstract class ArgumentNode extends SimpleNode<String> {
 
     @ApiStatus.Internal
     @Deprecated
-    protected ArgumentNode(String name, ArrayList<Node> nodes, String... values) {
+    protected ArgumentNode(String name, ArrayList<Node<?>> nodes, String... values) {
         super(name, nodes, values);
     }
 
@@ -40,7 +40,7 @@ public abstract class ArgumentNode extends SimpleNode<String> {
     //single value
 
     @ApiStatus.Experimental
-    protected ArgumentNode(String name, ArrayList<Node> nodes, String value) {
+    protected ArgumentNode(String name, ArrayList<Node<?>> nodes, String value) {
         super(name, nodes, value);
     }
 

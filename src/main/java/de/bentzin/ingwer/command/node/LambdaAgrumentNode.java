@@ -14,7 +14,7 @@ public class LambdaAgrumentNode extends ArgumentNode {
 
     @Deprecated
     @ApiStatus.Internal
-    public LambdaAgrumentNode(String name, ArrayList<Node> nodes, ArrayList<String> values, @Nullable NodeExecutor nodeExecutor) {
+    public LambdaAgrumentNode(String name, ArrayList<Node<?>> nodes, ArrayList<String> values, @Nullable NodeExecutor nodeExecutor) {
         super(name, nodes, values);
         this.nodeExecutor = nodeExecutor;
     }
@@ -28,7 +28,7 @@ public class LambdaAgrumentNode extends ArgumentNode {
 
     @Deprecated
     @ApiStatus.Internal
-    public LambdaAgrumentNode(String name, ArrayList<Node> nodes, @Nullable NodeExecutor nodeExecutor, String... values) {
+    public LambdaAgrumentNode(String name, ArrayList<Node<?>> nodes, @Nullable NodeExecutor nodeExecutor, String... values) {
         super(name, nodes, values);
         this.nodeExecutor = nodeExecutor;
     }
@@ -42,7 +42,7 @@ public class LambdaAgrumentNode extends ArgumentNode {
 
     @ApiStatus.Experimental
     @ApiStatus.Internal
-    public LambdaAgrumentNode(String name, ArrayList<Node> nodes, String value, @Nullable NodeExecutor nodeExecutor) {
+    public LambdaAgrumentNode(String name, ArrayList<Node<?>> nodes, String value, @Nullable NodeExecutor nodeExecutor) {
         super(name, nodes, value);
         this.nodeExecutor = nodeExecutor;
     }

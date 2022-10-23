@@ -166,9 +166,8 @@ public abstract class CommandNode implements Node<String> {
         return command_name;
     }
 
-    @Nullable
     @Override
-    public ArrayList<Node> getNodes() {
+    public Collection<Node<?>> getNodes() {
         return (ArrayList<Node>) nodes.clone();
     }
 

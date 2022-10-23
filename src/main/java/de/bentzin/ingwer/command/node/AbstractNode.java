@@ -15,14 +15,14 @@ public abstract class AbstractNode<T> implements Node<T> {
 
 
     private final String name;
-    private final Collection<Node> nodes;
+    private final Collection<Node<?>> nodes;
 
     public AbstractNode(String name) {
         this.name = name;
-        this.nodes = new ArrayList<>();
+        this.nodes = new ArrayList<Node<?>>();
     }
 
-    public AbstractNode(String name, ArrayList<Node> nodes) {
+    public AbstractNode(String name, ArrayList<Node<?>> nodes) {
         this.name = name;
         this.nodes = nodes;
     }
@@ -60,9 +60,8 @@ public abstract class AbstractNode<T> implements Node<T> {
         return this;
     }
 
-    @Nullable
     @Override
-    public final Collection<Node> getNodes() {
+    public final Collection<Node<?>> getNodes() {
         return nodes;
     }
 

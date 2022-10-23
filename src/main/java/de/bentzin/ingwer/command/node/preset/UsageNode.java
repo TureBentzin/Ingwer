@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class UsageNode extends LambdaAgrumentNode {
-    public UsageNode(String name, ArrayList<Node> nodes, ArrayList<String> values) {
+    public UsageNode(String name, ArrayList<Node<?>> nodes, ArrayList<String> values) {
         super(name, nodes, values, null);
     }
 
@@ -15,7 +15,7 @@ public class UsageNode extends LambdaAgrumentNode {
         super(name, values, null);
     }
 
-    public UsageNode(String name, ArrayList<Node> nodes, String... values) {
+    public UsageNode(String name, ArrayList<Node<?>> nodes, String... values) {
         super(name, nodes, null, values);
     }
 
@@ -23,7 +23,7 @@ public class UsageNode extends LambdaAgrumentNode {
         super(name, null, values);
     }
 
-    public UsageNode(String name, ArrayList<Node> nodes, String value) {
+    public UsageNode(String name, ArrayList<Node<?>> nodes, String value) {
         super(name, nodes, value, null);
     }
 

@@ -21,7 +21,7 @@ public abstract class WildNode<T> extends AbstractNode<T> {
         this.condition = condition;
     }
 
-    public WildNode(String name, ArrayList<Node> nodes, Predicate<String> condition) {
+    public WildNode(String name, ArrayList<Node<?>> nodes, Predicate<String> condition) {
         super(name, nodes);
         this.condition = condition;
     }
