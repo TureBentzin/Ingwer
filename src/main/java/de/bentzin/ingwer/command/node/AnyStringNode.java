@@ -12,28 +12,39 @@ import java.util.ArrayList;
  * @author Ture Bentzin
  * 23.10.2022
  */
-public class AnyStringNode extends WildNode<String>{
+@SuppressWarnings("unused")
+public class AnyStringNode extends WildNode<String> {
     private final NodeExecutor executor;
 
     /**
-     *
-     * @param name
-     * @param executor
+     * @param name     name of the node
+     * @param executor if you give null here then please override {@link AnyStringNode#execute(CommandData, NodeTrace, String)}!
      */
-    public AnyStringNode(String name,@Nullable NodeExecutor executor) {
+    public AnyStringNode(String name, @Nullable NodeExecutor executor) {
         super(name, s -> true);
         this.executor = executor;
     }
 
+    /**
+     * @param name     name of the node
+     * @param executor if you give null here then please override {@link AnyStringNode#execute(CommandData, NodeTrace, String)}!
+     */
     public AnyStringNode(String name, ArrayList<Node<?>> nodes, @Nullable NodeExecutor executor) {
-        super(name,nodes,s -> true);
+        super(name, nodes, s -> true);
         this.executor = executor;
     }
 
+    /**
+     * @param commandData data
+     * @param nodeTrace   trace
+     * @param s           the String
+     * @throws NodeTrace.NodeParser.NodeParserException see super for this
+     * @implNote You may want to override this if you set the NodeExecutor to null
+     */
     @Override
     public void execute(CommandData commandData, NodeTrace nodeTrace, String s) throws NodeTrace.NodeParser.NodeParserException {
-        if(executor != null)
-            executor.accept(commandData,nodeTrace);
+        if (executor != null)
+            executor.accept(commandData, nodeTrace);
         else {
             throw new NotImplementedException("Somebody forgot to implement a custom execute method here...");
         }
