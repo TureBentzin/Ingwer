@@ -37,10 +37,26 @@ public class NodeTrace {
         return nodes.get(index);
     }
 
+    public final <T> Optional<Node<T>> getOptional(int i){
+        try {
+            return Optional.of(get(i));
+        }catch (NoSuchElementException ignored){
+            return Optional.empty();
+        }
+    }
+
     public Node get(String name) {
         Node node = map.get(name);
         if (node == null) throw new NoSuchElementException("Node : \"" + name + "\" could not be found!");
         return node;
+    }
+
+    public final <T> Optional<Node<T>> getOptional(String name){
+        try {
+            return Optional.of(get(name));
+        }catch (NoSuchElementException ignored){
+            return Optional.empty();
+        }
     }
 
     /**

@@ -3,9 +3,7 @@ package de.bentzin.ingwer.features.integrated.vault;
 import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.CommandData;
-import de.bentzin.ingwer.command.node.IngwerNodeCommand;
-import de.bentzin.ingwer.command.node.LambdaAgrumentNode;
-import de.bentzin.ingwer.command.node.NodeTrace;
+import de.bentzin.ingwer.command.node.*;
 import de.bentzin.ingwer.command.node.preset.CollectionNode;
 import de.bentzin.ingwer.command.node.preset.OnlinePlayersNode;
 import de.bentzin.ingwer.command.node.preset.UsageNode;
@@ -15,6 +13,7 @@ import de.bentzin.ingwer.message.MultilinedMessage;
 import de.bentzin.ingwer.message.MultipageMessageKeeper;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -25,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static de.bentzin.ingwer.message.builder.C.*;
 
@@ -62,9 +62,43 @@ public class PermissionCommand extends IngwerNodeCommand {
         //command
 
         UsageNode addNode = new UsageNode("add");
-        UsageNode removeNode = new UsageNode("add");
+        UsageNode removeNode = new UsageNode("remove");
+        AnyStringNode permissionNode = new AnyStringNode("permission",null){
+            @Override
+            public void execute(CommandData commandData, @NotNull NodeTrace nodeTrace, String permission) throws NodeTrace.NodeParser.NodeParserException {
 
+                Case c = null;
+                String target = null;
+                Optional<Node<Player>> user = nodeTrace.getOptional("user");
+                if(user.isPresent()){
+                    c = Case.USER;
+                    Player p = nodeTrace.parser(commandData).parse("users");
+                    target = p.getName();
+                } else {
+                    Optional<Node<String>> group = nodeTrace.getOptional("group");
+                    if (group.isPresent()) {
+                        c = Case.GROUP;
+                        target = nodeTrace.parser(commandData).parse("groups");
+                    }
+                }
 
+                if(nodeTrace.contains(addNode)) {
+                    //case: add
+                    assert c != null;
+                    c.add.accept(vaultFeature,target,permission);
+                } else if (nodeTrace.contains(removeNode)) {
+                    //case: remove
+                    assert c != null;
+                    c.remove.accept(vaultFeature,target,permission);
+                }else {
+                    //ok wtf went wrong here
+                    throw new IllegalStateException("node is bricked!");
+                }
+            }
+        };
+
+        addNode.append(permissionNode);
+        removeNode.append(permissionNode);
 
         getCommandNode().append(new LambdaAgrumentNode("detail", (data, nodeTrace) -> {
                     IngwerCommandSender ingwerCommandSender = data.commandSender();
@@ -96,6 +130,7 @@ public class PermissionCommand extends IngwerNodeCommand {
                                     List<OneLinedMessage> oneLinedMessages = generateDetail(player, vaultFeature);
                                     new MultipageMessageKeeper(player.getUniqueId(), oneLinedMessages, 15, true).send();
                                 }))
+                                .append(addNode).append(removeNode)
                         ))
                 .append(new UsageNode("group").append(new CollectionNode<>(
                                 "groups", () -> List.of(vaultFeature.getPerms().getGroups()), group -> group) {
@@ -103,7 +138,7 @@ public class PermissionCommand extends IngwerNodeCommand {
                             public void execute(CommandData commandData, NodeTrace nodeTrace, String group) {
                                 generateOverview(group, vaultFeature).send(commandData.commandSender());
                             }
-                        })
+                        }.append(addNode).append(removeNode))
                 )
                 .finish();
     }
@@ -137,7 +172,7 @@ public class PermissionCommand extends IngwerNodeCommand {
     }
 
     @Contract("_, _ -> new")
-    private static List<OneLinedMessage> generateDetail(@NotNull Player player, @NotNull VaultFeature vaultFeature) {
+    private static @NotNull List<OneLinedMessage> generateDetail(@NotNull Player player, @NotNull VaultFeature vaultFeature) {
         List<OneLinedMessage> oneLinedMessageList = new ArrayList<>();
         oneLinedMessageList.add(MessageBuilder.empty().add(C, "Permissions of: ").add(A, player.getName()).build());
         // int i = 1;
@@ -149,4 +184,41 @@ public class PermissionCommand extends IngwerNodeCommand {
         }
         return oneLinedMessageList;
     }
+
+
+    protected void removePermission(String target, String permission) {
+
+    }
+
+    enum Case {
+        GROUP((vault, group, permission) -> {
+            //remove
+            for (World world : Bukkit.getWorlds()) {
+                vault.getPerms().groupRemove(world,group,permission);
+            }
+
+        }, (vault, group, permission) ->  {
+            //add
+            for (World world : Bukkit.getWorlds()) {
+                vault.getPerms().groupAdd(world,group,permission);
+            }
+        }),
+        USER((vault, user, permission) -> {
+            //remove
+            Player player = Bukkit.getPlayer(user);
+            vault.getPerms().playerRemove(player,permission);
+        }, (vault, user, permission) ->  {
+            //add
+            Player player = Bukkit.getPlayer(user);
+            vault.getPerms().playerAdd(player,permission);
+        });
+        private final TriConsumer<VaultFeature, String, String> remove;
+        private final TriConsumer<VaultFeature, String, String> add;
+
+        Case(TriConsumer<VaultFeature, String, String> remove, TriConsumer<VaultFeature, String, String> add){
+            this.remove = remove;
+            this.add = add;
+        }
+    }
+
 }
