@@ -60,6 +60,12 @@ public class PermissionCommand extends IngwerNodeCommand {
                 });
         this.vaultFeature = vaultFeature;
         //command
+
+        UsageNode addNode = new UsageNode("add");
+        UsageNode removeNode = new UsageNode("add");
+
+
+
         getCommandNode().append(new LambdaAgrumentNode("detail", (data, nodeTrace) -> {
                     IngwerCommandSender ingwerCommandSender = data.commandSender();
                     if (ingwerCommandSender instanceof Identity id) {
