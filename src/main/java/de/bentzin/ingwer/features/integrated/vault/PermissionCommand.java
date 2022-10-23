@@ -15,6 +15,7 @@ import de.bentzin.ingwer.message.builder.MessageBuilder;
 import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.thrower.ThrowType;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.jetbrains.annotations.Contract;
@@ -78,7 +79,7 @@ public class PermissionCommand extends IngwerNodeCommand {
                                             generateOverview(player,vaultFeature).send(commandData.commandSender());
                                         }
                                     }
-                                }).append(new LambdaAgrumentNode("detail",(data, nodeTrace) -> {
+                                }.append(new LambdaAgrumentNode("detail",(data, nodeTrace) -> {
                             Player player = null;
                             try {
                                 player = nodeTrace.parser(data).parse("users");
@@ -88,8 +89,14 @@ public class PermissionCommand extends IngwerNodeCommand {
                             List<OneLinedMessage> oneLinedMessages = generateDetail(player, vaultFeature);
                             new MultipageMessageKeeper(player.getUniqueId(),oneLinedMessages,15,true).send();
                         }))
-                )
-                .append(new UsageNode("group")
+                ))
+                .append(new UsageNode("group").append(new CollectionNode<>(
+                        "groups", () -> List.of(vaultFeature.getPerms().getGroups()), group -> group) {
+                            @Override
+                            public void execute(CommandData commandData, NodeTrace nodeTrace, String group) throws NodeTrace.NodeParser.NodeParserException {
+                                generateOverview(group,vaultFeature).send(commandData.commandSender());
+                            }
+                        })
                 )
                 .finish();
     }
@@ -110,15 +117,28 @@ public class PermissionCommand extends IngwerNodeCommand {
     }
 
     @Contract("_, _ -> new")
+    private static @NotNull MultilinedMessage generateOverview(@NotNull String group, @NotNull VaultFeature vaultFeature) {
+        List<OneLinedMessage> oneLinedMessageList = new ArrayList<>();
+        World world = Bukkit.getWorlds().get(0);
+        oneLinedMessageList.add(MessageBuilder.empty().add(C, "Overview of: ").add(A, group).build());
+        oneLinedMessageList.add(MessageBuilder.empty().add(C, "Data for world: ").add(A,world.getName()).build());
+        oneLinedMessageList.add(MessageBuilder.empty().add(A, "Prefix: ").add(C, vaultFeature.getChat().getGroupPrefix(world,group)).build());
+        oneLinedMessageList.add(MessageBuilder.empty().add(A, "Suffix: ").add(C, vaultFeature.getChat().getGroupSuffix(world,group)).build());
+        oneLinedMessageList.add(MessageBuilder.empty().add(C, "For advanced managing please try using an ingwer feature designed for you permission system!").build());
+
+        return new FramedMessage(oneLinedMessageList);
+    }
+
+    @Contract("_, _ -> new")
     private static List<OneLinedMessage> generateDetail(@NotNull Player player, @NotNull VaultFeature vaultFeature) {
         List<OneLinedMessage> oneLinedMessageList = new ArrayList<>();
         oneLinedMessageList.add(MessageBuilder.empty().add(C, "Permissions of: ").add(A, player.getName()).build());
-        int i = 1;
+       // int i = 1;
         for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
-            oneLinedMessageList.add(MessageBuilder.empty().add(C,"[" + i + "] : \"")
+            oneLinedMessageList.add(MessageBuilder.empty().add(C,/*[" + i + "] : */"\"")
                     .add(A, effectivePermission.getPermission())
                     .add(C,"\" : [" + effectivePermission.getValue() + "]").build());
-
+           // i++;
         }
                 return oneLinedMessageList;
     }

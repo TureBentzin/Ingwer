@@ -1,8 +1,11 @@
 package de.bentzin.ingwer.features.integrated.vault;
 
 import de.bentzin.ingwer.Ingwer;
+import de.bentzin.ingwer.command.node.NodeTrace;
 import de.bentzin.ingwer.features.SimpleFeature;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
+import de.bentzin.ingwer.thrower.IngwerThrower;
+import de.bentzin.ingwer.thrower.ThrowType;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -34,6 +37,12 @@ public class VaultFeature extends SimpleFeature {
         if (setupPermissions()) getLogger().warning("failed to setup permissions!");
         getLogger().info("setting up commands for Ingwer");
 
+        //VaultPermissionCommand
+        try {
+            new PermissionCommand(this);
+        } catch (NodeTrace.NodeParser.NodeParserException e) {
+            IngwerThrower.acceptS(e, ThrowType.COMMAND);
+        }
     }
 
     @Override
