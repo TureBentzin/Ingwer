@@ -79,7 +79,7 @@ public class MessageBuilder implements Cloneable {
         return PatternedMiniMessageMessage.fromMiniMessage(miniMessageBuilder.toString());
     }
 
-    public String getMiniMessage() {
+    public final String getMiniMessage() {
         return miniMessageBuilder.toString();
     }
 
@@ -92,22 +92,22 @@ public class MessageBuilder implements Cloneable {
         return s;
     }
 
-    public MessageBuilder c() {
+    public final MessageBuilder c() {
         miniMessageBuilder.append(IngwerMessage.COLOR_MM);
         return this;
     }
 
-    public MessageBuilder a() {
+    public final MessageBuilder a() {
         miniMessageBuilder.append(IngwerMessage.ACCENT_MM);
         return this;
     }
 
-    public MessageBuilder e() {
+    public final MessageBuilder e() {
         miniMessageBuilder.append(IngwerMessage.ERROR_MM);
         return this;
     }
 
-    public String getDefault() {
+    public final String getDefault() {
         return defaultMiniMessage;
     }
 
