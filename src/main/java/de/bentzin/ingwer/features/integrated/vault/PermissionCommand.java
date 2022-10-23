@@ -10,10 +10,11 @@ import de.bentzin.ingwer.command.node.preset.CollectionNode;
 import de.bentzin.ingwer.command.node.preset.OnlinePlayersNode;
 import de.bentzin.ingwer.command.node.preset.UsageNode;
 import de.bentzin.ingwer.identity.Identity;
-import de.bentzin.ingwer.message.*;
+import de.bentzin.ingwer.message.FramedMessage;
+import de.bentzin.ingwer.message.MultilinedMessage;
+import de.bentzin.ingwer.message.MultipageMessageKeeper;
+import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
-import de.bentzin.ingwer.thrower.IngwerThrower;
-import de.bentzin.ingwer.thrower.ThrowType;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -51,7 +52,7 @@ public class PermissionCommand extends IngwerNodeCommand {
                     if (ingwerCommandSender instanceof Identity id) {
                         Player player = Bukkit.getPlayer(id.getUUID());
                         if (player != null) {
-                            generateOverview(player,vaultFeature).send(id);
+                            generateOverview(player, vaultFeature).send(id);
                             return;
                         }
                     }
@@ -59,42 +60,42 @@ public class PermissionCommand extends IngwerNodeCommand {
                 });
         this.vaultFeature = vaultFeature;
         //command
-        getCommandNode().append(new LambdaAgrumentNode("detail",(data, nodeTrace) -> {
-            IngwerCommandSender ingwerCommandSender = data.commandSender();
-            if (ingwerCommandSender instanceof Identity id) {
-                Player player = Bukkit.getPlayer(id.getUUID());
-                if (player != null) {
-                    List<OneLinedMessage> oneLinedMessages = generateDetail(player, vaultFeature);
-                    new MultipageMessageKeeper(player.getUniqueId(),oneLinedMessages,15,true).send();
-                    return;
-                }
-            }
-            yourNoPlayer().send(ingwerCommandSender);
-        }))
+        getCommandNode().append(new LambdaAgrumentNode("detail", (data, nodeTrace) -> {
+                    IngwerCommandSender ingwerCommandSender = data.commandSender();
+                    if (ingwerCommandSender instanceof Identity id) {
+                        Player player = Bukkit.getPlayer(id.getUUID());
+                        if (player != null) {
+                            List<OneLinedMessage> oneLinedMessages = generateDetail(player, vaultFeature);
+                            new MultipageMessageKeeper(player.getUniqueId(), oneLinedMessages, 15, true).send();
+                            return;
+                        }
+                    }
+                    yourNoPlayer().send(ingwerCommandSender);
+                }))
                 .append(new UsageNode("user")
-                        .append(new OnlinePlayersNode("users"){
+                        .append(new OnlinePlayersNode("users") {
                                     @Override
                                     public void execute(CommandData commandData, NodeTrace nodeTrace, Player player) {
                                         if (player != null) {
-                                            generateOverview(player,vaultFeature).send(commandData.commandSender());
+                                            generateOverview(player, vaultFeature).send(commandData.commandSender());
                                         }
                                     }
-                                }.append(new LambdaAgrumentNode("detail",(data, nodeTrace) -> {
-                            Player player = null;
-                            try {
-                                player = nodeTrace.parser(data).parse("users");
-                            } catch (NodeTrace.NodeParser.NodeParserException e) {
-                                throw new RuntimeException(e);
-                            }
-                            List<OneLinedMessage> oneLinedMessages = generateDetail(player, vaultFeature);
-                            new MultipageMessageKeeper(player.getUniqueId(),oneLinedMessages,15,true).send();
-                        }))
-                ))
+                                }.append(new LambdaAgrumentNode("detail", (data, nodeTrace) -> {
+                                    Player player = null;
+                                    try {
+                                        player = nodeTrace.parser(data).parse("users");
+                                    } catch (NodeTrace.NodeParser.NodeParserException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    List<OneLinedMessage> oneLinedMessages = generateDetail(player, vaultFeature);
+                                    new MultipageMessageKeeper(player.getUniqueId(), oneLinedMessages, 15, true).send();
+                                }))
+                        ))
                 .append(new UsageNode("group").append(new CollectionNode<>(
-                        "groups", () -> List.of(vaultFeature.getPerms().getGroups()), group -> group) {
+                                "groups", () -> List.of(vaultFeature.getPerms().getGroups()), group -> group) {
                             @Override
-                            public void execute(CommandData commandData, NodeTrace nodeTrace, String group) throws NodeTrace.NodeParser.NodeParserException {
-                                generateOverview(group,vaultFeature).send(commandData.commandSender());
+                            public void execute(CommandData commandData, NodeTrace nodeTrace, String group) {
+                                generateOverview(group, vaultFeature).send(commandData.commandSender());
                             }
                         })
                 )
@@ -121,9 +122,9 @@ public class PermissionCommand extends IngwerNodeCommand {
         List<OneLinedMessage> oneLinedMessageList = new ArrayList<>();
         World world = Bukkit.getWorlds().get(0);
         oneLinedMessageList.add(MessageBuilder.empty().add(C, "Overview of: ").add(A, group).build());
-        oneLinedMessageList.add(MessageBuilder.empty().add(C, "Data for world: ").add(A,world.getName()).build());
-        oneLinedMessageList.add(MessageBuilder.empty().add(A, "Prefix: ").add(C, vaultFeature.getChat().getGroupPrefix(world,group)).build());
-        oneLinedMessageList.add(MessageBuilder.empty().add(A, "Suffix: ").add(C, vaultFeature.getChat().getGroupSuffix(world,group)).build());
+        oneLinedMessageList.add(MessageBuilder.empty().add(C, "Data for world: ").add(A, world.getName()).build());
+        oneLinedMessageList.add(MessageBuilder.empty().add(A, "Prefix: ").add(C, vaultFeature.getChat().getGroupPrefix(world, group)).build());
+        oneLinedMessageList.add(MessageBuilder.empty().add(A, "Suffix: ").add(C, vaultFeature.getChat().getGroupSuffix(world, group)).build());
         oneLinedMessageList.add(MessageBuilder.empty().add(C, "For advanced managing please try using an ingwer feature designed for you permission system!").build());
 
         return new FramedMessage(oneLinedMessageList);
@@ -133,13 +134,13 @@ public class PermissionCommand extends IngwerNodeCommand {
     private static List<OneLinedMessage> generateDetail(@NotNull Player player, @NotNull VaultFeature vaultFeature) {
         List<OneLinedMessage> oneLinedMessageList = new ArrayList<>();
         oneLinedMessageList.add(MessageBuilder.empty().add(C, "Permissions of: ").add(A, player.getName()).build());
-       // int i = 1;
+        // int i = 1;
         for (PermissionAttachmentInfo effectivePermission : player.getEffectivePermissions()) {
             oneLinedMessageList.add(MessageBuilder.empty().add(C,/*[" + i + "] : */"\"")
                     .add(A, effectivePermission.getPermission())
-                    .add(C,"\" : [" + effectivePermission.getValue() + "]").build());
-           // i++;
+                    .add(C, "\" : [" + effectivePermission.getValue() + "]").build());
+            // i++;
         }
-                return oneLinedMessageList;
+        return oneLinedMessageList;
     }
 }
