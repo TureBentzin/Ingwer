@@ -32,7 +32,7 @@ public class HelpCommand extends IngwerCommand {
     @Contract("_ -> new")
     private @NotNull MultipageMessageKeeper helpMessage(@NotNull Identity identity) {
         return new MultipageMessageKeeper(Objects.requireNonNull(identity.getUUID()),
-                generate(Objects.requireNonNull(identity)), 8,true);
+                generate(Objects.requireNonNull(identity)), 8, true);
     }
 
     private @NotNull List<OneLinedMessage> generate(@NotNull Identity identity) {

@@ -3,7 +3,6 @@ package de.bentzin.ingwer.storage.chunkdb;
 import com.google.common.annotations.Beta;
 import com.google.errorprone.annotations.ForOverride;
 import de.bentzin.ingwer.logging.Logger;
-import de.bentzin.ingwer.utils.Hardcode;
 import de.bentzin.ingwer.utils.LoggingClass;
 import org.bukkit.*;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -12,7 +11,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -28,17 +26,12 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
 
     public static final Function<World, Chunk> getChunk = world -> world.getChunkAt(0, 0);
     public static final String NAMESPACE = "ingwer";
+    public static final PersistentDataType<String, String> PERSISTENT_DATA_TYPE = PersistentDataType.STRING;
     protected final Supplier<Collection<World>> worlds;
-    public static final PersistentDataType<String,String> PERSISTENT_DATA_TYPE = PersistentDataType.STRING;
 
     public ChunkDBManager(Supplier<Collection<World>> worlds) {
         super(null);
         this.worlds = worlds;
-    }
-
-    @Override
-    public void updateLogger(Logger logger) {
-        super.updateLogger(logger);
     }
 
     @Contract("_ -> new")
@@ -46,15 +39,20 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
         return new NamespacedKey(NAMESPACE, key);
     }
 
+    @Override
+    public void updateLogger(Logger logger) {
+        super.updateLogger(logger);
+    }
+
     public abstract void save(NamespacedKey key, String data);
 
-    public <T> void saveSerialized(NamespacedKey key, T data, @NotNull Function<T,String> serializer) {
-        save(key,serializer.apply(data));
+    public <T> void saveSerialized(NamespacedKey key, T data, @NotNull Function<T, String> serializer) {
+        save(key, serializer.apply(data));
     }
 
     public abstract String get(NamespacedKey key);
 
-    public <T> T getDeserialized(NamespacedKey key, @NotNull Function<String,T> deserializer) {
+    public <T> T getDeserialized(NamespacedKey key, @NotNull Function<String, T> deserializer) {
         return deserializer.apply(get(key));
     }
 
@@ -70,13 +68,15 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
      * @implNote Override this is you want that the manager handles things on Stop
      */
     @ForOverride
-    public void stop() {}
+    public void stop() {
+    }
 
     /**
      * @implNote Override this is you want that the manager handles things on Start
      */
     @ForOverride
-    public void start() {}
+    public void start() {
+    }
 
     public final Collection<World> getWorlds() {
         return worlds.get();
@@ -107,21 +107,21 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
             builder.append(key.getKey()).append(":<");
             try {
                 builder.append(container.get(key, PERSISTENT_DATA_TYPE));
-            }catch (IllegalArgumentException ignored) {
+            } catch (IllegalArgumentException ignored) {
                 builder.append("--ERROR--");
                 getLogger().warning("illegal key found: \"" + key.getKey() + "\" -> removing!");
                 container.remove(key);
-            }finally {
+            } finally {
                 builder.append(">");
             }
             return builder;
         }).toList());
 
         chunkContainers().forEach(container1 -> {
-            ingwerKeys.forEach(key ->  {
-                if(!key.getKey().startsWith("ingwer.internal")) //NEVER TRANSFER INTERNALS!!!
+            ingwerKeys.forEach(key -> {
+                if (!key.getKey().startsWith("ingwer.internal")) //NEVER TRANSFER INTERNALS!!!
                     container1.set(key, PERSISTENT_DATA_TYPE,
-                        Objects.requireNonNull(container.get(key, PERSISTENT_DATA_TYPE)));
+                            Objects.requireNonNull(container.get(key, PERSISTENT_DATA_TYPE)));
                 timestamp(container1);
             });
         });
@@ -142,7 +142,7 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
     @NotNull
     @ApiStatus.Internal
     protected final Stream<NamespacedKey> streamKeysWithNamespace(@NotNull PersistentDataContainer container, String namespace) {
-        return streamKeysWithNamespace(container.getKeys(),namespace);
+        return streamKeysWithNamespace(container.getKeys(), namespace);
     }
 
     @NotNull
@@ -171,7 +171,7 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
      */
     public final void timestamp(@NotNull PersistentDataContainer container) {
         NamespacedKey key = genKey("ingwer.internal.timestamp");
-        container.set(key, PersistentDataType.STRING,Long.toString(System.currentTimeMillis()));
+        container.set(key, PersistentDataType.STRING, Long.toString(System.currentTimeMillis()));
     }
 
     /**
@@ -184,7 +184,7 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
         if (container.has(key)) {
             try {
                 return Optional.of(Long.valueOf(Objects.requireNonNull(container.get(key, PERSISTENT_DATA_TYPE))));
-            }catch (IllegalArgumentException ignored) {
+            } catch (IllegalArgumentException ignored) {
                 getLogger().warning("illegal key found: \"" + key.getKey() + "\" -> removing!");
                 container.remove(key);
             }
@@ -246,7 +246,7 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
     }
 
     @ApiStatus.Experimental
-    void onRecentContainer(@NotNull Consumer<PersistentDataContainer> containerConsumer){
+    void onRecentContainer(@NotNull Consumer<PersistentDataContainer> containerConsumer) {
         containerConsumer.accept(bestContainer());
     }
 

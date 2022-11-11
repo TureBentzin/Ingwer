@@ -7,7 +7,6 @@ import de.bentzin.tools.register.Registerator;
 
 import java.sql.SQLException;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 
 public final class IngwerThrower {
@@ -16,21 +15,10 @@ public final class IngwerThrower {
     private final Logger logger;
 
     /**
-     * @apiNote
-     * The FatalActions will be executed on a reported fatal. They should be as safe as possible and mostly independent of Ingwers initialization.
+     * @apiNote The FatalActions will be executed on a reported fatal. They should be as safe as possible and mostly independent of Ingwers initialization.
      * Please check for everything here! Do not assume things be correctly initialized because a fatal can mean that exact this initialization failed!
      */
     private final Registerator<Consumer<Throwable>> fatalActions = new Registerator<>();
-
-    /**
-     * @apiNote
-     * The FatalActions will be executed on a reported fatal. They should be as safe as possible and mostly independent of Ingwers initialization.
-     * Please check for everything here! Do not assume things be correctly initialized because a fatal can mean that exact this initialization failed!
-     * @see Registerator
-     */
-    public Registerator<Consumer<Throwable>> getFatalActions() {
-        return fatalActions;
-    }
 
     public IngwerThrower() {
         logger = Ingwer.getLogger().adopt("Thrower");
@@ -48,6 +36,15 @@ public final class IngwerThrower {
         Ingwer.getIngwerThrower().accept(throwable, type);
     }
 
+    /**
+     * @apiNote The FatalActions will be executed on a reported fatal. They should be as safe as possible and mostly independent of Ingwers initialization.
+     * Please check for everything here! Do not assume things be correctly initialized because a fatal can mean that exact this initialization failed!
+     * @see Registerator
+     */
+    public Registerator<Consumer<Throwable>> getFatalActions() {
+        return fatalActions;
+    }
+
     public void accept(Throwable throwable) throws IngwerException {
         accept(throwable, ThrowType.GENERAL);
     }
@@ -59,7 +56,7 @@ public final class IngwerThrower {
             StackTraceElement element = sqlException.getStackTrace()[sqlException.getStackTrace().length - 1];
             logger.error(element.toString());
         } else {
-            if(type != ThrowType.FATAL)
+            if (type != ThrowType.FATAL)
                 throw new IngwerException(throwable, type);
             else {
                 logger.error("FATAL: Ingwer will be stopped after Exception occurred in critical Workflows!!");

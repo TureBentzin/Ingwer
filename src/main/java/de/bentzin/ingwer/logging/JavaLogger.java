@@ -32,7 +32,7 @@ public class JavaLogger extends Logger {
             case WARNING -> logger.warning(prefix(message));
             case COSMETIC -> logger.info(message);
             case DEBUG -> {
-                if(isDebugEnabled()) logger.info(prefix(message,logLevel));
+                if (isDebugEnabled()) logger.info(prefix(message, logLevel));
             }
         }
     }

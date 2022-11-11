@@ -5,8 +5,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-
 public abstract class Logger {
 
     private final String name;
@@ -33,29 +31,28 @@ public abstract class Logger {
     }
 
     /**
-     *
      * @return true when globalDebug is active or the local debug of this is active!
      */
     public final boolean isDebugEnabled() {
-        if(Ingwer.isGlobalDebug()) return true;
+        if (Ingwer.isGlobalDebug()) return true;
         return debug;
     }
 
     /**
-     * @implNote use like this {@code if(checkDebug(logLevel) return;} This can be used like a "isAllowedToPrint" method
      * @return if it is allowed to further handle this message. true if it is and false if it is not
+     * @implNote use like this {@code if(checkDebug(logLevel) return;} This can be used like a "isAllowedToPrint" method
      */
     @ApiStatus.Experimental
     protected final boolean checkDebug(LogLevel logLevel) {
-        if(logLevel == LogLevel.DEBUG)
+        if (logLevel == LogLevel.DEBUG)
             return isDebugEnabled();
         return true;
     }
 
     /**
-     * @implNote WARNING: Please check is {@link Logger#isDebugEnabled()} before handling debug messages (logLevel == {@link LogLevel#DEBUG})
-     * @param message message to handle
+     * @param message  message to handle
      * @param logLevel level associated with the message
+     * @implNote WARNING: Please check is {@link Logger#isDebugEnabled()} before handling debug messages (logLevel == {@link LogLevel#DEBUG})
      */
     public abstract void log(String message, @NotNull LogLevel logLevel);
 

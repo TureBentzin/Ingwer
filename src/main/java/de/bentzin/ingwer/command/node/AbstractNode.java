@@ -6,7 +6,6 @@ import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.DoNotOverride;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;

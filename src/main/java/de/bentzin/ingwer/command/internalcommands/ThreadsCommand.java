@@ -29,7 +29,7 @@ public class ThreadsCommand extends IngwerCommand implements Permissioned {
     @Contract("_ -> new")
     private @NotNull MultipageMessageKeeper threadMessage(@NotNull Identity identity) {
         return new MultipageMessageKeeper(Objects.requireNonNull(identity.getUUID()),
-                generate(Objects.requireNonNull(identity)), 8,true);
+                generate(Objects.requireNonNull(identity)), 8, true);
     }
 
     private @NotNull List<OneLinedMessage> generate(@NotNull Identity identity) {

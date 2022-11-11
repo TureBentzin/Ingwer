@@ -140,18 +140,18 @@ public interface IngwerMessage {
     }
 
     /**
-     * @param onlyAtDebug used if logging this all the time would be more spam than useful
+     * @param onlyAtDebug       used if logging this all the time would be more spam than useful
      * @param recipientName     name of the recipient
      * @param simplifiedMessage simplifiedMessage can contain the message itself (without decoration and prefix) or a description of the message send to the recipient
      * @implNote can be implemented or custom called to log message sends!
      */
     default void log(String recipientName, String simplifiedMessage, boolean onlyAtDebug) {
-        if(!onlyAtDebug) {
-            log(recipientName,simplifiedMessage);
+        if (!onlyAtDebug) {
+            log(recipientName, simplifiedMessage);
             return;
         }
         Logger logger = manager().getLogger();
-        if(logger.isDebugEnabled())
+        if (logger.isDebugEnabled())
             logger.info(recipientName + " << " + simplifiedMessage);
     }
 

@@ -4,8 +4,6 @@ import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.logging.ApacheLogger;
 import de.bentzin.ingwer.preferences.Preferences;
 import de.bentzin.ingwer.preferences.StartType;
-import de.bentzin.ingwer.storage.Sqlite;
-import de.bentzin.ingwer.storage.chunkdb.AsyncChunkDBManager;
 import de.bentzin.ingwer.storage.chunkdb.ChunkDB;
 import de.bentzin.ingwer.storage.chunkdb.SyncedChunkDBManager;
 import de.bentzin.ingwer.utils.StopCode;
@@ -21,7 +19,7 @@ public final class IngwerPlugin extends JavaPlugin {
 
         Ingwer.start(new Preferences(Identity.DEVELOPER_UUID, '+', StartType.JAVA_PLUGIN_STANDALONE,
                 ChunkDB.getProvider(SyncedChunkDBManager.getDefault()),
-               /* Sqlite.getProvider(), */
+                /* Sqlite.getProvider(), */
                 new ApacheLogger("Ingwer", LogManager.getRootLogger()), this, true));
     }
 

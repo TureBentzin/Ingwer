@@ -4,9 +4,11 @@ import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.CommandTarget;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.command.ext.CommandData;
-import de.bentzin.ingwer.command.ext.NonFinalPermissiond;
 import de.bentzin.ingwer.command.ext.Permissioned;
-import de.bentzin.ingwer.command.node.*;
+import de.bentzin.ingwer.command.node.IngwerNodeCommand;
+import de.bentzin.ingwer.command.node.LambdaAgrumentNode;
+import de.bentzin.ingwer.command.node.NodeTrace;
+import de.bentzin.ingwer.command.node.WildNode;
 import de.bentzin.ingwer.command.node.preset.UsageNode;
 import de.bentzin.ingwer.features.SimpleFeature;
 import de.bentzin.ingwer.identity.Identity;
@@ -15,11 +17,8 @@ import de.bentzin.ingwer.message.MultipageMessageKeeper;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
-import de.bentzin.ingwer.utils.CompletableOptional;
-import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -77,17 +76,17 @@ class ChunkDBFeature extends SimpleFeature {
                                     .add(C.C, chunkDB.dbManager().get(currentIngwerKey.getKey())).build());
                         }
 
-                        if(data.commandSender() instanceof Identity identity) {
+                        if (data.commandSender() instanceof Identity identity) {
                             MultipageMessageKeeper multipageMessageKeeper
-                                    = new MultipageMessageKeeper(identity.getUUID(), oneLinedMessages, 8,true);
+                                    = new MultipageMessageKeeper(identity.getUUID(), oneLinedMessages, 8, true);
                             multipageMessageKeeper.send();
                         }
-                    })).append(new UsageNode("get").append(new WildNode<NamespacedKey>("key",(s) -> true) {
+                    })).append(new UsageNode("get").append(new WildNode<NamespacedKey>("key", (s) -> true) {
 
                         @Override
                         public @NotNull NamespacedKey parse(@NotNull String input, @NotNull NodeTrace nodeTrace)
                                 throws InvalidParameterException {
-                                return new NamespacedKey(ChunkDBManager.NAMESPACE, input);
+                            return new NamespacedKey(ChunkDBManager.NAMESPACE, input);
                         }
 
                         @Override
@@ -96,9 +95,10 @@ class ChunkDBFeature extends SimpleFeature {
                             String s = "null";
                             try {
                                 s = chunkDB.dbManager().get(key);
-                            }catch (NullPointerException ignored){}
+                            } catch (NullPointerException ignored) {
+                            }
 
-                            MessageBuilder.prefixed().add(C.C, key.getKey()).add(C.A," -> ").add(C.C, s).build().send(ingwerCommandSender);
+                            MessageBuilder.prefixed().add(C.C, key.getKey()).add(C.A, " -> ").add(C.C, s).build().send(ingwerCommandSender);
                         }
                     }))
                     .finish();

@@ -17,13 +17,14 @@ public class SystemLogger extends Logger {
 
     @Override
     public void log(String message, @NotNull LogLevel logLevel) {
-        if(checkDebug(logLevel))
+        if (checkDebug(logLevel))
             switch (logLevel) {
 
                 case INFO, DEBUG, WARNING -> System.out.println(prefix(message, logLevel));
                 case ERROR -> System.err.println(prefix(message, logLevel));
                 case COSMETIC -> System.out.println(message);
-                default -> IngwerThrower.acceptS(new IllegalStateException("Unexpected value: " + logLevel), ThrowType.LOGGING);
+                default ->
+                        IngwerThrower.acceptS(new IllegalStateException("Unexpected value: " + logLevel), ThrowType.LOGGING);
             }
     }
 

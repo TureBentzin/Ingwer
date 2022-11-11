@@ -4,14 +4,11 @@ import de.bentzin.ingwer.command.ext.CommandData;
 import de.bentzin.ingwer.command.node.CommandNode;
 import de.bentzin.ingwer.command.node.Node;
 import de.bentzin.ingwer.command.node.NodeTrace;
-import de.bentzin.ingwer.command.node.NodeTraceBuilder;
 import de.bentzin.ingwer.message.FramedMessage;
 import de.bentzin.ingwer.message.IngwerMessage;
-import de.bentzin.ingwer.message.MultipageMessageKeeper;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import de.bentzin.ingwer.message.builder.C;
 import de.bentzin.ingwer.message.builder.MessageBuilder;
-import de.bentzin.tools.pair.Pair;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,8 +42,7 @@ public class UsageNodeExecutor implements Node.NodeExecutor {
                 MessageBuilder builder = MessageBuilder.empty();
                 addContent(entry.getValue(), builder);
                 messages.add(builder.build());
-            }
-            else {
+            } else {
                 MessageBuilder builder = MessageBuilder.empty();
                 int i = entry.getKey();
                 while (i > 2) {

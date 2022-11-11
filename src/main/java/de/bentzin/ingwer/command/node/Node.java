@@ -4,7 +4,6 @@ import com.google.common.annotations.Beta;
 import com.google.common.reflect.TypeToken;
 import com.google.errorprone.annotations.ForOverride;
 import de.bentzin.ingwer.command.ext.CommandData;
-import de.bentzin.ingwer.command.ext.NonFinalPermissiond;
 import de.bentzin.ingwer.command.ext.Permissioned;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.utils.CompletableOptional;
@@ -13,7 +12,6 @@ import org.apache.commons.lang.NotImplementedException;
 import org.checkerframework.checker.optional.qual.MaybePresent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
@@ -199,7 +197,7 @@ public interface Node<T> extends Cloneable {
             Objects.requireNonNull(getNodes())
                     .forEach(!checkForDuplicates ? node -> collection.addAll(node.collect()) : node -> {
                         node.collect(true).forEach(node2 -> {
-                            if (!collection.contains(node2)) collection.add((Node) node2);
+                            if (!collection.contains(node2)) collection.add(node2);
                         });
                     });
         }
@@ -207,7 +205,7 @@ public interface Node<T> extends Cloneable {
     }
 
     default Collection<Node> find(Predicate<Node> nodePredicate) {
-        return collect(false).stream().filter((Predicate<? super Node>) nodePredicate).toList();
+        return collect(false).stream().filter(nodePredicate).toList();
     }
 
     /**
@@ -270,7 +268,7 @@ public interface Node<T> extends Cloneable {
         } else {
             getCommandNode().getOrThrow().usage().accept(data, traceBuilder.build());
         }
-                return null;
+        return null;
     }
 
     /**

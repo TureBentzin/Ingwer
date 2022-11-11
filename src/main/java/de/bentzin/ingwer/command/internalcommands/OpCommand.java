@@ -21,6 +21,7 @@ public class OpCommand extends IngwerCommand {
     private final PatternedMiniMessageMessage grantOpPlayer = MessageBuilder.prefixed().add(C.C, "You").add(C.A, " {0} ").add(C.A, "Operator for ").add(C.A, "{1}").add(C.C, "!").toCompletableMessage().origin();
     @CompletableMessage.Origin
     private final PatternedMiniMessageMessage informOpPlayer = MessageBuilder.informMessageBuilder().add(C.A, "{2}").add(C.A, " {0} ").add(C.A, "Operator for ").add(C.A, "{1}").add(C.C, "!").toCompletableMessage().origin();
+
     public OpCommand() {
         super("op", "grant or revoke operator status");
     }

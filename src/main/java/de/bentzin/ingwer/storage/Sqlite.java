@@ -22,6 +22,16 @@ import java.util.UUID;
 public final class Sqlite extends LoggingClass implements Storage {
 
 
+    private File db;
+    private Connection connection;
+    public Sqlite() throws URISyntaxException, IOException, SQLException {
+        super(Ingwer.getLogger().adopt("Storage"));
+        db = getDefaultFile();
+
+        //INIT
+
+    }
+
     @Contract(value = " -> new", pure = true)
     public static @NotNull StorageProvider<Sqlite> getProvider() {
         return new StorageProvider<>(false, false) {
@@ -36,18 +46,6 @@ public final class Sqlite extends LoggingClass implements Storage {
                 return null;
             }
         };
-    }
-
-    private File db;
-    private Connection connection;
-
-
-    public Sqlite() throws URISyntaxException, IOException, SQLException {
-        super(Ingwer.getLogger().adopt("Storage"));
-        db = getDefaultFile();
-
-        //INIT
-
     }
 
     public static @NotNull File getDefaultFile() throws URISyntaxException {
@@ -66,14 +64,14 @@ public final class Sqlite extends LoggingClass implements Storage {
         try {
             db.createNewFile();
         } catch (IOException e) {
-           IngwerThrower.acceptS(e,ThrowType.STORAGE);
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
         }
 
         try {
             connect();
             setupDB();
         } catch (SQLException e) {
-            IngwerThrower.acceptS(e,ThrowType.STORAGE);
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
         }
 
     }
@@ -288,8 +286,6 @@ public final class Sqlite extends LoggingClass implements Storage {
 
         return getIdentityByUUID(suuid);
     }
-
-
 
 
     /**

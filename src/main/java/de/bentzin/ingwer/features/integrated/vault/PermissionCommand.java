@@ -59,19 +59,19 @@ public class PermissionCommand extends IngwerNodeCommand {
         //command
 
         @CompletableMessage.Origin
-        PatternedMiniMessageMessage message = MessageBuilder.prefixed().add(C,"Successfully ").add(A,"{0}")
-                .add(C," permission \"").add(A,"{1}").add(C,"\" from ").add(A,"{2}").add(C,"!").toCompletableMessage().origin();
+        PatternedMiniMessageMessage message = MessageBuilder.prefixed().add(C, "Successfully ").add(A, "{0}")
+                .add(C, " permission \"").add(A, "{1}").add(C, "\" from ").add(A, "{2}").add(C, "!").toCompletableMessage().origin();
 
         UsageNode addNode = new UsageNode("add");
         UsageNode removeNode = new UsageNode("remove");
-        AnyStringNode permissionNode = new AnyStringNode("permission",null){
+        AnyStringNode permissionNode = new AnyStringNode("permission", null) {
             @Override
             public void execute(CommandData commandData, @NotNull NodeTrace nodeTrace, String permission) throws NodeTrace.NodeParser.NodeParserException {
 
                 Case c = null;
                 String target = null;
                 Optional<Node<Player>> user = nodeTrace.getOptional("user");
-                if(user.isPresent()){
+                if (user.isPresent()) {
                     c = Case.USER;
                     Player p = nodeTrace.parser(commandData).parse("users");
                     target = p.getName();
@@ -83,18 +83,18 @@ public class PermissionCommand extends IngwerNodeCommand {
                     }
                 }
 
-                if(nodeTrace.contains(addNode)) {
+                if (nodeTrace.contains(addNode)) {
                     //case: add
                     assert c != null;
-                    c.add.accept(vaultFeature,target,permission);
-                    message.clone().insert(0,"added").insert(1,permission).insert(2,target).send(commandData.commandSender());
+                    c.add.accept(vaultFeature, target, permission);
+                    message.clone().insert(0, "added").insert(1, permission).insert(2, target).send(commandData.commandSender());
 
                 } else if (nodeTrace.contains(removeNode)) {
                     //case: remove
                     assert c != null;
-                    c.remove.accept(vaultFeature,target,permission);
-                    message.clone().insert(0,"removed").insert(1,permission).insert(2,target).send(commandData.commandSender());
-                }else {
+                    c.remove.accept(vaultFeature, target, permission);
+                    message.clone().insert(0, "removed").insert(1, permission).insert(2, target).send(commandData.commandSender());
+                } else {
                     //ok wtf went wrong here
                     throw new IllegalStateException("node is bricked!");
                 }
@@ -125,16 +125,16 @@ public class PermissionCommand extends IngwerNodeCommand {
                                         }
                                     }
                                 }.append(new LambdaAgrumentNode("detail", (data, nodeTrace) -> {
-                                    Player player = null;
-                                    try {
-                                        player = nodeTrace.parser(data).parse("users");
-                                    } catch (NodeTrace.NodeParser.NodeParserException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                    List<OneLinedMessage> oneLinedMessages = generateDetail(player, vaultFeature);
-                                    new MultipageMessageKeeper(player.getUniqueId(), oneLinedMessages, 15, true).send();
-                                }))
-                                .append(addNode).append(removeNode)
+                                            Player player = null;
+                                            try {
+                                                player = nodeTrace.parser(data).parse("users");
+                                            } catch (NodeTrace.NodeParser.NodeParserException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                            List<OneLinedMessage> oneLinedMessages = generateDetail(player, vaultFeature);
+                                            new MultipageMessageKeeper(player.getUniqueId(), oneLinedMessages, 15, true).send();
+                                        }))
+                                        .append(addNode).append(removeNode)
                         ))
                 .append(new UsageNode("group").append(new CollectionNode<>(
                                 "groups", () -> List.of(vaultFeature.getPerms().getGroups()), group -> group) {
@@ -198,28 +198,28 @@ public class PermissionCommand extends IngwerNodeCommand {
         GROUP((vault, group, permission) -> {
             //remove
             for (World world : Bukkit.getWorlds()) {
-                vault.getPerms().groupRemove(world,group,permission);
+                vault.getPerms().groupRemove(world, group, permission);
             }
 
-        }, (vault, group, permission) ->  {
+        }, (vault, group, permission) -> {
             //add
             for (World world : Bukkit.getWorlds()) {
-                vault.getPerms().groupAdd(world,group,permission);
+                vault.getPerms().groupAdd(world, group, permission);
             }
         }),
         USER((vault, user, permission) -> {
             //remove
             Player player = Bukkit.getPlayer(user);
-            vault.getPerms().playerRemove(player,permission);
-        }, (vault, user, permission) ->  {
+            vault.getPerms().playerRemove(player, permission);
+        }, (vault, user, permission) -> {
             //add
             Player player = Bukkit.getPlayer(user);
-            vault.getPerms().playerAdd(player,permission);
+            vault.getPerms().playerAdd(player, permission);
         });
         private final TriConsumer<VaultFeature, String, String> remove;
         private final TriConsumer<VaultFeature, String, String> add;
 
-        Case(TriConsumer<VaultFeature, String, String> remove, TriConsumer<VaultFeature, String, String> add){
+        Case(TriConsumer<VaultFeature, String, String> remove, TriConsumer<VaultFeature, String, String> add) {
             this.remove = remove;
             this.add = add;
         }

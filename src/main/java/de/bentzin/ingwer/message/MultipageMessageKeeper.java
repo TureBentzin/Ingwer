@@ -23,13 +23,13 @@ public class MultipageMessageKeeper {
     }
 
     public MultipageMessageKeeper(UUID recipient, List<OneLinedMessage> content, int pageLength) {
-        this(recipient,content,pageLength,false);
+        this(recipient, content, pageLength, false);
     }
 
     public MultipageMessageKeeper(UUID recipient, List<OneLinedMessage> content, int pageLength, boolean sorted) {
         ArrayList<FramedMessage> messages1;
         this.recipient = recipient;
-        if(sorted)
+        if (sorted)
             messages1 = new FramedMultipageMessageGenerator(content).sortAlphabet().generate(pageLength, recipient, this::send);
         messages1 = new FramedMultipageMessageGenerator(content).generate(pageLength, recipient, this::send);
         this.messages = messages1;
@@ -40,7 +40,7 @@ public class MultipageMessageKeeper {
     }
 
     @ApiStatus.Experimental
-    public void send(){
+    public void send() {
         send(1);
     }
 

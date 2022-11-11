@@ -37,10 +37,10 @@ public class NodeTrace {
         return nodes.get(index);
     }
 
-    public final <T> Optional<Node<T>> getOptional(int i){
+    public final <T> Optional<Node<T>> getOptional(int i) {
         try {
             return Optional.of(get(i));
-        }catch (NoSuchElementException ignored){
+        } catch (NoSuchElementException ignored) {
             return Optional.empty();
         }
     }
@@ -51,22 +51,22 @@ public class NodeTrace {
         return node;
     }
 
-    public final <T> Optional<Node<T>> getOptional(String name){
+    public final <T> Optional<Node<T>> getOptional(String name) {
         try {
             return Optional.of(get(name));
-        }catch (NoSuchElementException ignored){
+        } catch (NoSuchElementException ignored) {
             return Optional.empty();
         }
     }
 
     /**
-     * @implNote The NodeParser can be used to get the parsed values of the Nodes in this NodeTrace
      * @param data used for parsing
      * @return new nodeParser
+     * @implNote The NodeParser can be used to get the parsed values of the Nodes in this NodeTrace
      */
     @NotNull
     public NodeParser parser(CommandData data) {
-        return new NodeParser(this,data);
+        return new NodeParser(this, data);
     }
 
     @ApiStatus.Experimental
@@ -153,9 +153,8 @@ public class NodeTrace {
     }
 
 
-
     @ApiStatus.Internal
-    public static final class NodeParser{
+    public static final class NodeParser {
 
         private final NodeTrace current;
         private final CommandData data;
@@ -170,7 +169,7 @@ public class NodeTrace {
             try {
                 Node<T> node = current.get(name);
                 return node.parse(data.cmd()[current.indexOf(node)], current);
-            }catch (Exception exception) {
+            } catch (Exception exception) {
                 throw new NodeParserException(exception, current, data, name, false);
             }
         }
@@ -180,7 +179,7 @@ public class NodeTrace {
             try {
                 Node<T> node = current.get(index);
                 return node.parse(data.cmd()[current.indexOf(node)], current);
-            }catch (Exception exception) {
+            } catch (Exception exception) {
                 throw new NodeParserException(exception, current, data, index + "", true);
             }
         }
@@ -188,7 +187,7 @@ public class NodeTrace {
         @NotNull
         @ApiStatus.Internal
         public <T> T parse(@NotNull Supplier<String> name) throws NodeParserException {
-          return parse(name.get());
+            return parse(name.get());
         }
 
         @NotNull
@@ -204,9 +203,10 @@ public class NodeTrace {
              * Constructs a new exception with {@code null} as its detail message.
              * The cause is not initialized, and may subsequently be initialized by a
              * call to {@link #initCause}.
-             * @param current the nodeTrace that the node should be in
-             * @param data the data that was used to parse the node
-             * @param queryString the query as string
+             *
+             * @param current       the nodeTrace that the node should be in
+             * @param data          the data that was used to parse the node
+             * @param queryString   the query as string
              * @param queryWasIndex true when the query was an index
              */
             public NodeParserException(NodeTrace current, CommandData data, String queryString, boolean queryWasIndex) {
@@ -223,9 +223,9 @@ public class NodeTrace {
              *
              * @param message       the detail message. The detail message is saved for
              *                      later retrieval by the {@link #getMessage()} method.
-             * @param current the nodeTrace that the node should be in
-             * @param data the data that was used to parse the node
-             * @param queryString the query as string
+             * @param current       the nodeTrace that the node should be in
+             * @param data          the data that was used to parse the node
+             * @param queryString   the query as string
              * @param queryWasIndex true when the query was an index
              */
             public NodeParserException(@Nullable String message, NodeTrace current, CommandData data, String queryString, boolean queryWasIndex) {
@@ -248,9 +248,9 @@ public class NodeTrace {
              *                      {@link #getCause()} method).  (A {@code null} value is
              *                      permitted, and indicates that the cause is nonexistent or
              *                      unknown.)
-             * @param current the nodeTrace that the node should be in
-             * @param data the data that was used to parse the node
-             * @param queryString the query as string
+             * @param current       the nodeTrace that the node should be in
+             * @param data          the data that was used to parse the node
+             * @param queryString   the query as string
              * @param queryWasIndex true when the query was an index
              * @since 1.4
              */
@@ -274,9 +274,9 @@ public class NodeTrace {
              *                      {@link #getCause()} method).  (A {@code null} value is
              *                      permitted, and indicates that the cause is nonexistent or
              *                      unknown.)
-             * @param current the nodeTrace that the node should be in
-             * @param data the data that was used to parse the node
-             * @param queryString the query as string
+             * @param current       the nodeTrace that the node should be in
+             * @param data          the data that was used to parse the node
+             * @param queryString   the query as string
              * @param queryWasIndex true when the query was an index
              * @since 1.4
              */
@@ -290,12 +290,12 @@ public class NodeTrace {
 
             @Override
             public String getMessage() {
-               if(super.getMessage() != null) {
-                   return "Can´t parse Node! Query \"" + (queryWasIndex? "index: ": "") + queryString + "\" failed on [" + current.nodes + "] with "
-                           + Arrays.toString(data.cmd()) + "!";
-               }else{
-                   return super.getMessage();
-               }
+                if (super.getMessage() != null) {
+                    return "Can´t parse Node! Query \"" + (queryWasIndex ? "index: " : "") + queryString + "\" failed on [" + current.nodes + "] with "
+                            + Arrays.toString(data.cmd()) + "!";
+                } else {
+                    return super.getMessage();
+                }
             }
         }
     }

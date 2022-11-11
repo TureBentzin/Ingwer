@@ -1,19 +1,13 @@
 package de.bentzin.ingwer.identity;
 
-import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
 import de.bentzin.ingwer.identity.permissions.IngwerPermissions;
 import de.bentzin.ingwer.message.OneLinedMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 public class Identity implements IngwerCommandSender {

@@ -44,7 +44,7 @@ public class PaperEventListener implements Listener {
                 }
             }
 
-        }catch (Throwable throwable) {
+        } catch (Throwable throwable) {
             IngwerThrower.acceptS(throwable, ThrowType.EVENT);
         }
     }
@@ -64,7 +64,7 @@ public class PaperEventListener implements Listener {
                 } else
                     Ingwer.getStorage().updateOrSaveIdentity(identity, player.getName(), player.getUniqueId(), identity.getPermissions());
             }
-        }catch (Throwable throwable) {
+        } catch (Throwable throwable) {
             IngwerThrower.acceptS(throwable, ThrowType.EVENT);
         }
     }

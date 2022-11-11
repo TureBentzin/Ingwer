@@ -97,16 +97,16 @@ public final class Ingwer {
         return logger;
     }
 
+    public static void setLogger(@NotNull Logger logger) {
+        Ingwer.logger = logger;
+    }
+
     @NotNull
     public static Logger getNullLogger() {
-        if(nullLogger == null)
+        if (nullLogger == null)
             throw new IllegalStateException("Okay that should never happen, but the \"null-logger\" is null. yes actually....");
         else
             return nullLogger;
-    }
-
-    public static void setLogger(@NotNull Logger logger) {
-        Ingwer.logger = logger;
     }
 
     public static boolean isGlobalDebug() {
@@ -136,9 +136,9 @@ public final class Ingwer {
             getLogger().info("Booting Ingwer v." + VERSION_STRING);
 
             //WARN DEBUG
-            if(isGlobalDebug())
+            if (isGlobalDebug())
                 getLogger().warning("Warning! Ingwers debugmode is currently active! Only use this with caution because this may result into unwanted logger output!" +
-                    "If you dont know what this message is about and you are using a pre compiled version of Ingwer then consider reporting this to your Ingwer-Provider!");
+                        "If you dont know what this message is about and you are using a pre compiled version of Ingwer then consider reporting this to your Ingwer-Provider!");
 
             javaPlugin = preferences.javaPlugin();
             getLogger().cosmetic(BANNER);
@@ -207,11 +207,11 @@ public final class Ingwer {
 
             //maliciousConfig();
         } catch (Throwable throwable) {
-            if(throwable instanceof RuntimeException)
+            if (throwable instanceof RuntimeException)
                 IngwerThrower.acceptS(throwable, ThrowType.FATAL);
 
             else
-              IngwerThrower.acceptS(throwable, ThrowType.GENERAL);
+                IngwerThrower.acceptS(throwable, ThrowType.GENERAL);
         }
     }
 

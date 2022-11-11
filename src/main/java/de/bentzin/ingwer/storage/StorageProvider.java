@@ -1,6 +1,5 @@
 package de.bentzin.ingwer.storage;
 
-import de.bentzin.ingwer.storage.Storage;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -36,7 +35,7 @@ public abstract class StorageProvider<T extends Storage> implements Supplier<T> 
 
     public T getAndInit() throws IOException {
         T get = get();
-        get.init();;
+        get.init();
         return get;
     }
 }

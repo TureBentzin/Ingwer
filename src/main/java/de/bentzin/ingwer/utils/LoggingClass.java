@@ -19,9 +19,9 @@ public class LoggingClass implements Logging {
     }
 
     /**
+     * @param logger new logger
      * @implNote Override and execute super if you want to enable people to update the logger your class is using
      * You may also use this to set your logger if you set null in the constructor
-     * @param logger new logger
      */
     protected void updateLogger(Logger logger) {
         this.logger = logger;

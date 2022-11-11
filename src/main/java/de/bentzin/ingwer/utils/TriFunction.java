@@ -8,7 +8,7 @@ import java.util.function.Function;
  * 23.10.2022
  */
 @FunctionalInterface
-interface TriFunction<A,B,C,R> {
+interface TriFunction<A, B, C, R> {
 
     R apply(A a, B b, C c);
 

@@ -67,7 +67,7 @@ public class SimpleMultilinedMessage implements MultilinedMessage {
     }
 
     @Override
-    public void sort(Comparator<OneLinedMessage> sorter){
+    public void sort(Comparator<OneLinedMessage> sorter) {
         messageList.sort(sorter);
     }
 }

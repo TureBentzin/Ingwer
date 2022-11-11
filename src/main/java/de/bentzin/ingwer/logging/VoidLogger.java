@@ -13,8 +13,8 @@ public class VoidLogger extends Logger {
 
     @Override
     public void log(String message, @NotNull LogLevel logLevel) {
-        if(logLevel.equals(LogLevel.DEBUG) && isDebugEnabled()){
-            if(hasParent()) {
+        if (logLevel.equals(LogLevel.DEBUG) && isDebugEnabled()) {
+            if (hasParent()) {
                 assert getParent() != null;
                 getParent().debug(".> " + logLevel);
             }

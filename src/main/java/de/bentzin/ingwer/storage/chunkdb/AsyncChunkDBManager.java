@@ -66,7 +66,7 @@ public final class AsyncChunkDBManager extends ChunkDBManager {
         getLogger().info("reading data...");
         PersistentDataContainer persistentDataContainer = bestContainer();
         for (NamespacedKey key : persistentDataContainer.getKeys()) {
-            if(key.getNamespace().equals(NAMESPACE)) {
+            if (key.getNamespace().equals(NAMESPACE)) {
                 storage.put(key, persistentDataContainer.get(key, PersistentDataType.STRING));
                 getLogger().debug("read-in: " + key);
             }

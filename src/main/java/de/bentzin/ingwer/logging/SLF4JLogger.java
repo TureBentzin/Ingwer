@@ -21,7 +21,7 @@ public class SLF4JLogger extends Logger {
 
     @Override
     public void log(String message, @NotNull LogLevel logLevel) {
-        if(checkDebug(logLevel)) {
+        if (checkDebug(logLevel)) {
             if (logger == null) {
                 Bukkit.getServer().getLogger().info(prefix(message, logLevel));
                 return;

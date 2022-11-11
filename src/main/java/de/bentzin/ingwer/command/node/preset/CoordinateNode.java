@@ -5,7 +5,7 @@ import de.bentzin.ingwer.command.node.NodeTrace;
 
 import java.util.function.Predicate;
 
-public class CoordinateNode extends NumberNode{
+public class CoordinateNode extends NumberNode {
 
     //TODO not yet implemented
 

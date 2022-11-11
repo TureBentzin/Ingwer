@@ -19,9 +19,11 @@ public class CompletableOptional<E> {
     private final Collection<Thread> interrupted = new ArrayList<>();
     private E value = null;
     private boolean set = false;
+
     public CompletableOptional() {
 
     }
+
     public CompletableOptional(@Nullable E initialValue) {
         complete(initialValue);
     }

@@ -24,17 +24,16 @@ public interface MultilinedMessage extends IngwerMessage {
      */
     @Nullable
     @ForOverride
-    default String logDescription(){
+    default String logDescription() {
         return null;
     }
 
     default void multilineLog(String recipientName) {
-        if(logDescription() == null)
-            get().forEachRemaining(oneLinedMessage -> log(recipientName,IngwerMessage.deserializePlain(oneLinedMessage.getOneLinedComponent()),
+        if (logDescription() == null)
+            get().forEachRemaining(oneLinedMessage -> log(recipientName, IngwerMessage.deserializePlain(oneLinedMessage.getOneLinedComponent()),
                     true));
-        else
-        {
-            log(recipientName,"ML:" + logDescription());
+        else {
+            log(recipientName, "ML:" + logDescription());
         }
     }
 }

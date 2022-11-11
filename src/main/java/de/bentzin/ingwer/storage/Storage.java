@@ -13,7 +13,6 @@ import java.util.UUID;
 /**
  * @author Ture Bentzin
  * 07.10.2022
- *
  * @implNote Every implementation of this should have a static method <code>public static StorageProvider<ThisClass> getProvider(arguments);</code>
  */
 public interface Storage extends Logging {
@@ -24,7 +23,7 @@ public interface Storage extends Logging {
     /**
      * will be executed after Ingwers systems are on
      */
-    default void lateInit(){
+    default void lateInit() {
 
     }
 
@@ -53,10 +52,11 @@ public interface Storage extends Logging {
 
     /**
      * THIS USES UUID for check!!!!
+     *
      * @implNote If Identity is not present this will create a new one based on the given SINGLE parameters. In this case the given Identity would not be used or changed!!!
      */
     @Contract("_, _, _, _ -> param1")
-    public default Identity updateOrSaveIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
+    default Identity updateOrSaveIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
         if (containsIdentityWithUUID(uuid.toString())) {
             updateIdentity(identity, name, uuid, ingwerPermissions);
         } else {

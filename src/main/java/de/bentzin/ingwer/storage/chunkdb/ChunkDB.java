@@ -77,10 +77,10 @@ public class ChunkDB extends LoggingClass implements Storage {
                     clean();
                     getLogger().info("ChunkDB tried deleting all keys and values from Ingwers Namespace -> We have " + dbManager().getCurrentIngwerKeys().size() + " keys left!");
                 } catch (Exception e) {
-                Ingwer.getNullLogger().error("ChunkDB Fatal emergency deletion failed.... yea does not seem like this could be saved!");
-                IngwerThrower.acceptS(e,ThrowType.STORAGE);
+                    Ingwer.getNullLogger().error("ChunkDB Fatal emergency deletion failed.... yea does not seem like this could be saved!");
+                    IngwerThrower.acceptS(e, ThrowType.STORAGE);
 
-            }
+                }
 
             });
         } catch (Registerator.DuplicateEntryException e) {
@@ -108,8 +108,8 @@ public class ChunkDB extends LoggingClass implements Storage {
     public Identity saveIdentity(@NotNull Identity identity) {
         String uuid = identity.getUUID().toString();
         // getLogger().debug("saving: " + identity);
-        if (containsIdentityWithUUID(uuid)){
-            updateIdentity(Objects.requireNonNull(getIdentityByUUID(uuid)),identity.getName(),identity.getUUID(),identity.getPermissions());
+        if (containsIdentityWithUUID(uuid)) {
+            updateIdentity(Objects.requireNonNull(getIdentityByUUID(uuid)), identity.getName(), identity.getUUID(), identity.getPermissions());
             getLogger().warning("someone tried to save identity that was already present: updating!");
             return getIdentityByUUID(uuid);
         }
@@ -140,7 +140,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     public @Nullable Identity getIdentityByName(String name) {
         List<Identity> identities = getAllIdentities().stream().filter(identity -> identity.getName().equals(name))
                 .toList();
-        if(identities.isEmpty()) return null;
+        if (identities.isEmpty()) return null;
         else return identities.get(0);
     }
 
@@ -148,34 +148,34 @@ public class ChunkDB extends LoggingClass implements Storage {
     public @Nullable Identity getIdentityByUUID(String uuid) {
         List<Identity> identities = getAllIdentities().stream().filter(identity -> identity.getUUID().equals(UUID.fromString(uuid)))
                 .toList();
-        getLogger().debug("Extract: " + getAllIdentities().toString());
-        if(identities.isEmpty()) return null;
+        getLogger().debug("Extract: " + getAllIdentities());
+        if (identities.isEmpty()) return null;
         else return identities.get(0);
     }
 
     @Override
     public @NotNull Collection<Identity> getAllIdentities() {
-            Collection<Identity> identities = new ArrayList<>();
-            Collection<String> keys = allIdentityKeys(true);
-            for (String key : keys) {
-                String name = null, uuid = null, perms = null;
-                boolean flag = false;
-                try {
-                    if (dbManager.get(key + ".flag").equals("0")) {
-                        flag = true;
-                    }
-                    name = dbManager.get(key + ".name");
-                    uuid = dbManager.get(key + ".uuid");
-                    perms = dbManager.get(key + ".perms");
-                }catch (NullPointerException e){
-                    getLogger().error("cant read data from key: \""+ key + "\" -> " + e.getMessage());
+        Collection<Identity> identities = new ArrayList<>();
+        Collection<String> keys = allIdentityKeys(true);
+        for (String key : keys) {
+            String name = null, uuid = null, perms = null;
+            boolean flag = false;
+            try {
+                if (dbManager.get(key + ".flag").equals("0")) {
+                    flag = true;
                 }
-                if (flag)
-                    identities.add(new Identity(name, UUID.fromString(uuid), IngwerPermission.decodePermissions(Long.parseLong(perms))));
-                else
-                    getLogger().warning("flag not matching for entry: \"" + key + "\". This data will be ignored!");
+                name = dbManager.get(key + ".name");
+                uuid = dbManager.get(key + ".uuid");
+                perms = dbManager.get(key + ".perms");
+            } catch (NullPointerException e) {
+                getLogger().error("cant read data from key: \"" + key + "\" -> " + e.getMessage());
             }
-            return identities;
+            if (flag)
+                identities.add(new Identity(name, UUID.fromString(uuid), IngwerPermission.decodePermissions(Long.parseLong(perms))));
+            else
+                getLogger().warning("flag not matching for entry: \"" + key + "\". This data will be ignored!");
+        }
+        return identities;
     }
 
 
@@ -201,19 +201,19 @@ public class ChunkDB extends LoggingClass implements Storage {
     @Override
     public void removeIdentity(@NotNull Identity identity) {
         NamespacedKey key = getKeyOfIdentity(identity);
-        if(key == null){
-                throw new InvalidParameterException("the given identity is not in chunkDB!");
+        if (key == null) {
+            throw new InvalidParameterException("the given identity is not in chunkDB!");
         }
-        dbManager.remove(cloneAppend(key,"name"));
-        dbManager.remove(cloneAppend(key,"uuid"));
-        dbManager.remove(cloneAppend(key,"perms"));
-        dbManager.remove(cloneAppend(key,"flag"));
+        dbManager.remove(cloneAppend(key, "name"));
+        dbManager.remove(cloneAppend(key, "uuid"));
+        dbManager.remove(cloneAppend(key, "perms"));
+        dbManager.remove(cloneAppend(key, "flag"));
     }
 
     @Override
     public boolean containsIdentityWithUUID(String uuid) {
         for (Identity allIdentity : getAllIdentities()) {
-            if(allIdentity.getUUID().equals(UUID.fromString(uuid))){
+            if (allIdentity.getUUID().equals(UUID.fromString(uuid))) {
                 return true;
             }
         }
@@ -221,12 +221,12 @@ public class ChunkDB extends LoggingClass implements Storage {
     }
 
     /**
-     * @changes Breaking change: now uses uuid to get key
      * @param identity
      * @return
+     * @changes Breaking change: now uses uuid to get key
      */
     private @Nullable NamespacedKey getKeyOfIdentity(@NotNull Identity identity) {
-        if(getIdentityByUUID(String.valueOf(identity.getUUID())) != null) {
+        if (getIdentityByUUID(String.valueOf(identity.getUUID())) != null) {
             Collection<String> keys = allIdentityKeys(false);
             int i = -1;
             for (String key : keys) {
@@ -242,23 +242,23 @@ public class ChunkDB extends LoggingClass implements Storage {
             if (i == -1) {
                 throw new IllegalStateException("Please report this issue! <i is -1>");
             }
-           return genKey(IDENTITY_PREFIX + i);
-        }else
+            return genKey(IDENTITY_PREFIX + i);
+        } else
             return null;
     }
 
     @Override
     public Identity updateIdentity(@NotNull Identity identity, String name, @NotNull UUID uuid, IngwerPermissions ingwerPermissions) {
-            NamespacedKey origin = getKeyOfIdentity(identity);
-            if(origin == null)
-                    throw new InvalidParameterException("the given identity is not in chunkDB!");
+        NamespacedKey origin = getKeyOfIdentity(identity);
+        if (origin == null)
+            throw new InvalidParameterException("the given identity is not in chunkDB!");
 
-            dbManager.save(cloneAppend(origin, "name"), name);
-            dbManager.save(cloneAppend(origin, "uuid"), String.valueOf(uuid));
-            dbManager.save(cloneAppend(origin, "perms"), Long.toString(identity.getCodedPermissions()));
-            dbManager.save(cloneAppend(origin, "flag"), Short.valueOf("0").toString());
+        dbManager.save(cloneAppend(origin, "name"), name);
+        dbManager.save(cloneAppend(origin, "uuid"), String.valueOf(uuid));
+        dbManager.save(cloneAppend(origin, "perms"), Long.toString(identity.getCodedPermissions()));
+        dbManager.save(cloneAppend(origin, "flag"), Short.valueOf("0").toString());
 
-            return getIdentityByUUID(String.valueOf(uuid)); //Backcheck
+        return getIdentityByUUID(String.valueOf(uuid)); //Backcheck
     }
 
     /**
