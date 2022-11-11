@@ -57,6 +57,7 @@ public final class AsyncChunkDBManager extends ChunkDBManager {
 
     @Override
     public void stop() {
+        getLogger().debug("shutting down AsyncChunkDBManager -> pushing data...");
         push(bestContainer());
     }
 
