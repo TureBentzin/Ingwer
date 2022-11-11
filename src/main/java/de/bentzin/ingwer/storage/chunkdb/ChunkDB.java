@@ -148,7 +148,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     public @Nullable Identity getIdentityByUUID(String uuid) {
         List<Identity> identities = getAllIdentities().stream().filter(identity -> identity.getUUID().equals(UUID.fromString(uuid)))
                 .toList();
-        getLogger().debug("Extraxt: " + getAllIdentities().toString());
+        getLogger().debug("Extract: " + getAllIdentities().toString());
         if(identities.isEmpty()) return null;
         else return identities.get(0);
     }
@@ -264,7 +264,7 @@ public class ChunkDB extends LoggingClass implements Storage {
     /**
      * @return IDENTITY_PREFIX + n+1 + "." -> "identities.3."
      */
-    protected String nextIdentityKey(boolean withDot) {
+    protected String nextIdentityKey(@SuppressWarnings("SameParameterValue") boolean withDot) {
         int max = 0;
         Collection<String> keys = allIdentityKeys(true);
         for (String key : keys) {
@@ -302,7 +302,7 @@ public class ChunkDB extends LoggingClass implements Storage {
         return new NamespacedKey("ingwer", nextIdentityKey(false));
     }
 
-    public NamespacedKey cloneAppend(NamespacedKey origin, String @NotNull ... sub) {
+    public NamespacedKey cloneAppend(@NotNull NamespacedKey origin, String @NotNull ... sub) {
         StringJoiner joiner = new StringJoiner(".");
         joiner.add(origin.getKey());
         for (String s : sub) joiner.add(s);

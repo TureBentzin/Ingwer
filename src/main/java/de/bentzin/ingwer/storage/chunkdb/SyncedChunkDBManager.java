@@ -1,6 +1,5 @@
 package de.bentzin.ingwer.storage.chunkdb;
 
-import com.google.common.annotations.Beta;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -10,25 +9,26 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
  * @author Ture Bentzin
  * 08.10.2022
  */
+@SuppressWarnings("ProtectedMemberInFinalClass")
 @ApiStatus.Internal
 public final class SyncedChunkDBManager extends ChunkDBManager {
 
 
-    @Contract(" -> new")
-    public static Supplier<ChunkDBManager> getDefault() {
-        return () -> new SyncedChunkDBManager(Bukkit::getWorlds);
-    }
-
     public SyncedChunkDBManager(Supplier<Collection<World>> worlds) {
         super(worlds);
+    }
+
+    @Contract(" -> new")
+    public static @NotNull Supplier<ChunkDBManager> getDefault() {
+        return () -> new SyncedChunkDBManager(Bukkit::getWorlds);
     }
 
     @Override
@@ -64,7 +64,7 @@ public final class SyncedChunkDBManager extends ChunkDBManager {
     public void clean() {
         //TODO ConcurrentModificationException
         for (NamespacedKey key : getMostRecentContainer().orElseThrow().getKeys()) {
-            if(key.getNamespace().equals(NAMESPACE)) {
+            if (key.getNamespace().equals(NAMESPACE)) {
                 remove(key);
             }
         }
@@ -79,13 +79,11 @@ public final class SyncedChunkDBManager extends ChunkDBManager {
     @Deprecated
     @ApiStatus.Internal
     public long getElseSetTimeStamp(@NotNull PersistentDataContainer container) {
-       return getTimestamp(container).or(() -> {
+        return getTimestamp(container).or(() -> {
             timestamp(container);
             return getTimestamp(container);
         }).orElseThrow();
     }
-
-
 
 
     @Nullable

@@ -70,17 +70,13 @@ public abstract sealed class ChunkDBManager extends LoggingClass permits AsyncCh
      * @implNote Override this is you want that the manager handles things on Stop
      */
     @ForOverride
-    public void stop() {
-
-    }
+    public void stop() {}
 
     /**
      * @implNote Override this is you want that the manager handles things on Start
      */
     @ForOverride
-    public void start() {
-
-    }
+    public void start() {}
 
     public final Collection<World> getWorlds() {
         return worlds.get();
