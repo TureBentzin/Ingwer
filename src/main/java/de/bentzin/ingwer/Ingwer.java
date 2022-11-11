@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 public final class Ingwer {
 
     //TODO dynamic
-    public static final String VERSION_STRING = "0.5-BETA";
+    public static final String VERSION_STRING = "0.6-BETA";
     public static final String BANNER = "\n" +
             "██╗███╗░░██╗░██████╗░░██╗░░░░░░░██╗███████╗██████╗░\n" +
             "██║████╗░██║██╔════╝░░██║░░██╗░░██║██╔════╝██╔══██╗\n" +
