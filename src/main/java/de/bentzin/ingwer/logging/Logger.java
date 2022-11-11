@@ -1,6 +1,10 @@
 package de.bentzin.ingwer.logging;
 
+import com.google.errorprone.annotations.DoNotCall;
+import com.google.errorprone.annotations.ForOverride;
 import de.bentzin.ingwer.Ingwer;
+import de.bentzin.ingwer.thrower.IngwerThrower;
+import de.bentzin.ingwer.thrower.ThrowType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +24,14 @@ public abstract class Logger {
         debug = this.parent.isDebugEnabled();
         //debug
         debug("creating new logger: " + genName() + "!");
+
+        //notify parent:
+        try {
+            parent.notifyParent(this);
+        }catch (Exception e){
+            IngwerThrower.acceptS(e, ThrowType.LOGGING);
+        }
+
     }
 
     public Logger(String name) {
@@ -98,6 +110,15 @@ public abstract class Logger {
         else return name;
     }
 
+    public final String getName() {
+        return genName();
+    }
+
+    @ApiStatus.Internal
+    public final String getLastName() {
+        return name;
+    }
+
     public abstract Logger adopt(String name);
 
     public enum LogLevel {
@@ -106,5 +127,18 @@ public abstract class Logger {
         ERROR,
         COSMETIC,
         DEBUG,
+    }
+
+    //dynamic logging
+
+    /**
+     * This will be called by default if a Logger is created with a parent.
+     * There is no guarantee that non-dynamic loggers will support this!
+     * @param child the child
+     */
+    @DoNotCall
+    @ForOverride
+    public void notifyParent(Logger child) {
+
     }
 }
