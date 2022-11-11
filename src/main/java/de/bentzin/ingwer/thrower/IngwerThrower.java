@@ -2,14 +2,35 @@ package de.bentzin.ingwer.thrower;
 
 import de.bentzin.ingwer.Ingwer;
 import de.bentzin.ingwer.logging.Logger;
+import de.bentzin.ingwer.utils.StopCode;
+import de.bentzin.tools.register.Registerator;
 
 import java.sql.SQLException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public final class IngwerThrower {
 
     public static final boolean SQL_DEBUGMODE = true;
     private final Logger logger;
+
+    /**
+     * @apiNote
+     * The FatalActions will be executed on a reported fatal. They should be as safe as possible and mostly independent of Ingwers initialization.
+     * Please check for everything here! Do not assume things be correctly initialized because a fatal can mean that exact this initialization failed!
+     */
+    private final Registerator<Consumer<Throwable>> fatalActions = new Registerator<>();
+
+    /**
+     * @apiNote
+     * The FatalActions will be executed on a reported fatal. They should be as safe as possible and mostly independent of Ingwers initialization.
+     * Please check for everything here! Do not assume things be correctly initialized because a fatal can mean that exact this initialization failed!
+     * @see Registerator
+     */
+    public Registerator<Consumer<Throwable>> getFatalActions() {
+        return fatalActions;
+    }
 
     public IngwerThrower() {
         logger = Ingwer.getLogger().adopt("Thrower");
@@ -38,8 +59,17 @@ public final class IngwerThrower {
             StackTraceElement element = sqlException.getStackTrace()[sqlException.getStackTrace().length - 1];
             logger.error(element.toString());
         } else {
+            if(type != ThrowType.FATAL)
+                throw new IngwerException(throwable, type);
+            else {
+                logger.error("FATAL: Ingwer will be stopped after Exception occurred in critical Workflows!!");
+                throwable.printStackTrace();
+                //run FatalActions
+                logger.warning("FATAL: It may be possible that Ingwer will lose settings or data because of the automatic fixing routine!");
+                fatalActions.forEach(action -> action.accept(throwable));
+                Ingwer.stop(StopCode.FATAL);
+            }
 
-            throw new IngwerException(throwable, type);
         }
 
     }

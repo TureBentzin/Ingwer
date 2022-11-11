@@ -15,6 +15,7 @@ import de.bentzin.ingwer.storage.StorageProvider;
 import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.thrower.ThrowType;
 import de.bentzin.ingwer.utils.LoggingClass;
+import de.bentzin.tools.register.Registerator;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -67,6 +68,24 @@ public class ChunkDB extends LoggingClass implements Storage {
     public void init() {
         getLogger().info("running ChunkDB v." + VERSION_STRING);
         dbManager.updateLogger(getLogger().adopt("DBManager"));
+
+        //ChunkDB Start-up
+        try {
+            Ingwer.getFatalActions().register(throwable -> {
+                try {
+                    getLogger().warning("A fatal error is forcing ChunkDB to try to remove all data from database to remove all possibly corrupted data entry's!");
+                    clean();
+                    getLogger().info("ChunkDB tried deleting all keys and values from Ingwers Namespace -> We have " + dbManager().getCurrentIngwerKeys().size() + " keys left!");
+                } catch (Exception e) {
+                Ingwer.getNullLogger().error("ChunkDB Fatal emergency deletion failed.... yea does not seem like this could be saved!");
+                IngwerThrower.acceptS(e,ThrowType.STORAGE);
+
+            }
+
+            });
+        } catch (Registerator.DuplicateEntryException e) {
+            IngwerThrower.acceptS(e, ThrowType.STORAGE);
+        }
         dbManager.start();
     }
 
@@ -293,7 +312,6 @@ public class ChunkDB extends LoggingClass implements Storage {
     @ApiStatus.Internal
     protected void clean() {
         dbManager.clean();
-        ;
     }
 
     @ApiStatus.Internal

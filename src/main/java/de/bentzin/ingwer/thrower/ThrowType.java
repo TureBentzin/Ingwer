@@ -14,6 +14,7 @@ public enum ThrowType {
     FEATURE("An error has occurred within Ingwers feature system! This my not be an official Ingwer issue!"),
     COMMAND("Error while executing IngwerCommand procedures!"),
     EVENT("Error initiated due event execution!"),
+    FATAL("An exception was thrown that prohibits further execution of the Ingwer Core."),
     MESSAGE("Error occurred handling IngwerMessage!");
     private final String message;
 

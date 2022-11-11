@@ -19,6 +19,7 @@ import de.bentzin.ingwer.utils.StopCode;
 import de.bentzin.ingwer.utils.cmdreturn.CommandReturnSystem;
 import de.bentzin.ingwer.utils.cmdreturn.paper.CommandReturnPaperListener;
 import de.bentzin.tools.console.Console;
+import de.bentzin.tools.register.Registerator;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -29,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class Ingwer {
 
@@ -61,6 +63,13 @@ public final class Ingwer {
 
     public static IngwerThrower getIngwerThrower() {
         return ingwerThrower;
+    }
+
+    /**
+     * @return {@code getIngwerThrower().getFatalActions()}
+     */
+    public static Registerator<Consumer<Throwable>> getFatalActions() {
+        return getIngwerThrower().getFatalActions();
     }
 
     public static IngwerMessageManager getMessageManager() {
@@ -198,7 +207,11 @@ public final class Ingwer {
 
             //maliciousConfig();
         } catch (Throwable throwable) {
-            IngwerThrower.acceptS(throwable, ThrowType.GENERAL);
+            if(throwable instanceof RuntimeException)
+                IngwerThrower.acceptS(throwable, ThrowType.FATAL);
+
+            else
+              IngwerThrower.acceptS(throwable, ThrowType.GENERAL);
         }
     }
 
