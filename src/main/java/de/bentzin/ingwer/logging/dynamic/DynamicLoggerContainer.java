@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -62,6 +63,7 @@ public class DynamicLoggerContainer extends Logger {
      * @param newHeart
      */
     public void setHeart(@NotNull Logger newHeart) {
+        Objects.requireNonNull(newHeart);
         this.heart = newHeart;
         children.forEach(children -> children.update(heart));
     }
@@ -73,7 +75,14 @@ public class DynamicLoggerContainer extends Logger {
      */
     @Override
     public void log(String message, @NotNull LogLevel logLevel) {
-        heart.log(message,logLevel);
+        if(heart == null){
+            if(hasParent()) {
+                assert getParent() != null;
+                getParent().log(message,logLevel);
+                return;
+            }
+        }else
+            heart.log(message,logLevel);
     }
 
     @Override
@@ -87,7 +96,7 @@ public class DynamicLoggerContainer extends Logger {
             children.add(dynamicLoggerContainer);
         }else {
             try {
-                throw new OperationNotSupportedException("{" + getContainerName() + "} :: this container does not allow non container children!");
+                throw new OperationNotSupportedException("{" + getContainerName() + "} :: this container does not allow non container children! \"" + child.getClass().getName() + "\" is not allowed!");
             } catch (OperationNotSupportedException e) {
                 IngwerThrower.acceptS(e, ThrowType.LOGGING);
             }

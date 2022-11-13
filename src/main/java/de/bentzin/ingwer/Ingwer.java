@@ -207,6 +207,7 @@ public final class Ingwer {
 
             //maliciousConfig();
         } catch (Throwable throwable) {
+            throwable.printStackTrace();
             if (throwable instanceof RuntimeException)
                 IngwerThrower.acceptS(throwable, ThrowType.FATAL);
 

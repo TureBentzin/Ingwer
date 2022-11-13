@@ -13,7 +13,8 @@ import org.slf4j.LoggerFactory;
 
 public final class IngwerLog4JFilter extends LoggingClass implements Filter {
     public IngwerLog4JFilter() {
-        super(new SLF4JLogger("filter4J", Ingwer.getLogger(), LoggerFactory.getLogger("filter4J")));
+       // super(new SLF4JLogger("filter4J", Ingwer.getLogger(), LoggerFactory.getLogger("filter4J")));
+        super(Ingwer.getLogger().adopt("filter4J"));
         getLogger().info("successfully constructed!");
     }
 
