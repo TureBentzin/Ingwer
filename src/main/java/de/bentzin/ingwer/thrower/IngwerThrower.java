@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 public final class IngwerThrower {
 
-    public static final boolean SQL_DEBUGMODE = true;
+    public static final boolean SQL_DEBUGMODE = false;
     private final Logger logger;
 
     /**
@@ -57,7 +57,7 @@ public final class IngwerThrower {
             logger.error(element.toString());
         } else {
             if (type != ThrowType.FATAL)
-                throw new IngwerException(throwable, type);
+                throw new IngwerException(throwable, type); //TODO STEALTH v.1.0
             else {
                 logger.error("FATAL: Ingwer will be stopped after Exception occurred in critical Workflows!!");
                 throwable.printStackTrace();
