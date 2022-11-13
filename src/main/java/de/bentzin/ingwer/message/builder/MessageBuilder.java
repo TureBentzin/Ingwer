@@ -1,9 +1,6 @@
 package de.bentzin.ingwer.message.builder;
 
-import de.bentzin.ingwer.message.IngwerMessage;
-import de.bentzin.ingwer.message.MiniMessageMessage;
-import de.bentzin.ingwer.message.OneLinedMessage;
-import de.bentzin.ingwer.message.PatternedMiniMessageMessage;
+import de.bentzin.ingwer.message.*;
 import de.bentzin.ingwer.utils.Hardcode;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +11,7 @@ import java.util.Objects;
  * Hardcode that makes your life easy when dealing with simple messages
  */
 @Hardcode
-public class MessageBuilder implements Cloneable {
+public class MessageBuilder implements Cloneable, MessageLike {
 
     private final String defaultMiniMessage;
     private StringBuilder miniMessageBuilder;
@@ -134,5 +131,17 @@ public class MessageBuilder implements Cloneable {
     @Override
     public int hashCode() {
         return miniMessageBuilder.hashCode();
+    }
+
+    /**
+     *
+     * This should never be made final
+     *
+     * @return the Message
+     * @see MessageLike
+     */
+    @Override
+    public IngwerMessage toMessage() {
+        return build();
     }
 }

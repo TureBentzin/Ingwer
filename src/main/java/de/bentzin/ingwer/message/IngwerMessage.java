@@ -1,6 +1,7 @@
 package de.bentzin.ingwer.message;
 
 import de.bentzin.ingwer.Ingwer;
+import de.bentzin.ingwer.command.IngwerCommand;
 import de.bentzin.ingwer.command.IngwerCommandSender;
 import de.bentzin.ingwer.identity.Identity;
 import de.bentzin.ingwer.identity.permissions.IngwerPermission;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public interface IngwerMessage {
+public interface IngwerMessage extends MessageLike{
 
     //stylesheet
     /*
@@ -157,5 +158,10 @@ public interface IngwerMessage {
 
     default IngwerMessageManager manager() {
         return Ingwer.getMessageManager();
+    }
+
+    @Override
+    default IngwerMessage toMessage() {
+        return this;
     }
 }

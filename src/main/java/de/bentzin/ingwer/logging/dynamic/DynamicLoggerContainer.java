@@ -3,6 +3,7 @@ package de.bentzin.ingwer.logging.dynamic;
 import de.bentzin.ingwer.logging.Logger;
 import de.bentzin.ingwer.thrower.IngwerThrower;
 import de.bentzin.ingwer.thrower.ThrowType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import javax.naming.OperationNotSupportedException;
@@ -10,9 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
+ * The {@link DynamicLoggerContainer} presents a way to use IngwerLoggers Dynamically. This would allow to change the {@link Logger} on the
+ * flight and redirect all Log-Outputs to another kind of Logger. This is not 100% save and may not be supported.
+ * It is not used by Ingwer by default but if you like there is nothing stopping you from do so.
+ * @implNote This may be unchecked or untested - do not assume that a dynamicLogger works as intended or as expected
+ *
  * @author Ture Bentzin
  * 11.11.2022
  */
+@ApiStatus.Experimental
 public class DynamicLoggerContainer extends Logger {
 
     public final String name;

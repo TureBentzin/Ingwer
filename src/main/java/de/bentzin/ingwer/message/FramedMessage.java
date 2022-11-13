@@ -1,11 +1,14 @@
 package de.bentzin.ingwer.message;
 
+import com.google.common.annotations.Beta;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 public class FramedMessage extends SimpleMultilinedMessage {
 
@@ -17,8 +20,24 @@ public class FramedMessage extends SimpleMultilinedMessage {
         FRAME = nC.append(mm).append(IngwerMessage.INGWER_HEAD).append(mm);
     }
 
-    public FramedMessage(Collection<OneLinedMessage> messageList) {
+    public FramedMessage(@NotNull Collection<MessageLike> messageList) {
         super(frame(messageList));
+    }
+
+    /**
+     * This is highly experimental!
+     * This may be removed
+     * @param messageLikes
+     */
+    @ApiStatus.Experimental
+    @Beta
+    public FramedMessage(@NotNull Collection<MessageLike> messageLikes) {
+        super(frame(messageLikes.stream().map(messageLike -> {
+            if (messageLike instanceof OneLinedMessage olm)
+                return olm;
+            else
+                return null;
+        }).filter(Objects::nonNull).toList()));
     }
 
     public FramedMessage(Collection<OneLinedMessage> messageList, Component footer) {
